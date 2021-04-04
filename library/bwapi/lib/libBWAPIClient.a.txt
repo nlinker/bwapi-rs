@@ -1,0 +1,25 @@
+$ nm --debug-syms libBWAPIClient.a
+
+libBWAPIClient.a(Client.cpp.o):
+00000000000000f8 s GCC_except_table6
+0000000000000110 s __GLOBAL__sub_I_Client.cpp
+                 U __Unwind_Resume
+0000000000000430 S __ZN5BWAPI11BWAPIClientE
+0000000000000080 T __ZN5BWAPI6Client10disconnectEv
+00000000000000f0 T __ZN5BWAPI6Client6updateEv
+00000000000000a0 T __ZN5BWAPI6Client7connectEv
+0000000000000000 T __ZN5BWAPI6ClientC1Ev
+0000000000000040 T __ZN5BWAPI6ClientC2Ev
+0000000000000020 T __ZN5BWAPI6ClientD1Ev
+0000000000000060 T __ZN5BWAPI6ClientD2Ev
+0000000000000090 T __ZNK5BWAPI6Client11isConnectedEv
+                 U __ZNSt13runtime_errorC1EPKc
+                 U __ZNSt13runtime_errorD1Ev
+                 U __ZTISt13runtime_error
+                 U __ZdlPv
+                 U ___cxa_allocate_exception
+                 U ___cxa_atexit
+                 U ___cxa_free_exception
+                 U ___cxa_throw
+                 U ___dso_handle
+                 U ___gxx_personality_v0

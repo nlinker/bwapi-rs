@@ -41,8 +41,7 @@ fn main() {
     let bwapi_include_dir = cur_dir.join("bwapi").join("include");
     let bwapi_lib_dir = cur_dir.join("bwapi").join("lib");
 
-    cxx_build::bridge("src/main.rs")
-        // .file("cvresize/src/cvresize/cvresize.cpp")
+    cxx_build::bridge("src/lib.rs")
         .flag_if_supported("-std=c++11")
         .include(bwapi_include_dir)
         .compile("rice");
