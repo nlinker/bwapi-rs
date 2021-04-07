@@ -1,6 +1,7 @@
-# `bwapi-rice` library
-
-Native [Rust](https://github.com/rust-lang/rust) bindings to [BWAPI](https://github.com/bwapi/bwapi). Main objectives:
+# `BWAPI` o`XI`dized library
+ 
+_Oxidized BWAPI_ is the native [Rust](https://github.com/rust-lang/rust) bindings 
+to [BWAPI](https://github.com/bwapi/bwapi). Main objectives:
 
 - Create full coverage for BWAPI, but with Rust-friendly data structures. 
 
@@ -37,4 +38,11 @@ TODO
 pwd  # something like ~/rust/scai/bwapi-rice
 cd library/bwapi/include
 find . -type f -print0 | xargs -0 dos2unix
+```
+
+### Using generator
+
+```bash
+conda activate bwapi-rsx
+
 ```

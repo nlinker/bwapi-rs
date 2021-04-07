@@ -3,7 +3,7 @@
 pub mod ffi {
 
     unsafe extern "C++" {
-        include!("library/bwapi/include/BWAPI.h");
+        include!("library/bwapilib/include/BWAPI.h");
 
         #[rust_name = "bwapi_get_revision"]
         fn BWAPI_getRevision() -> i32;
@@ -54,6 +54,33 @@ pub mod ffi {
     // extern "Rust" {
     // }
 }
+
+mod xi {
+    trait AIModule {
+        fn on_start(&self);
+        fn on_frame(&self);
+        fn on_end(&self, is_winner: bool);
+    }
+
+    struct DemoAI {
+        name: String,
+    }
+
+    impl AIModule for DemoAI {
+        fn on_start(&self) {
+            println!("`on_start` called for {}", self.name);
+        }
+
+        fn on_frame(&self) {
+            println!("`on_frame` called for {}", self.name);
+        }
+
+        fn on_end(&self, is_winner: bool) {
+            println!("`on_end({})` called for {}", is_winner, self.name);
+        }
+    }
+}
+
 
 pub fn lib_main() {
     let r = crate::ffi::bwapi_get_revision();

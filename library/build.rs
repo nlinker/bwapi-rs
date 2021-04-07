@@ -38,15 +38,26 @@ fn main() {
     //     .build();
     // log_var!(bwapi_build_dir);
 
-    let bwapi_include_dir = cur_dir.join("bwapi").join("include");
-    let bwapi_lib_dir = cur_dir.join("bwapi").join("lib");
+    let bwapi_include_dir = cur_dir.join("bwapilib").join("include");
+    let bwapi_lib_dir = cur_dir.join("bwapilib").join("lib");
+
+    log_var!(bwapi_include_dir);
 
     cxx_build::bridge("src/lib.rs")
-        .flag_if_supported("-std=c++11")
-        .include(bwapi_include_dir)
+        .flag_if_supported("-std=c++17")
+        .include(bwapi_include_dir.clone())
+        .include("src")
+        .file("src/lib.cpp")
+        .flag("")
         .compile("rice");
+
+    // cc::Build::new()
+    //     .file("src/lib.cpp")
+    //     .include(bwapi_include_dir)
+    //     .compile("rice-c");
 
     println!("cargo:rustc-link-search=native={}", bwapi_lib_dir.display());
     // Phase `BWAPILIB` here stands for the library name (without lib prefix and without .dylib suffix)
     println!("cargo:rustc-link-lib=dylib=BWAPILIB");
+
 }
