@@ -15,4 +15,4 @@ target_compile_options(BWAPILIB PRIVATE -w)
 # The target installation command has to exist
 # and has to install all linkable targets
 # into `.` (current) directory for cargo to find it.
-install(TARGETS foo DESTINATION .)
+install(TARGETS BWAPILIB DESTINATION .)
