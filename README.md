@@ -40,9 +40,6 @@ cd library/bwapi/include
 find . -type f -print0 | xargs -0 dos2unix
 ```
 
-### Using generator
+### Useful links
 
-```bash
-conda activate bwapi-rsx
-
-```
+- Pretty complex `build.rs` to learn from: https://github.com/alexcrichton/curl-rust/blob/master/curl-sys/build.rs

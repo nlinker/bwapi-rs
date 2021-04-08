@@ -1,4 +1,13 @@
 
+#[cxx::bridge]
+pub mod ffi_main {
+    unsafe extern "C++" {
+        include!("library/src/lib.h");
+
+        fn cpp_main();
+    }
+}
+
 #[cxx::bridge(namespace = BWAPI)]
 pub mod ffi {
 
@@ -86,4 +95,5 @@ pub fn lib_main() {
     let r = crate::ffi::bwapi_get_revision();
     let d = crate::ffi::bwapi_is_debug();
     println!("{} {}", r, d);
+    ffi_main::cpp_main();
 }

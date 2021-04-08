@@ -1,8 +1,6 @@
-extern crate cmake;
-
 use std::env;
 use std::path::PathBuf;
-// use cmake::Config;
+use std::fs;
 
 // borrowed from tensorflow/rust
 macro_rules! get(($name:expr) => (ok!(env::var($name))));
@@ -50,6 +48,14 @@ fn main() {
         .file("src/lib.cpp")
         .flag("")
         .compile("rice");
+
+    let openbw_libs = [
+        "libBWAPILIB.dylib",
+        "libBWAPILIB.dylib.txt",
+    ];
+    for l in &openbw_libs {
+        fs::copy(bwapi_lib_dir.join(l), output_dir.join(l)).unwrap();
+    }
 
     // cc::Build::new()
     //     .file("src/lib.cpp")
