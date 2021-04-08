@@ -3,8 +3,7 @@
 pub mod ffi_main {
     unsafe extern "C++" {
         include!("library/src/lib.h");
-
-        fn cpp_main();
+        pub fn cpp_main();
     }
 }
 
@@ -64,7 +63,7 @@ pub mod ffi {
     // }
 }
 
-mod xi {
+mod bw {
     trait AIModule {
         fn on_start(&self);
         fn on_frame(&self);
@@ -90,10 +89,7 @@ mod xi {
     }
 }
 
-
-pub fn lib_main() {
-    let r = crate::ffi::bwapi_get_revision();
-    let d = crate::ffi::bwapi_is_debug();
-    println!("{} {}", r, d);
-    ffi_main::cpp_main();
+pub fn main() {
+    // we don't need unsafe actually, just to satisfy IDE
+    unsafe { ffi_main::cpp_main(); }
 }
