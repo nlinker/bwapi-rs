@@ -1,2 +1,6 @@
 [workspace]
-members = ["launcher", "library"]
+members = [
+    "demo_ai",
+    "launcher",
+    "library",
+]

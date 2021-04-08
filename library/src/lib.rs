@@ -1,3 +1,4 @@
+pub mod bw;
 
 #[cxx::bridge]
 pub mod ffi_main {
@@ -20,6 +21,7 @@ pub mod ffi {
     }
 
     extern "Rust" {
+
         // type AIModule;
         //
         // #[rust_name = "on_start"]
@@ -61,32 +63,6 @@ pub mod ffi {
     // #[namespace = "bwapi"]
     // extern "Rust" {
     // }
-}
-
-mod bw {
-    trait AIModule {
-        fn on_start(&self);
-        fn on_frame(&self);
-        fn on_end(&self, is_winner: bool);
-    }
-
-    struct DemoAI {
-        name: String,
-    }
-
-    impl AIModule for DemoAI {
-        fn on_start(&self) {
-            println!("`on_start` called for {}", self.name);
-        }
-
-        fn on_frame(&self) {
-            println!("`on_frame` called for {}", self.name);
-        }
-
-        fn on_end(&self, is_winner: bool) {
-            println!("`on_end({})` called for {}", is_winner, self.name);
-        }
-    }
 }
 
 pub fn main() {
