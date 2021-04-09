@@ -1,4 +1,4 @@
-use library::bw::new_ai_module;
+use library::bw::register_ai_module;
 use library::bw::ai_module::AIModule;
 use library::bw::player::Player;
 use library::bw::position::Position;
@@ -9,13 +9,13 @@ struct DemoAI {
 }
 
 impl AIModule for DemoAI {
-    fn on_start(&self) {
+    fn on_start(&mut self) {
         println!("`on_start` called for {}", self.name);
     }
-    fn on_frame(&self) {
+    fn on_frame(&mut self) {
         println!("`on_frame` called for {}", self.name);
     }
-    fn on_end(&self, is_winner: bool) {
+    fn on_end(&mut self, is_winner: bool) {
         println!("`on_end({})` called for {}", is_winner, self.name);
     }
     fn on_send_text(&mut self, _text: String) {}
@@ -35,7 +35,7 @@ impl AIModule for DemoAI {
 }
 
 fn main() {
-    new_ai_module(|| DemoAI {
+    register_ai_module(|| DemoAI {
         name: "Hello from Rust, I'm DemoAI".to_string()
     })
 }

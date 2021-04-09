@@ -1,6 +1,7 @@
 use game::Game;
 
 use crate::bw::ai_module::AIModule;
+use once_cell::sync::Lazy;
 
 pub mod ai_module;
 pub mod game;
@@ -8,7 +9,7 @@ pub mod unit;
 pub mod player;
 pub mod position;
 
-static BW: Game = unreachable!();
+static BW: Lazy<Game> = Lazy::new(|| unreachable!());
 
 pub fn register_ai_module<T: AIModule>(_create_ai: impl FnOnce() -> T) {
     todo!()
