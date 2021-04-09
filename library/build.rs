@@ -41,12 +41,13 @@ fn main() {
 
     log_var!(bwapi_include_dir);
 
-    cxx_build::bridge("src/lib.rs")
+    let source_files = vec!["src/lib.rs", "src/ffi/mod.rs"];
+    cxx_build::bridges(source_files)
         .flag_if_supported("-std=c++17")
         .include(bwapi_include_dir.clone())
         .include("src")
         .file("src/lib.cc")
-        .compile("rice");
+        .compile("bwapi_xi");
 
     let openbw_libs = [
         "libBWAPILIB.dylib",

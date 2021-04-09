@@ -10,6 +10,6 @@ pub mod ffi_main {
 }
 
 pub fn main() {
-    // we don't need unsafe actually, just to satisfy IDE
-    unsafe { ffi_main::cpp_main(); }
+    // we don't need unsafe actually, IDE is mistaking
+    ffi_main::cpp_main();
 }

@@ -10,8 +10,8 @@ pub mod position;
 
 static BW: Game = unreachable!();
 
-pub fn register_ai_module<T: AIModule>(create_ai: impl FnOnce() -> T) {
-
+pub fn register_ai_module<T: AIModule>(_create_ai: impl FnOnce() -> T) {
+    todo!()
 }
 
 pub fn bwapi_get_revision() -> i32 {
@@ -21,5 +21,5 @@ pub fn bwapi_get_revision() -> i32 {
 
 pub fn bwapi_is_debug() -> bool {
     // don't need the unsafe block
-    crate::ffi::root::BWAPI_getRevision()
+    crate::ffi::root::BWAPI_isDebug()
 }
