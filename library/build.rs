@@ -45,8 +45,7 @@ fn main() {
         .flag_if_supported("-std=c++17")
         .include(bwapi_include_dir.clone())
         .include("src")
-        .file("src/lib.cpp")
-        .flag("")
+        .file("src/lib.cc")
         .compile("rice");
 
     let openbw_libs = [

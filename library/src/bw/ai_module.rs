@@ -1,8 +1,6 @@
-static BW: Game = unreachable!();
-
-pub fn new_ai_module<T: AIModule>(create_ai: impl FnOnce() -> T) {
-
-}
+use crate::bw::player::Player;
+use crate::bw::position::Position;
+use crate::bw::unit::Unit;
 
 pub trait AIModule {
     fn on_start(&mut self);
@@ -22,26 +20,4 @@ pub trait AIModule {
     fn on_unit_renegade(&mut self, unit: &mut Unit);
     fn on_save_game(&mut self, game_name: String);
     fn on_unit_complete(&mut self, unit: &mut Unit);
-}
-
-pub struct Game;
-pub struct Unit;
-pub struct Player;
-
-#[derive(Debug, Copy, Clone, PartialEq, Eq)]
-pub struct Position {
-    pub x: i32,
-    pub y: i32,
-}
-
-#[derive(Debug, Copy, Clone, PartialEq, Eq)]
-pub struct TilePosition {
-    pub x: i32,
-    pub y: i32,
-}
-
-#[derive(Debug, Copy, Clone, PartialEq, Eq)]
-pub struct WalkPosition {
-    pub x: i32,
-    pub y: i32,
 }

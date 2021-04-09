@@ -1,5 +1,6 @@
-/.idea
 /_my
+/.idea
+/cmake-build-debug
 /target
 /subtrees
 
