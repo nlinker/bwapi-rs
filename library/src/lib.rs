@@ -20,8 +20,9 @@ pub extern "C" fn _Unwind_RaiseException() -> ! {
 
 #[no_mangle]
 #[allow(non_snake_case)]
-pub unsafe extern "C" fn gameInit(_game: *mut std::ffi::c_void) {
-    println!("gameInit called!");
+pub unsafe extern "C" fn gameInit(game: *mut std::ffi::c_void) {
+    println!("gameInit called: game = {:?}", game);
+    println!("std::env::current_dir = {:?}", std::env::current_dir());
     // TODO assign game to the BW global
 }
 
