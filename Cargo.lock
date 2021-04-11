@@ -74,6 +74,7 @@ name = "launcher"
 version = "0.1.0"
 dependencies = [
  "library",
+ "once_cell",
 ]
 
 [[package]]

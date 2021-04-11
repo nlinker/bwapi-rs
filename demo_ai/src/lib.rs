@@ -3,6 +3,15 @@ use library::bw::ai_module::AIModule;
 use library::bw::player::Player;
 use library::bw::position::Position;
 use library::bw::unit::Unit;
+use std::ptr::null_mut;
+
+#[no_mangle]
+#[allow(non_snake_case)]
+pub unsafe extern "C" fn newAIModule() -> *mut std::ffi::c_void {
+    println!("newAIModule called!");
+    null_mut()
+}
+
 
 struct DemoAI {
     name: String,
@@ -34,11 +43,6 @@ impl AIModule for DemoAI {
     fn on_unit_complete(&mut self, _unit: &Unit) {}
 }
 
-fn main() {
-    register_ai_module(|| DemoAI {
-        name: "Hello from Rust, I'm DemoAI".to_string()
-    })
-}
 
 #[cfg(test)]
 mod tests {

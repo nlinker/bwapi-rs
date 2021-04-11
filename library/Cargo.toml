@@ -19,5 +19,6 @@ cxx-build = "1.0"
 #cc = "1.0"
 #cargo-make = "0.32"
 
+## not necessary to make it dylib
 #[lib]
 #crate-type = ["dylib"]

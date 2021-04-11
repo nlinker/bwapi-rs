@@ -6,14 +6,7 @@
 #include "library/src/lib.rs.h"
 #include "../bwapilib/include/BWAPI/Game.h"
 
-#define DLLEXPORT
-extern "C" {
-DLLEXPORT void gameInit(BWAPI::Game *game) { BWAPI::BroodwarPtr = game; }
-DLLEXPORT BWAPI::AIModule *newAIModule() { return nullptr; }
-};
-
-void cpp_main() {
+int cpp_main() {
     std::cout << "Hello, there" << std::endl;
-    BWAPI::Game* gameStub = nullptr;
-    gameInit(gameStub);
+    return 0;
 }

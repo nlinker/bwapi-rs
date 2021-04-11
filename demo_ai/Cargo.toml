@@ -6,3 +6,6 @@ edition = "2018"
 
 [dependencies]
 library = { path = "../library" }
+
+[lib]
+crate-type = ["dylib"]
