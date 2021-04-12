@@ -9,16 +9,16 @@ license = "Unlicense/MIT"
 build = "build.rs"
 edition = "2018"
 
+## temporary, better to make it (default) rlib
+[lib]
+crate-type = ["rlib", "dylib"]
+
 [dependencies]
-once_cell = "1.7.2"
 cxx = "1.0"
+once_cell = "1.7.2"
 
 [build-dependencies]
 cxx-build = "1.0"
 #cmake = "0.1"
 #cc = "1.0"
 #cargo-make = "0.32"
-
-## not necessary to make it dylib
-#[lib]
-#crate-type = ["dylib"]

@@ -4,8 +4,8 @@ version = "0.1.0"
 authors = ["Nick Linker <nlinker@gmail.com>"]
 edition = "2018"
 
-[dependencies]
-library = { path = "../library" }
-
 [lib]
 crate-type = ["dylib"]
+
+[dependencies]
+library = { path = "../library" }

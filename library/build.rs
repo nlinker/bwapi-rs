@@ -41,9 +41,10 @@ fn main() {
 
     log_var!(bwapi_include_dir);
 
-    let source_files = vec!["src/lib.rs", "src/ffi/mod.rs"];
+    let source_files = vec!["src/lib.rs"];
     cxx_build::bridges(source_files)
         .flag_if_supported("-std=c++17")
+        .flag_if_supported("-Wno-unused-parameter")
         .include(bwapi_include_dir.clone())
         .include("src")
         .file("src/lib.cc")

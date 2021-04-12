@@ -1,26 +1,22 @@
-use game::Game;
-
-use crate::bw::ai_module::AIModule;
-use once_cell::sync::Lazy;
-
 pub mod ai_module;
 pub mod game;
 pub mod unit;
 pub mod player;
 pub mod position;
 
-static BW: Lazy<Game> = Lazy::new(|| unreachable!());
+use game::Game;
+use once_cell::sync::Lazy;
+use std::ptr::null;
 
-pub fn register_ai_module<T: AIModule>(_create_ai: impl FnOnce() -> T) {
-    todo!()
-}
+static mut _BW_UNSAFE: *const Game = null();
+static _BW: Lazy<&Game> = Lazy::new(|| unsafe { &*_BW_UNSAFE });
 
 pub fn bwapi_get_revision() -> i32 {
     // don't need the unsafe block
-    crate::ffi::root::BWAPI_getRevision()
+    crate::ffi::BWAPI_getRevision()
 }
 
 pub fn bwapi_is_debug() -> bool {
     // don't need the unsafe block
-    crate::ffi::root::BWAPI_isDebug()
+    crate::ffi::BWAPI_isDebug()
 }
