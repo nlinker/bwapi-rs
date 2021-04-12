@@ -1,20 +1,35 @@
 use std::pin::Pin;
-use std::ptr::null_mut;
+use cxx::UniquePtr;
 
 pub mod bw;
+
+#[cxx::bridge]
+pub mod ffi_main {
+    unsafe extern "C++" {
+    include!("library/src/lib.h");
+    unsafe fn cpp_main() -> i32;
+}
+}
+
+pub fn main() {
+    // we don't need unsafe actually, IDE is mistaking
+    unsafe { ffi_main::cpp_main(); }
+}
 
 #[cxx::bridge]
 pub mod ffi {
 
     unsafe extern "C++" {
         include!("library/bwapilib/include/BWAPI.h");
+
         #[namespace = "BWAPI"]
         pub fn BWAPI_getRevision() -> i32;
         #[namespace = "BWAPI"]
         pub fn BWAPI_isDebug() -> bool;
 
-        include!("library/src/lib.h");
         type AIModuleWrapper;
+        #[rust_name="create_ai_module_wrapper"]
+        fn createAIModuleWrapper() -> UniquePtr<AIModuleWrapper>;
     }
 
     extern "Rust" {
@@ -39,23 +54,8 @@ impl ffi::AIModuleWrapper {
     }
 }
 
-
 #[derive(Debug, Clone)]
 pub struct RustAIModule(pub String);
-
-#[cxx::bridge]
-pub mod ffi_main {
-    unsafe extern "C++" {
-        include!("library/src/lib.h");
-        unsafe fn cpp_main() -> i32;
-    }
-}
-
-pub fn main() {
-    // we don't need unsafe actually, IDE is mistaking
-    unsafe { ffi_main::cpp_main(); }
-}
-
 
 #[cfg(windows)]
 #[no_mangle]
@@ -73,15 +73,15 @@ pub extern "C" fn _Unwind_RaiseException() -> ! {
 
 #[no_mangle]
 #[allow(non_snake_case)]
-pub unsafe extern "C" fn gameInit(game: *mut std::ffi::c_void) {
+pub unsafe extern "C" fn gameInit(game: *const std::ffi::c_void) {
     println!("gameInit called: game = {:?}", game);
-    println!("std::env::current_dir = {:?}", std::env::current_dir());
     // TODO assign game to the BW global
 }
 
 #[no_mangle]
 #[allow(non_snake_case)]
-pub unsafe extern "C" fn newAIModule() -> *mut std::ffi::c_void {
+pub unsafe extern "C" fn newAIModule() -> *mut ffi::AIModuleWrapper {
     println!("newAIModule called!");
-    null_mut()
+    let ai: UniquePtr<ffi::AIModuleWrapper> = ffi::create_ai_module_wrapper();
+    ai.into_raw()
 }

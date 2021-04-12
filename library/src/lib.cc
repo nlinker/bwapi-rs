@@ -14,9 +14,10 @@ int cpp_main() {
     return 0;
 }
 
-//AIModuleWrapper* createAIModuleWrapper(AIModule* module) {
-//    return new AIModuleWrapper(module);
-//}
+std::unique_ptr <AIModuleWrapper> createAIModuleWrapper() {
+    return std::make_unique<AIModuleWrapper>();
+}
+
 //void destroyAIModuleWrapper(/* BWAPI::AIModule* */ void* module) {
 //    delete reinterpret_cast<AIModuleWrapper*>(module);
 //}

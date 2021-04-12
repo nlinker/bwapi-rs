@@ -3,6 +3,8 @@
 
 int cpp_main();
 
+// NOTE: the implementation of the class in Rust, so it is expected
+// warnings from C++ compiler/IDE about no implementation found
 class AIModuleWrapper: public BWAPI::AIModule {
 public:
     AIModuleWrapper() {}
@@ -25,3 +27,4 @@ public:
     void onUnitComplete(BWAPI::Unit unit) noexcept override {}
 };
 
+std::unique_ptr<AIModuleWrapper> createAIModuleWrapper();
