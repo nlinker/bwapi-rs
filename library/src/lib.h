@@ -28,4 +28,4 @@ public:
     void onUnitComplete(BWAPI::Unit unit) noexcept override;
 };
 
-std::unique_ptr<AIModuleWrapper> createAIModuleWrapper();
+std::unique_ptr<AIModuleWrapper> createAIModuleWrapper(const AiPlaceholder& userModule);

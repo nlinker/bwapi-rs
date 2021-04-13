@@ -45,7 +45,7 @@ int cpp_main() {
     return 0;
 }
 
-std::unique_ptr<AIModuleWrapper> createAIModuleWrapper() {
+std::unique_ptr<AIModuleWrapper> createAIModuleWrapper(const AiPlaceholder& userModule) {
     return std::make_unique<AIModuleWrapper>();
 }
 //void destroyAIModuleWrapper(std::unique_ptr<AIModuleWrapper> module) {
