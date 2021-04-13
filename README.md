@@ -20,9 +20,23 @@ to [BWAPI](https://github.com/bwapi/bwapi). Main objectives:
 ## Installation and run
 
 ### MacOS
-```bash
-pwd  # something like ~/rust/scai/bwapi-rice
-DYLD_LIBRARY_PATH=library/bwapi/lib cargo run
+
+Standalone test
+```shell
+cd /Users/nick/rust/scai/bwapi-xi
+DYLD_LIBRARY_PATH=library/bwapilib/lib cargo run --package library --bin library
+```
+
+To run inside OpenBW you need to take `broodat.mpq`, `patch_rt.mpq` and `stardat.mpq` from BW,
+distribution, make sure the version is `1.16.1`.
+
+```shell
+cp broodat.mpq patch_rt.mpq stardat.mpq  launcher
+cd launcher
+vim bwapi-data/bwapi.ini
+  # make sure this path is correct
+  # ai = ../target/debug/liblibrary.dylib
+./bwapi_launcher
 ```
 
 ### Linux
