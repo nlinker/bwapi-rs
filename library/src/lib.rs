@@ -16,11 +16,6 @@ pub mod ffi_main {
     }
 }
 
-pub fn main() {
-    // we don't need unsafe actually, IDE is mistaking
-    ffi_main::cpp_main();
-}
-
 /// Box contains arbitrary user AiModule, needed to
 /// provide a fixed size object for FFI.
 pub struct AimBox(Box<dyn AIMod + Sync + Send>);

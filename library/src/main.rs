@@ -1,3 +1,3 @@
 fn main() {
-    library::main();
+    library::ffi_main::cpp_main();
 }
