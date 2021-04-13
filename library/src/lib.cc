@@ -12,6 +12,8 @@ int cpp_main() {
     ai->onFrame();
     ai->onEnd(true);
     ai->onSendText(std::string("Hello, this is the text!"));
+    BWAPI::Player player = reinterpret_cast<BWAPI::Player>(0xDEADBEEF);
+    ai->onReceiveText(player, std::string("Hello, this is the received text!"));
     return 0;
 }
 
@@ -22,6 +24,11 @@ std::unique_ptr <AIModuleWrapper> createAIModuleWrapper() {
 
 void AIModuleWrapper::onSendText(std::string text) noexcept {
     onSendText_shim(*this, std::make_unique<std::string>(text));
+}
+
+void AIModuleWrapper::onReceiveText(BWAPI::Player player, std::string text) noexcept {
+    Player p {.raw = player};
+    onReceiveText_shim(*this, p, std::make_unique<std::string>(text));
 }
 
 //void onSendText_123(AIModuleWrapper& self, std::string& text) {

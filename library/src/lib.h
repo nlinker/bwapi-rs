@@ -1,5 +1,6 @@
 #pragma once
 #include "BWAPI/AIModule.h"
+#include "library/src/lib.rs.h"
 
 int cpp_main();
 
@@ -12,7 +13,7 @@ public:
     void onEnd(bool isWinner) noexcept override;
     void onFrame() noexcept override;
     void onSendText(std::string text) noexcept override;
-    void onReceiveText(BWAPI::Player player, std::string text) noexcept override {}
+    void onReceiveText(BWAPI::Player player, std::string text) noexcept override;
     void onPlayerLeft(BWAPI::Player player) noexcept override {}
     void onNukeDetect(BWAPI::Position target) noexcept override {}
     void onUnitDiscover(BWAPI::Unit unit) noexcept override {}
@@ -29,3 +30,4 @@ public:
 
 std::unique_ptr<AIModuleWrapper> createAIModuleWrapper();
 void onSendText_shim(AIModuleWrapper& self, std::unique_ptr<std::string>& text) noexcept;
+void onReceiveText_shim(AIModuleWrapper& self, Player player, std::unique_ptr<std::string>& text) noexcept;
