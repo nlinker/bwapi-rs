@@ -38,41 +38,119 @@ pub mod ffi {
         type UnitInterface;
     }
 
+    #[derive(Debug, Clone)]
     struct Player { pub raw: *const PlayerInterface }
+
+    #[derive(Debug, Clone)]
     struct Unit { pub raw: *const UnitInterface }
+
+    #[derive(Debug, Copy, Clone)]
+    struct Position {
+        pub x: i32,
+        pub y: i32,
+    }
 
     extern "Rust" {
         include!("library/src/aim.h");
 
-        #[rust_name = "on_start"]
-        fn onStart_shim(wrapper: Pin<&mut AIModuleWrapper>);
-        #[rust_name = "on_end"]
-        fn onEnd_shim(wrapper: Pin<&mut AIModuleWrapper>, is_winner: bool);
-        #[rust_name = "on_frame"]
-        fn onFrame_shim(wrapper: Pin<&mut AIModuleWrapper>);
-        #[rust_name = "on_send_text"]
-        fn onSendText_shim(wrapper: Pin<&mut AIModuleWrapper>, text: UniquePtr<CxxString>);
-        #[rust_name = "on_receive_text"]
-        fn onReceiveText_shim(wrapper: Pin<&mut AIModuleWrapper>, player: &Player, text: UniquePtr<CxxString>);
+        fn on_start(wrapper: Pin<&mut AIModuleWrapper>);
+        fn on_end(wrapper: Pin<&mut AIModuleWrapper>, is_winner: bool);
+        fn on_frame(wrapper: Pin<&mut AIModuleWrapper>);
+        fn on_send_text(wrapper: Pin<&mut AIModuleWrapper>, text: &CxxString);
+        fn on_receive_text(wrapper: Pin<&mut AIModuleWrapper>, player: &Player, text: &CxxString);
+        fn on_player_left(wrapper: Pin<&mut AIModuleWrapper>, player: &Player);
+        fn on_nuke_detect(wrapper: Pin<&mut AIModuleWrapper>, target: Position);
+        fn on_unit_discover(wrapper: Pin<&mut AIModuleWrapper>, unit: &Unit);
+        fn on_unit_evade(wrapper: Pin<&mut AIModuleWrapper>, unit: &Unit);
+        fn on_unit_show(wrapper: Pin<&mut AIModuleWrapper>, unit: &Unit);
+        fn on_unit_hide(wrapper: Pin<&mut AIModuleWrapper>, unit: &Unit);
+        fn on_unit_create(wrapper: Pin<&mut AIModuleWrapper>, unit: &Unit);
+        fn on_unit_destroy(wrapper: Pin<&mut AIModuleWrapper>, unit: &Unit);
+        fn on_unit_morph(wrapper: Pin<&mut AIModuleWrapper>, unit: &Unit);
+        fn on_unit_renegade(wrapper: Pin<&mut AIModuleWrapper>, unit: &Unit);
+        fn on_save_game(wrapper: Pin<&mut AIModuleWrapper>, game_name: &CxxString);
+        fn on_unit_complete(wrapper: Pin<&mut AIModuleWrapper>, unit: &Unit);
     }
 }
 
 fn on_start(wrapper: Pin<&mut ffi::AIModuleWrapper>) {
     println!("fn on_start(self: {:p})", wrapper);
 }
-
 fn on_end(wrapper: Pin<&mut ffi::AIModuleWrapper>, is_winner: bool) {
     println!("fn on_end(self: {:p}, is_winner: {})", wrapper, is_winner);
 }
 fn on_frame(wrapper: Pin<&mut ffi::AIModuleWrapper>) {
     println!("fn on_frame(self: {:p})", wrapper);
 }
-fn on_send_text(wrapper: Pin<&mut ffi::AIModuleWrapper>, text: UniquePtr<CxxString>) {
+fn on_send_text(wrapper: Pin<&mut ffi::AIModuleWrapper>, text: &CxxString) {
     println!("fn on_send_text(self: {:p}, text: {})", wrapper, text);
 }
-fn on_receive_text(wrapper: Pin<&mut ffi::AIModuleWrapper>, player: &ffi::Player, text: UniquePtr<CxxString>) {
-    println!("fn on_receive_text(self: {:p}, player: {:p}, text: {})", wrapper, player.raw, text);
+fn on_receive_text(wrapper: Pin<&mut ffi::AIModuleWrapper>, player: &ffi::Player, text: &CxxString) {
+    println!("fn on_receive_text(wrapper: {:p}, player: {:p}, text: {})", wrapper, player.raw, text)
 }
+fn on_player_left(wrapper: Pin<&mut ffi::AIModuleWrapper>, player: &ffi::Player) {
+    println!("fn on_player_left(wrapper: {:p}, player: {:p})", wrapper, player.raw);
+}
+fn on_nuke_detect(wrapper: Pin<&mut ffi::AIModuleWrapper>, target: ffi::Position) {
+    println!("fn on_nuke_detect(wrapper: {:p}, target: {:?})", wrapper, target);
+}
+fn on_unit_discover(wrapper: Pin<&mut ffi::AIModuleWrapper>, unit: &ffi::Unit) {
+    println!("fn on_unit_discover(wrapper: {:p}, unit: {:p})", wrapper, unit.raw);
+}
+fn on_unit_evade(wrapper: Pin<&mut ffi::AIModuleWrapper>, unit: &ffi::Unit) {
+    println!("fn on_unit_evade(wrapper: {:p}, unit: {:p})", wrapper, unit.raw);
+}
+fn on_unit_show(wrapper: Pin<&mut ffi::AIModuleWrapper>, unit: &ffi::Unit) {
+    println!("fn on_unit_show(wrapper: {:p}, unit: {:p})", wrapper, unit.raw);
+}
+fn on_unit_hide(wrapper: Pin<&mut ffi::AIModuleWrapper>, unit: &ffi::Unit) {
+    println!("fn on_unit_hide(wrapper: {:p}, unit: {:p})", wrapper, unit.raw);
+}
+fn on_unit_create(wrapper: Pin<&mut ffi::AIModuleWrapper>, unit: &ffi::Unit) {
+    println!("fn on_unit_create(wrapper: {:p}, unit: {:p})", wrapper, unit.raw);
+}
+fn on_unit_destroy(wrapper: Pin<&mut ffi::AIModuleWrapper>, unit: &ffi::Unit) {
+    println!("fn on_unit_destroy(wrapper: {:p}, unit: {:p})", wrapper, unit.raw);
+}
+fn on_unit_morph(wrapper: Pin<&mut ffi::AIModuleWrapper>, unit: &ffi::Unit) {
+    println!("fn on_unit_morph(wrapper: {:p}, unit: {:p})", wrapper, unit.raw);
+}
+fn on_unit_renegade(wrapper: Pin<&mut ffi::AIModuleWrapper>, unit: &ffi::Unit) {
+    println!("fn on_unit_renegade(wrapper: {:p}, unit: {:p})", wrapper, unit.raw);
+}
+fn on_save_game(wrapper: Pin<&mut ffi::AIModuleWrapper>, game_name: &CxxString) {
+    println!("fn on_save_game(self: {:p}, text: {})", wrapper, game_name);
+}
+fn on_unit_complete(wrapper: Pin<&mut ffi::AIModuleWrapper>, unit: &ffi::Unit) {
+    println!("fn on_unit_complete(wrapper: {:p}, unit: {:p})", wrapper, unit.raw);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #[derive(Debug, Clone)]
 pub struct RustAIModule(pub String);

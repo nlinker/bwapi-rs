@@ -14,24 +14,18 @@ public:
     void onFrame() noexcept override;
     void onSendText(std::string text) noexcept override;
     void onReceiveText(BWAPI::Player player, std::string text) noexcept override;
-    void onPlayerLeft(BWAPI::Player player) noexcept override {}
-    void onNukeDetect(BWAPI::Position target) noexcept override {}
-    void onUnitDiscover(BWAPI::Unit unit) noexcept override {}
-    void onUnitEvade(BWAPI::Unit unit) noexcept override {}
-    void onUnitShow(BWAPI::Unit unit) noexcept override {}
-    void onUnitHide(BWAPI::Unit unit) noexcept override {}
-    void onUnitCreate(BWAPI::Unit unit) noexcept override {}
-    void onUnitDestroy(BWAPI::Unit unit) noexcept override {}
-    void onUnitMorph(BWAPI::Unit unit) noexcept override {}
-    void onUnitRenegade(BWAPI::Unit unit) noexcept override {}
-    void onSaveGame(std::string gameName) noexcept override {}
-    void onUnitComplete(BWAPI::Unit unit) noexcept override {}
+    void onPlayerLeft(BWAPI::Player player) noexcept override;
+    void onNukeDetect(BWAPI::Position target) noexcept override;
+    void onUnitDiscover(BWAPI::Unit unit) noexcept override;
+    void onUnitEvade(BWAPI::Unit unit) noexcept override;
+    void onUnitShow(BWAPI::Unit unit) noexcept override;
+    void onUnitHide(BWAPI::Unit unit) noexcept override;
+    void onUnitCreate(BWAPI::Unit unit) noexcept override;
+    void onUnitDestroy(BWAPI::Unit unit) noexcept override;
+    void onUnitMorph(BWAPI::Unit unit) noexcept override;
+    void onUnitRenegade(BWAPI::Unit unit) noexcept override;
+    void onSaveGame(std::string gameName) noexcept override;
+    void onUnitComplete(BWAPI::Unit unit) noexcept override;
 };
 
 std::unique_ptr<AIModuleWrapper> createAIModuleWrapper();
-
-void onStart_shim(AIModuleWrapper& self) noexcept;
-void onEnd_shim(AIModuleWrapper& self, bool isWinner) noexcept;
-void onFrame_shim(AIModuleWrapper& self) noexcept;
-void onSendText_shim(AIModuleWrapper& self, std::unique_ptr<std::string>& text) noexcept;
-void onReceiveText_shim(AIModuleWrapper& self, Player player, std::unique_ptr<std::string>& text) noexcept;
