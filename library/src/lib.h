@@ -29,5 +29,9 @@ public:
 };
 
 std::unique_ptr<AIModuleWrapper> createAIModuleWrapper();
+
+void onStart_shim(AIModuleWrapper& self) noexcept;
+void onEnd_shim(AIModuleWrapper& self, bool isWinner) noexcept;
+void onFrame_shim(AIModuleWrapper& self) noexcept;
 void onSendText_shim(AIModuleWrapper& self, std::unique_ptr<std::string>& text) noexcept;
 void onReceiveText_shim(AIModuleWrapper& self, Player player, std::unique_ptr<std::string>& text) noexcept;
