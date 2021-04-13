@@ -11,7 +11,7 @@ public:
     void onStart() noexcept override;
     void onEnd(bool isWinner) noexcept override;
     void onFrame() noexcept override;
-    void onSendText(std::string text) noexcept override {}
+    void onSendText(std::string text) noexcept override;
     void onReceiveText(BWAPI::Player player, std::string text) noexcept override {}
     void onPlayerLeft(BWAPI::Player player) noexcept override {}
     void onNukeDetect(BWAPI::Position target) noexcept override {}
@@ -28,3 +28,4 @@ public:
 };
 
 std::unique_ptr<AIModuleWrapper> createAIModuleWrapper();
+void onSendText_123(AIModuleWrapper& self, std::string& text);

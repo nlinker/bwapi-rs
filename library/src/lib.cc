@@ -11,26 +11,23 @@ int cpp_main() {
     ai->onStart();
     ai->onFrame();
     ai->onEnd(true);
+    ai->onSendText(std::string("send text"));
     return 0;
 }
+
 
 std::unique_ptr <AIModuleWrapper> createAIModuleWrapper() {
     return std::make_unique<AIModuleWrapper>();
 }
 
+void AIModuleWrapper::onSendText(std::string text) noexcept {
+    // method
+}
+
+//void onSendText_123(AIModuleWrapper& self, std::string& text) {
+//    // ???
+//}
+
 //void destroyAIModuleWrapper(/* BWAPI::AIModule* */ void* module) {
 //    delete reinterpret_cast<AIModuleWrapper*>(module);
-//}
-
-
-//void AIModuleWrapper::onStart() {
-//    ai->on_start();
-//}
-//
-//void AIModuleWrapper::onEnd(bool isWinner) {
-//    ai->on_end(isWinner);
-//}
-//
-//void AIModuleWrapper::onFrame() {
-//    ai->on_frame();
 //}

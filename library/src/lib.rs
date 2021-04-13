@@ -1,5 +1,6 @@
 use std::pin::Pin;
-use cxx::UniquePtr;
+use cxx::{UniquePtr, CxxString};
+use std::ffi::c_void;
 
 pub mod bw;
 
@@ -40,19 +41,29 @@ pub mod ffi {
         #[rust_name="on_frame"]
         fn onFrame(self: Pin<&mut AIModuleWrapper>);
     }
+
+    extern "Rust" {
+        #[rust_name="on_send_text_123"]
+        fn onSendText_123(not_self: Pin<&mut AIModuleWrapper>, text: &CxxString);
+    }
 }
 
 impl ffi::AIModuleWrapper {
-    fn on_start(this: Pin<&mut ffi::AIModuleWrapper>) {
-        println!("fn on_start(self: {:p})", this);
+    fn on_start(self: Pin<&mut ffi::AIModuleWrapper>) {
+        println!("fn on_start(self: {:p})", self);
     }
-    fn on_end(this: Pin<&mut ffi::AIModuleWrapper>, is_winner: bool) {
-        println!("fn on_end(self: {:p}, is_winner: {})", this, is_winner);
+    fn on_end(self: Pin<&mut ffi::AIModuleWrapper>, is_winner: bool) {
+        println!("fn on_end(self: {:p}, is_winner: {})", self, is_winner);
     }
-    fn on_frame(this: Pin<&mut ffi::AIModuleWrapper>) {
-        println!("fn on_frame(self: {:p})", this);
+    fn on_frame(self: Pin<&mut ffi::AIModuleWrapper>) {
+        println!("fn on_frame(self: {:p})", self);
     }
 }
+
+fn on_send_text_123(not_self: Pin<&mut ffi::AIModuleWrapper>, text: &CxxString) {
+    println!("fn on_send_text(self: {:p}, text: {})", &123, text);
+}
+
 
 #[derive(Debug, Clone)]
 pub struct RustAIModule(pub String);

@@ -16,7 +16,7 @@ fn main() {
     // unsafe { v2 = MaybeUninit::uninit().assume_init(); }
     // let addr = &mut v2 as *mut _;
     // // ptr::write() though it takes v1 by value, v1s destructor is not run when it goes out of
-    // // scope, which is good since then we'd have a vector of free'd vectors
+    // // scope, which is good since then we'd have a vector of freed vectors
     // unsafe { ptr::write(addr, v1); }
     // println!("New address: {:p}", &v2);
     // println!("New value: {}", v2);
