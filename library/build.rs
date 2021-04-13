@@ -1,6 +1,6 @@
 use std::env;
-use std::path::PathBuf;
 use std::fs;
+use std::path::PathBuf;
 
 // borrowed from tensorflow/rust
 macro_rules! get(($name:expr) => (ok!(env::var($name))));
@@ -50,10 +50,7 @@ fn main() {
         .file("src/lib.cc")
         .compile("bwapi_xi");
 
-    let openbw_libs = [
-        "libBWAPILIB.dylib",
-        "libBWAPILIB.dylib.txt",
-    ];
+    let openbw_libs = ["libBWAPILIB.dylib", "libBWAPILIB.dylib.txt"];
     for l in &openbw_libs {
         fs::copy(bwapi_lib_dir.join(l), output_dir.join(l)).unwrap();
     }
@@ -66,5 +63,4 @@ fn main() {
     println!("cargo:rustc-link-search=native={}", bwapi_lib_dir.display());
     // Phase `BWAPILIB` here stands for the library name (without lib prefix and without .dylib suffix)
     println!("cargo:rustc-link-lib=dylib=BWAPILIB");
-
 }

@@ -20,6 +20,6 @@ fn main() {
     // unsafe { ptr::write(addr, v1); }
     // println!("New address: {:p}", &v2);
     // println!("New value: {}", v2);
-    library::main();
 
+    // Process run BWAPI launcher
 }

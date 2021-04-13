@@ -1,20 +1,19 @@
+use cxx::{CxxString, UniquePtr};
 use std::pin::Pin;
-use cxx::{UniquePtr, CxxString};
-use std::ffi::c_void;
 
 pub mod bw;
 
 #[cxx::bridge]
 pub mod ffi_main {
     unsafe extern "C++" {
-    include!("library/src/lib.h");
-    unsafe fn cpp_main() -> i32;
-}
+        include!("library/src/lib.h");
+        fn cpp_main() -> i32;
+    }
 }
 
 pub fn main() {
     // we don't need unsafe actually, IDE is mistaking
-    unsafe { ffi_main::cpp_main(); }
+    ffi_main::cpp_main();
 }
 
 #[cxx::bridge]
@@ -29,22 +28,19 @@ pub mod ffi {
         pub fn BWAPI_isDebug() -> bool;
 
         type AIModuleWrapper;
-        #[rust_name="create_ai_module_wrapper"]
+        #[rust_name = "create_ai_module_wrapper"]
         fn createAIModuleWrapper() -> UniquePtr<AIModuleWrapper>;
     }
 
     extern "Rust" {
-        #[rust_name="on_start"]
+        #[rust_name = "on_start"]
         fn onStart(self: Pin<&mut AIModuleWrapper>);
-        #[rust_name="on_end"]
+        #[rust_name = "on_end"]
         fn onEnd(self: Pin<&mut AIModuleWrapper>, is_winner: bool);
-        #[rust_name="on_frame"]
+        #[rust_name = "on_frame"]
         fn onFrame(self: Pin<&mut AIModuleWrapper>);
-    }
-
-    extern "Rust" {
-        #[rust_name="on_send_text_123"]
-        fn onSendText_123(not_self: Pin<&mut AIModuleWrapper>, text: &CxxString);
+        #[rust_name = "on_send_text_shim"]
+        fn onSendText_shim(non_self: Pin<&mut AIModuleWrapper>, text: UniquePtr<CxxString>);
     }
 }
 
@@ -59,11 +55,9 @@ impl ffi::AIModuleWrapper {
         println!("fn on_frame(self: {:p})", self);
     }
 }
-
-fn on_send_text_123(not_self: Pin<&mut ffi::AIModuleWrapper>, text: &CxxString) {
-    println!("fn on_send_text(self: {:p}, text: {})", &123, text);
+fn on_send_text_shim(non_self: Pin<&mut ffi::AIModuleWrapper>, text: UniquePtr<CxxString>) {
+    println!("fn on_send_text(self: {:p}, text: {})", non_self, text);
 }
-
 
 #[derive(Debug, Clone)]
 pub struct RustAIModule(pub String);

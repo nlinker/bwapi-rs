@@ -1,8 +1,8 @@
 pub mod ai_module;
 pub mod game;
-pub mod unit;
 pub mod player;
 pub mod position;
+pub mod unit;
 
 use game::Game;
 use once_cell::sync::Lazy;

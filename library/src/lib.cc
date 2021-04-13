@@ -11,7 +11,7 @@ int cpp_main() {
     ai->onStart();
     ai->onFrame();
     ai->onEnd(true);
-    ai->onSendText(std::string("send text"));
+    ai->onSendText(std::string("Hello, this is the text!"));
     return 0;
 }
 
@@ -21,7 +21,7 @@ std::unique_ptr <AIModuleWrapper> createAIModuleWrapper() {
 }
 
 void AIModuleWrapper::onSendText(std::string text) noexcept {
-    // method
+    onSendText_shim(*this, std::make_unique<std::string>(text));
 }
 
 //void onSendText_123(AIModuleWrapper& self, std::string& text) {

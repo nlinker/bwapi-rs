@@ -28,4 +28,4 @@ public:
 };
 
 std::unique_ptr<AIModuleWrapper> createAIModuleWrapper();
-void onSendText_123(AIModuleWrapper& self, std::string& text);
+void onSendText_shim(AIModuleWrapper& self, std::unique_ptr<std::string>& text) noexcept;
