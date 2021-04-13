@@ -20,14 +20,16 @@ pub fn main() {
     ffi_main::cpp_main();
 }
 
-pub struct AiPlaceholder;
+/// Box contains arbitrary user AiModule, needed to
+/// provide a fixed size object for FFI.
+pub struct AimBox(Box<dyn AIMod>);
 
 #[cxx::bridge]
 pub mod ffi {
 
     extern "Rust" {
         // #[namespace = "library::bw::ai_module"]
-        type AiPlaceholder;
+        type AimBox;
     }
 
     unsafe
@@ -41,8 +43,9 @@ pub mod ffi {
 
         type AIModuleWrapper;
         #[rust_name = "create_ai_module_wrapper"]
-        unsafe fn createAIModuleWrapper(user_ai: &AiPlaceholder) -> UniquePtr<AIModuleWrapper>;
-
+        unsafe fn createAIModuleWrapper(user_ai: &AimBox) -> UniquePtr<AIModuleWrapper>;
+        #[rust_name = "aim_box"]
+        fn getAimBox(wrapper: &AIModuleWrapper) -> &AimBox;
 
         #[namespace = "BWAPI"]
         type PlayerInterface;
@@ -83,10 +86,6 @@ pub mod ffi {
         fn on_save_game(wrapper: Pin<&mut AIModuleWrapper>, game_name: &CxxString);
         fn on_unit_complete(wrapper: Pin<&mut AIModuleWrapper>, unit: &Unit);
     }
-}
-
-struct AIModX {
-    user_ai: Box<dyn AIMod>
 }
 
 // region ----------- fn [***](wrapper: Pin<&mut ffi::AIModuleWrapper>) ------------
@@ -248,7 +247,7 @@ pub unsafe extern "C" fn gameInit(game: *const std::ffi::c_void) {
 pub unsafe extern "C" fn newAIModule() -> *mut ffi::AIModuleWrapper {
     println!("newAIModule called!");
     let r = RustAIModule("RustAIModule here".to_string());
-    let p = AiPlaceholder;
-    let ai: UniquePtr<ffi::AIModuleWrapper> = ffi::create_ai_module_wrapper(&p);
+    let b = AimBox(Box::new(r));
+    let ai: UniquePtr<ffi::AIModuleWrapper> = ffi::create_ai_module_wrapper(&b);
     ai.into_raw()
 }

@@ -1,8 +1,9 @@
-// use crate::bw::player::Player;
-// use crate::bw::position::Position;
-// use crate::bw::unit::Unit;
+use crate::bw::player::Player;
+use crate::bw::position::Position;
+use crate::bw::unit::Unit;
 
 use crate::ffi;
+use crate::bw;
 
 pub trait AIMod {
     fn on_start(&mut self);
@@ -22,4 +23,24 @@ pub trait AIMod {
     fn on_unit_renegade(&mut self, unit: &ffi::Unit);
     fn on_save_game(&mut self, game_name: String);
     fn on_unit_complete(&mut self, unit: &ffi::Unit);
+}
+
+pub enum Event {
+    OnStart(),
+    OnEnd(bool),
+    OnFrame(),
+    OnSendText(String),
+    OnReceiveText(Player, String),
+    OnPlayerLeft(Player),
+    OnNukeDetect(Position),
+    OnUnitDiscover(Unit),
+    OnUnitEvade(Unit),
+    OnUnitShow(Unit),
+    OnUnitHide(Unit),
+    OnUnitCreate(Unit),
+    OnUnitDestroy(Unit),
+    OnUnitMorph(Unit),
+    OnUnitRenegade(Unit),
+    OnSaveGame(String),
+    OnUnitComplete(Unit),
 }
