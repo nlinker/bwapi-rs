@@ -7,8 +7,8 @@
 
 int cpp_main() {
     std::cout << "Hello, there" << std::endl;
-    AimBox* box = reinterpret_cast<AimBox*>(0xAABBCCDD);
-    auto ai = new AIModuleWrapper(*box);
+    AimBox& box = const_cast<AimBox&>(hack());
+    auto ai = new AIModuleWrapper(box);
 
     BWAPI::Position target(11, 22);
     BWAPI::Player player = reinterpret_cast<BWAPI::Player>(0xDEADBEEF);
@@ -46,11 +46,8 @@ int cpp_main() {
     return 0;
 }
 
-std::unique_ptr<AIModuleWrapper> createAIModuleWrapper(const AimBox& box) {
+std::unique_ptr<AIModuleWrapper> createAIModuleWrapper(AimBox& box) {
     return std::unique_ptr<AIModuleWrapper>(new AIModuleWrapper(box));
-}
-const AimBox& getAimBox(const AIModuleWrapper& wrapper) {
-    return wrapper.aimBox;
 }
 //void destroyAIModuleWrapper(std::unique_ptr<AIModuleWrapper> module) {
 //    delete reinterpret_cast<AIModuleWrapper*>(module);

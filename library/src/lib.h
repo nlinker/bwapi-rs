@@ -8,9 +8,11 @@ int cpp_main();
 // warnings from C++ compiler/IDE about no implementation found
 class AIModuleWrapper: public BWAPI::AIModule {
 public:
-    const AimBox& aimBox;
+    AimBox& aimBox;
 public:
-    AIModuleWrapper(const AimBox& box): aimBox(box) {}
+    AIModuleWrapper(AimBox& box): aimBox(box) {}
+    AimBox& getAimBox() { return aimBox; }
+
     void onStart() noexcept override;
     void onEnd(bool isWinner) noexcept override;
     void onFrame() noexcept override;
@@ -30,5 +32,5 @@ public:
     void onUnitComplete(BWAPI::Unit unit) noexcept override;
 };
 
-std::unique_ptr<AIModuleWrapper> createAIModuleWrapper(const AimBox& box);
-const AimBox& getAimBox(const AIModuleWrapper& wrapper);
+std::unique_ptr<AIModuleWrapper> createAIModuleWrapper(AimBox& box);
+

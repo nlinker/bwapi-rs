@@ -1,9 +1,10 @@
 use cxx::{CxxString, UniquePtr};
-use std::pin::Pin;
 use std::fmt::{Debug, Formatter};
 use std::fmt;
 use crate::bw::ai_module::AIMod;
 use crate::ffi::{Player, Position, Unit};
+use std::pin::Pin;
+use once_cell::sync::Lazy;
 
 pub mod bw;
 
@@ -22,7 +23,7 @@ pub fn main() {
 
 /// Box contains arbitrary user AiModule, needed to
 /// provide a fixed size object for FFI.
-pub struct AimBox(Box<dyn AIMod>);
+pub struct AimBox(Box<dyn AIMod + Sync + Send>);
 
 #[cxx::bridge]
 pub mod ffi {
@@ -43,9 +44,9 @@ pub mod ffi {
 
         type AIModuleWrapper;
         #[rust_name = "create_ai_module_wrapper"]
-        unsafe fn createAIModuleWrapper(user_ai: &AimBox) -> UniquePtr<AIModuleWrapper>;
+        fn createAIModuleWrapper(user_ai: &mut AimBox) -> UniquePtr<AIModuleWrapper>;
         #[rust_name = "aim_box"]
-        fn getAimBox(wrapper: &AIModuleWrapper) -> &AimBox;
+        pub fn getAimBox(self: Pin<&mut AIModuleWrapper>) -> &mut AimBox;
 
         #[namespace = "BWAPI"]
         type PlayerInterface;
@@ -67,78 +68,84 @@ pub mod ffi {
 
     extern "Rust" {
         include!("library/src/aim.h");
+        // the hack is to create AimBox to create AIModuleWrapper on the C++ side
+        fn hack() -> &'static AimBox;
 
-        fn on_start(wrapper: &AIModuleWrapper);
-        fn on_end(wrapper: &AIModuleWrapper, is_winner: bool);
-        fn on_frame(wrapper: &AIModuleWrapper);
-        fn on_send_text(wrapper: &AIModuleWrapper, text: &CxxString);
-        fn on_receive_text(wrapper: &AIModuleWrapper, player: &Player, text: &CxxString);
-        fn on_player_left(wrapper: &AIModuleWrapper, player: &Player);
-        fn on_nuke_detect(wrapper: &AIModuleWrapper, target: Position);
-        fn on_unit_discover(wrapper: &AIModuleWrapper, unit: &Unit);
-        fn on_unit_evade(wrapper: &AIModuleWrapper, unit: &Unit);
-        fn on_unit_show(wrapper: &AIModuleWrapper, unit: &Unit);
-        fn on_unit_hide(wrapper: &AIModuleWrapper, unit: &Unit);
-        fn on_unit_create(wrapper: &AIModuleWrapper, unit: &Unit);
-        fn on_unit_destroy(wrapper: &AIModuleWrapper, unit: &Unit);
-        fn on_unit_morph(wrapper: &AIModuleWrapper, unit: &Unit);
-        fn on_unit_renegade(wrapper: &AIModuleWrapper, unit: &Unit);
-        fn on_save_game(wrapper: &AIModuleWrapper, game_name: &CxxString);
-        fn on_unit_complete(wrapper: &AIModuleWrapper, unit: &Unit);
+        fn on_start(wrapper: Pin<&mut AIModuleWrapper>);
+        fn on_end(wrapper: Pin<&mut AIModuleWrapper>, is_winner: bool);
+        fn on_frame(wrapper: Pin<&mut AIModuleWrapper>);
+        fn on_send_text(wrapper: Pin<&mut AIModuleWrapper>, text: &CxxString);
+        fn on_receive_text(wrapper: Pin<&mut AIModuleWrapper>, player: &Player, text: &CxxString);
+        fn on_player_left(wrapper: Pin<&mut AIModuleWrapper>, player: &Player);
+        fn on_nuke_detect(wrapper: Pin<&mut AIModuleWrapper>, target: Position);
+        fn on_unit_discover(wrapper: Pin<&mut AIModuleWrapper>, unit: &Unit);
+        fn on_unit_evade(wrapper: Pin<&mut AIModuleWrapper>, unit: &Unit);
+        fn on_unit_show(wrapper: Pin<&mut AIModuleWrapper>, unit: &Unit);
+        fn on_unit_hide(wrapper: Pin<&mut AIModuleWrapper>, unit: &Unit);
+        fn on_unit_create(wrapper: Pin<&mut AIModuleWrapper>, unit: &Unit);
+        fn on_unit_destroy(wrapper: Pin<&mut AIModuleWrapper>, unit: &Unit);
+        fn on_unit_morph(wrapper: Pin<&mut AIModuleWrapper>, unit: &Unit);
+        fn on_unit_renegade(wrapper: Pin<&mut AIModuleWrapper>, unit: &Unit);
+        fn on_save_game(wrapper: Pin<&mut AIModuleWrapper>, game_name: &CxxString);
+        fn on_unit_complete(wrapper: Pin<&mut AIModuleWrapper>, unit: &Unit);
     }
 }
 
+static BOX: Lazy<AimBox> = Lazy::new(|| AimBox(Box::new(RustAIModule("Static RustAIModule".to_string()))));
+
+fn hack() -> &'static AimBox { &BOX }
+
 // region ----------- fn [***](wrapper: Pin<&mut ffi::AIModuleWrapper>) ------------
-fn on_start(wrapper: &ffi::AIModuleWrapper) {
-
+fn on_start(wrapper: Pin<&mut ffi::AIModuleWrapper>) {
+    wrapper.aim_box().0.on_start();
 }
-fn on_end(wrapper: &ffi::AIModuleWrapper, is_winner: bool) {
-
+fn on_end(wrapper: Pin<&mut ffi::AIModuleWrapper>, is_winner: bool) {
+    wrapper.aim_box().0.on_end(is_winner);
 }
-fn on_frame(wrapper: &ffi::AIModuleWrapper) {
-
+fn on_frame(wrapper: Pin<&mut ffi::AIModuleWrapper>) {
+    wrapper.aim_box().0.on_frame();
 }
-fn on_send_text(wrapper: &ffi::AIModuleWrapper, text: &CxxString) {
-
+fn on_send_text(wrapper: Pin<&mut ffi::AIModuleWrapper>, text: &CxxString) {
+    wrapper.aim_box().0.on_send_text(text.to_string());
 }
-fn on_receive_text(wrapper: &ffi::AIModuleWrapper, player: &ffi::Player, text: &CxxString) {
-
+fn on_receive_text(wrapper: Pin<&mut ffi::AIModuleWrapper>, player: &ffi::Player, text: &CxxString) {
+    wrapper.aim_box().0.on_receive_text(player, text.to_string());
 }
-fn on_player_left(wrapper: &ffi::AIModuleWrapper, player: &ffi::Player) {
-
+fn on_player_left(wrapper: Pin<&mut ffi::AIModuleWrapper>, player: &ffi::Player) {
+    wrapper.aim_box().0.on_player_left(player);
 }
-fn on_nuke_detect(wrapper: &ffi::AIModuleWrapper, target: ffi::Position) {
-
+fn on_nuke_detect(wrapper: Pin<&mut ffi::AIModuleWrapper>, target: ffi::Position) {
+    wrapper.aim_box().0.on_nuke_detect(target);
 }
-fn on_unit_discover(wrapper: &ffi::AIModuleWrapper, unit: &ffi::Unit) {
-
+fn on_unit_discover(wrapper: Pin<&mut ffi::AIModuleWrapper>, unit: &ffi::Unit) {
+    wrapper.aim_box().0.on_unit_discover(unit);
 }
-fn on_unit_evade(wrapper: &ffi::AIModuleWrapper, unit: &ffi::Unit) {
-
+fn on_unit_evade(wrapper: Pin<&mut ffi::AIModuleWrapper>, unit: &ffi::Unit) {
+    wrapper.aim_box().0.on_unit_evade(unit);
 }
-fn on_unit_show(wrapper: &ffi::AIModuleWrapper, unit: &ffi::Unit) {
-
+fn on_unit_show(wrapper: Pin<&mut ffi::AIModuleWrapper>, unit: &ffi::Unit) {
+    wrapper.aim_box().0.on_unit_show(unit);
 }
-fn on_unit_hide(wrapper: &ffi::AIModuleWrapper, unit: &ffi::Unit) {
-
+fn on_unit_hide(wrapper: Pin<&mut ffi::AIModuleWrapper>, unit: &ffi::Unit) {
+    wrapper.aim_box().0.on_unit_hide(unit);
 }
-fn on_unit_create(wrapper: &ffi::AIModuleWrapper, unit: &ffi::Unit) {
-
+fn on_unit_create(wrapper: Pin<&mut ffi::AIModuleWrapper>, unit: &ffi::Unit) {
+    wrapper.aim_box().0.on_unit_create(unit);
 }
-fn on_unit_destroy(wrapper: &ffi::AIModuleWrapper, unit: &ffi::Unit) {
-
+fn on_unit_destroy(wrapper: Pin<&mut ffi::AIModuleWrapper>, unit: &ffi::Unit) {
+    wrapper.aim_box().0.on_unit_destroy(unit);
 }
-fn on_unit_morph(wrapper: &ffi::AIModuleWrapper, unit: &ffi::Unit) {
-
+fn on_unit_morph(wrapper: Pin<&mut ffi::AIModuleWrapper>, unit: &ffi::Unit) {
+    wrapper.aim_box().0.on_unit_morph(unit);
 }
-fn on_unit_renegade(wrapper: &ffi::AIModuleWrapper, unit: &ffi::Unit) {
-
+fn on_unit_renegade(wrapper: Pin<&mut ffi::AIModuleWrapper>, unit: &ffi::Unit) {
+    wrapper.aim_box().0.on_unit_renegade(unit);
 }
-fn on_save_game(wrapper: &ffi::AIModuleWrapper, game_name: &CxxString) {
-
+fn on_save_game(wrapper: Pin<&mut ffi::AIModuleWrapper>, game_name: &CxxString) {
+    wrapper.aim_box().0.on_save_game(game_name.to_string());
 }
-fn on_unit_complete(wrapper: &ffi::AIModuleWrapper, unit: &ffi::Unit) {
-
+fn on_unit_complete(wrapper: Pin<&mut ffi::AIModuleWrapper>, unit: &ffi::Unit) {
+    wrapper.aim_box().0.on_unit_complete(unit);
 }
 // ------------------- endregion -------------------
 
@@ -213,7 +220,7 @@ impl AIMod for RustAIModule {
     }
 
     fn on_save_game(&mut self, game_name: String) {
-        println!("fn on_save_game(, text: {})", game_name);
+        println!("fn on_save_game(game_name: {})", game_name);
     }
 
     fn on_unit_complete(&mut self, unit: &Unit) {
@@ -247,7 +254,7 @@ pub unsafe extern "C" fn gameInit(game: *const std::ffi::c_void) {
 pub unsafe extern "C" fn newAIModule() -> *mut ffi::AIModuleWrapper {
     println!("newAIModule called!");
     let r = RustAIModule("RustAIModule here".to_string());
-    let b = AimBox(Box::new(r));
-    let ai: UniquePtr<ffi::AIModuleWrapper> = ffi::create_ai_module_wrapper(&b);
+    let mut b = AimBox(Box::new(r));
+    let ai: UniquePtr<ffi::AIModuleWrapper> = ffi::create_ai_module_wrapper(&mut b);
     ai.into_raw()
 }

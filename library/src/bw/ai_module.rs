@@ -3,7 +3,6 @@ use crate::bw::position::Position;
 use crate::bw::unit::Unit;
 
 use crate::ffi;
-use crate::bw;
 
 pub trait AIMod {
     fn on_start(&mut self);
