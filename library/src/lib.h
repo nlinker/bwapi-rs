@@ -15,86 +15,42 @@ public:
 
     AimBox &getAimBox() { return aimBox; }
 
-    void onStart() noexcept override {
-        on_start(*this);
-    }
+    void onStart() noexcept override { on_start(*this); }
 
-    void onEnd(bool isWinner) noexcept override {
-        on_end(*this, isWinner);
-    }
+    void onEnd(bool isWinner) noexcept override { on_end(*this, isWinner); }
 
-    void onFrame() noexcept override {
-        on_frame(*this);
-    }
+    void onFrame() noexcept override { on_frame(*this); }
 
-    void onSendText(std::string text) noexcept override {
-        on_send_text(*this, text);
-    }
+    void onSendText(std::string text) noexcept override { on_send_text(*this, text); }
 
-    void onReceiveText(BWAPI::Player player, std::string text) noexcept override {
-        const Player p{.raw = player};
-        on_receive_text(*this, p, text);
-    }
+    void onReceiveText(BWAPI::Player player, std::string text) noexcept override { on_receive_text(*this, player, text); }
 
-    void onPlayerLeft(BWAPI::Player player) noexcept override {
-        const Player p{.raw = player};
-        on_player_left(*this, p);
-    }
+    void onPlayerLeft(BWAPI::Player player) noexcept override { on_player_left(*this, player); }
 
     void onNukeDetect(BWAPI::Position target) noexcept override {
         Position *p = reinterpret_cast<Position *>(&target);
         on_nuke_detect(*this, *p);
     }
 
-    void onUnitDiscover(BWAPI::Unit unit) noexcept override {
-        const Unit u{.raw = unit};
-        on_unit_discover(*this, u);
-    }
+    void onUnitDiscover(BWAPI::Unit unit) noexcept override { on_unit_discover(*this, unit); }
 
-    void onUnitEvade(BWAPI::Unit unit) noexcept override {
-        const Unit u{.raw = unit};
-        on_unit_evade(*this, u);
-    }
+    void onUnitEvade(BWAPI::Unit unit) noexcept override { on_unit_evade(*this, unit); }
 
-    void onUnitShow(BWAPI::Unit unit) noexcept override {
-        const Unit u{.raw = unit};
-        on_unit_show(*this, u);
-    }
+    void onUnitShow(BWAPI::Unit unit) noexcept override { on_unit_show(*this, unit); }
 
-    void onUnitHide(BWAPI::Unit unit) noexcept override {
-        const Unit u{.raw = unit};
-        on_unit_hide(*this, u);
-    }
+    void onUnitHide(BWAPI::Unit unit) noexcept override { on_unit_hide(*this, unit); }
 
-    void onUnitCreate(BWAPI::Unit unit) noexcept override {
-        const Unit u{.raw = unit};
-        on_unit_create(*this, u);
-    }
+    void onUnitCreate(BWAPI::Unit unit) noexcept override { on_unit_create(*this, unit); }
 
-    void onUnitDestroy(BWAPI::Unit unit) noexcept override {
-        const Unit u{.raw = unit};
-        on_unit_destroy(*this, u);
-    }
+    void onUnitDestroy(BWAPI::Unit unit) noexcept override { on_unit_destroy(*this, unit); }
 
-    void onUnitMorph(BWAPI::Unit unit) noexcept override {
-        const Unit u{.raw = unit};
-        on_unit_morph(*this, u);
-    }
+    void onUnitMorph(BWAPI::Unit unit) noexcept override { on_unit_morph(*this, unit); }
 
-    void onUnitRenegade(BWAPI::Unit unit) noexcept override {
-        const Unit u{.raw = unit};
-        on_unit_renegade(*this, u);
-    }
+    void onUnitRenegade(BWAPI::Unit unit) noexcept override { on_unit_renegade(*this, unit); }
 
-    void onSaveGame(std::string gameName) noexcept override {
-        on_save_game(*this, gameName);
-    }
+    void onSaveGame(std::string gameName) noexcept override { on_save_game(*this, gameName); }
 
-    void onUnitComplete(BWAPI::Unit unit) noexcept override {
-        Unit u{.raw = unit};
-        on_unit_complete(*this, u);
-    }
+    void onUnitComplete(BWAPI::Unit unit) noexcept override { on_unit_complete(*this, unit); }
 };
 
 std::unique_ptr <AIModuleWrapper> createAIModuleWrapper(AimBox &box);
-

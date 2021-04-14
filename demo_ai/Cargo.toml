@@ -9,3 +9,4 @@ crate-type = ["dylib"]
 
 [dependencies]
 library = { path = "../library" }
+cxx = "1.0"

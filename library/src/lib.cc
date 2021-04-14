@@ -6,7 +6,7 @@
 #include "library/src/lib.rs.h"
 
 int cpp_main() {
-    std::cout << "Hello, there" << std::endl;
+    std::cout << "cpp_main started" << std::endl;
     AimBox &box = const_cast<AimBox &>(hack());
     auto ai = new AIModuleWrapper(box);
 
