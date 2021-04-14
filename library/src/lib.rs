@@ -52,10 +52,10 @@ pub mod ffi {
     }
 
     #[derive(Debug, Clone)]
-    pub struct Player { pub raw: *const PlayerInterface }
+    pub struct Player { raw: *const PlayerInterface }
 
     #[derive(Debug, Clone)]
-    pub struct Unit { pub raw: *const UnitInterface }
+    pub struct Unit { raw: *const UnitInterface }
 
     #[derive(Debug, Copy, Clone)]
     pub struct Position {
