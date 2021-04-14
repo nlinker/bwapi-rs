@@ -7,7 +7,7 @@
 
 int cpp_main() {
     std::cout << "Hello, there" << std::endl;
-    AimBox& box = const_cast<AimBox&>(hack());
+    AimBox &box = const_cast<AimBox &>(hack());
     auto ai = new AIModuleWrapper(box);
 
     BWAPI::Position target(11, 22);
@@ -46,93 +46,9 @@ int cpp_main() {
     return 0;
 }
 
-std::unique_ptr<AIModuleWrapper> createAIModuleWrapper(AimBox& box) {
+std::unique_ptr <AIModuleWrapper> createAIModuleWrapper(AimBox &box) {
     return std::unique_ptr<AIModuleWrapper>(new AIModuleWrapper(box));
 }
 //void destroyAIModuleWrapper(std::unique_ptr<AIModuleWrapper> module) {
 //    delete reinterpret_cast<AIModuleWrapper*>(module);
 //}
-
-// NOTE: the implementation of the functions `on_*(*this, ..)` are in Rust,
-// so it is expected warnings from C++ compiler/IDE about no implementation found
-// region --------------------- AIModuleWrapper shims ---------------------
-void AIModuleWrapper::onStart() noexcept {
-    on_start(*this);
-}
-
-void AIModuleWrapper::onEnd(bool isWinner) noexcept {
-    on_end(*this, isWinner);
-}
-
-void AIModuleWrapper::onFrame() noexcept {
-    on_frame(*this);
-}
-
-void AIModuleWrapper::onSendText(std::string text) noexcept {
-    on_send_text(*this, text);
-}
-
-void AIModuleWrapper::onReceiveText(BWAPI::Player player, std::string text) noexcept {
-    const Player p {.raw = player};
-    on_receive_text(*this, p, text);
-}
-
-void AIModuleWrapper::onPlayerLeft(BWAPI::Player player) noexcept {
-    const Player p {.raw = player};
-    on_player_left(*this, p);
-}
-
-void AIModuleWrapper::onNukeDetect(BWAPI::Position target) noexcept {
-    Position* p = reinterpret_cast<Position*>(&target);
-    on_nuke_detect(*this, *p);
-}
-
-void AIModuleWrapper::onUnitDiscover(BWAPI::Unit unit) noexcept {
-    const Unit u {.raw = unit};
-    on_unit_discover(*this, u);
-}
-
-void AIModuleWrapper::onUnitEvade(BWAPI::Unit unit) noexcept {
-    const Unit u {.raw = unit};
-    on_unit_evade(*this, u);
-}
-
-void AIModuleWrapper::onUnitShow(BWAPI::Unit unit) noexcept {
-    const Unit u {.raw = unit};
-    on_unit_show(*this, u);
-}
-
-void AIModuleWrapper::onUnitHide(BWAPI::Unit unit) noexcept {
-    const Unit u {.raw = unit};
-    on_unit_hide(*this, u);
-}
-
-void AIModuleWrapper::onUnitCreate(BWAPI::Unit unit) noexcept {
-    const Unit u {.raw = unit};
-    on_unit_create(*this, u);
-}
-
-void AIModuleWrapper::onUnitDestroy(BWAPI::Unit unit) noexcept {
-    const Unit u {.raw = unit};
-    on_unit_destroy(*this, u);
-}
-
-void AIModuleWrapper::onUnitMorph(BWAPI::Unit unit) noexcept {
-    const Unit u {.raw = unit};
-    on_unit_morph(*this, u);
-}
-
-void AIModuleWrapper::onUnitRenegade(BWAPI::Unit unit) noexcept {
-    const Unit u {.raw = unit};
-    on_unit_renegade(*this, u);
-}
-
-void AIModuleWrapper::onSaveGame(std::string gameName) noexcept {
-    on_save_game(*this, gameName);
-}
-
-void AIModuleWrapper::onUnitComplete(BWAPI::Unit unit) noexcept {
-    Unit u {.raw = unit};
-    on_unit_complete(*this, u);
-}
-// --------------------- endregion -------------------------
