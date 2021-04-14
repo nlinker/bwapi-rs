@@ -31,12 +31,15 @@ To run inside OpenBW you need to take `broodat.mpq`, `patch_rt.mpq` and `stardat
 distribution, make sure the version is `1.16.1`.
 
 ```shell
-cp broodat.mpq patch_rt.mpq stardat.mpq  launcher
+cargo build
+cp broodat.mpq patch_rt.mpq stardat.mpq target/debug
 cd launcher
+
+# make sure this path is correct
+# ai = ../target/debug/liblibrary.dylib
 vim bwapi-data/bwapi.ini
-  # make sure this path is correct
-  # ai = ../target/debug/liblibrary.dylib
-./bwapi_launcher
+
+DYLD_LIBRARY_PATH=library/bwapilib/lib ./openbw_launcher
 ```
 
 ### Linux

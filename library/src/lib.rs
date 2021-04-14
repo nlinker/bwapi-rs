@@ -18,7 +18,9 @@ pub mod ffi_main {
 
 /// Box contains arbitrary user AiModule, needed to
 /// provide a fixed size object for FFI.
-pub struct AimBox(Box<dyn AIMod + Sync + Send>);
+// TODO research why the definition below results in SEGFAULT
+// pub struct AimBox(Box<dyn AIMod + Send + Sync>);
+pub struct AimBox(Box<RustAIModule>);
 
 #[cxx::bridge]
 pub mod ffi {
@@ -163,7 +165,8 @@ impl AIMod for RustAIModule {
     }
 
     fn on_frame(&mut self) {
-        println!("fn on_frame()");
+        // too much of them
+        // println!("fn on_frame()");
     }
 
     fn on_send_text(&mut self, text: String) {
