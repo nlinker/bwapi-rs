@@ -53,7 +53,8 @@ std::unique_ptr<AIModuleWrapper> createAIModuleWrapper(AimBox& box) {
 //    delete reinterpret_cast<AIModuleWrapper*>(module);
 //}
 
-
+// NOTE: the implementation of the functions `on_*(*this, ..)` are in Rust,
+// so it is expected warnings from C++ compiler/IDE about no implementation found
 // region --------------------- AIModuleWrapper shims ---------------------
 void AIModuleWrapper::onStart() noexcept {
     on_start(*this);
