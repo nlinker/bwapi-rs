@@ -6,7 +6,7 @@ use cxx::UniquePtr;
 #[allow(non_snake_case)]
 pub unsafe extern "C" fn newAIModule() -> *mut ffi::AIModuleWrapper {
     println!("newAIModule called!");
-    let r = DemoAI { name: "RustAIModule here".to_string(), counter: 0 };
+    let r = DemoAI { name: "DemoAI here".to_string(), counter: 0 };
     let mut b = AimBox(Box::new(r));
     let ai: UniquePtr<ffi::AIModuleWrapper> = ffi::create_ai_module_wrapper(&mut b);
     ai.into_raw()
@@ -28,8 +28,7 @@ impl AIModule for DemoAI {
                 println!("fn on_end(is_winner: {})", is_winner);
             }
             Event::OnFrame() => {
-                // too much of them
-                // println!("fn on_frame()");
+                println!("fn on_frame()");
             }
             Event::OnSendText(text) => {
                 println!("fn on_send_text(text: {})", text);

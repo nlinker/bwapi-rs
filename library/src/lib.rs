@@ -1,15 +1,12 @@
+pub mod bw;
+pub mod prelude;
+
 use cxx::CxxString;
 use std::fmt::{Debug, Formatter};
 use std::fmt;
 use std::pin::Pin;
 use once_cell::sync::Lazy;
-use crate::bw::ai_module::{AIModule, Event};
-use crate::bw::player::Player;
-use crate::bw::position::Position;
-use crate::bw::unit::Unit;
-
-pub mod bw;
-pub mod prelude;
+use crate::prelude::{AIModule, Event};
 
 #[cxx::bridge]
 pub mod ffi_main {
@@ -93,7 +90,61 @@ pub mod ffi {
 
 struct TestAI;
 impl AIModule for TestAI {
-    fn on_event(&mut self, _event: Event) {}
+    fn on_event(&mut self, event: Event) {
+        match event {
+            Event::OnStart() => {
+                println!("fn on_start()");
+            }
+            Event::OnEnd(is_winner) => {
+                println!("fn on_end(is_winner: {})", is_winner);
+            }
+            Event::OnFrame() => {
+                println!("fn on_frame()");
+            }
+            Event::OnSendText(text) => {
+                println!("fn on_send_text(text: {})", text);
+            }
+            Event::OnReceiveText(player, text) => {
+                println!("fn on_receive_text(player: {:?}, text: {})", player, text);
+            }
+            Event::OnPlayerLeft(player) => {
+                println!("fn on_player_left(player: {:?})", player);
+            }
+            Event::OnNukeDetect(target) => {
+                println!("fn on_nuke_detect(target: {:?})", target);
+            }
+            Event::OnUnitDiscover(unit) => {
+                println!("fn on_unit_discover(unit: {:?})", unit);
+            }
+            Event::OnUnitEvade(unit) => {
+                println!("fn on_unit_evade(unit: {:?})", unit);
+            }
+            Event::OnUnitShow(unit) => {
+                println!("fn on_unit_show(unit: {:?})", unit);
+            }
+            Event::OnUnitHide(unit) => {
+                println!("fn on_unit_hide(unit: {:?})", unit);
+            }
+            Event::OnUnitCreate(unit) => {
+                println!("fn on_unit_create(unit: {:?})", unit);
+            }
+            Event::OnUnitDestroy(unit) => {
+                println!("fn on_unit_destroy(unit: {:?})", unit);
+            }
+            Event::OnUnitMorph(unit) => {
+                println!("fn on_unit_morph(unit: {:?})", unit);
+            }
+            Event::OnUnitRenegade(unit) => {
+                println!("fn on_unit_renegade(unit: {:?})", unit);
+            }
+            Event::OnSaveGame(game_name) => {
+                println!("fn on_save_game(game_name: {})", game_name);
+            }
+            Event::OnUnitComplete(unit) => {
+                println!("fn on_unit_complete(unit: {:?})", unit);
+            }
+        }
+    }
 }
 static BOX: Lazy<AimBox> = Lazy::new(|| AimBox(Box::new(TestAI)));
 fn hack() -> &'static AimBox { &BOX }

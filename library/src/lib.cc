@@ -22,13 +22,13 @@ int cpp_main() {
     BWAPI::Unit unit7 = reinterpret_cast<BWAPI::Unit>(0xF00D0007);
     //BWAPI::Unit unit8 = reinterpret_cast<BWAPI::Unit>(0xF00D0008);
     BWAPI::Unit unit9 = reinterpret_cast<BWAPI::Unit>(0xF00D0009);
-    std::string s1("Hello, this is the text!");
-    std::string s2("Hello, this is the received text!");
-    std::string s3("This is game name");
+    std::string s1("Hello sent");
+    std::string s2("Hello received");
+    std::string s3("Saving game name");
 
     ai->onStart();
-    ai->onFrame();
     ai->onEnd(true);
+    ai->onFrame();
     ai->onSendText(s1);
     ai->onReceiveText(player, s2);
     ai->onPlayerLeft(player);
