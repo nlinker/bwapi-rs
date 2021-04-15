@@ -9,6 +9,7 @@ use crate::bw::position::Position;
 use crate::bw::unit::Unit;
 
 pub mod bw;
+pub mod prelude;
 
 #[cxx::bridge]
 pub mod ffi_main {
