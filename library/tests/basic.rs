@@ -1,5 +1,5 @@
 use library::prelude::{AIModule, Event};
-use library::{AimBox, BOX};
+use library::{AimBox, HACK_BOX};
 use std::env;
 
 struct TestAI;
@@ -63,7 +63,7 @@ impl AIModule for TestAI {
 
 #[test]
 fn all_events() {
-    BOX.set(AimBox(Box::new(TestAI)));
+    HACK_BOX.set(AimBox(Box::new(TestAI)));
     println!("{}", std::mem::size_of::<AimBox>());
     library::ffi_main::cpp_main();
 }

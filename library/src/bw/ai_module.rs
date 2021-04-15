@@ -1,7 +1,9 @@
 use crate::bw::player::Player;
 use crate::bw::position::Position;
 use crate::bw::unit::Unit;
+use thin_trait_object::*;
 
+#[thin_trait_object]
 pub trait AIModule {
     fn on_event(&mut self, event: Event);
 }

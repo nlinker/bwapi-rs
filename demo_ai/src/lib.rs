@@ -28,7 +28,7 @@ impl AIModule for DemoAI {
                 println!("fn on_end(is_winner: {})", is_winner);
             }
             Event::OnFrame() => {
-                println!("fn on_frame()");
+                // println!("fn on_frame()");
             }
             Event::OnSendText(text) => {
                 println!("fn on_send_text(text: {})", text);

@@ -5,7 +5,6 @@ use cxx::CxxString;
 use std::fmt::{Debug, Formatter};
 use std::fmt;
 use std::pin::Pin;
-use once_cell::sync::Lazy;
 use crate::prelude::{AIModule, Event};
 use once_cell::sync::OnceCell;
 
@@ -37,24 +36,25 @@ pub mod ffi {
         type AimBox;
     }
 
+    #[namespace = "BWAPI"]
     unsafe extern "C++" {
         include!("library/bwapilib/include/BWAPI.h");
 
-        #[namespace = "BWAPI"]
         pub fn BWAPI_getRevision() -> i32;
-        #[namespace = "BWAPI"]
         pub fn BWAPI_isDebug() -> bool;
 
+        pub type PlayerInterface;
+        pub type UnitInterface;
+        pub type Game;
+    }
+
+    unsafe extern "C++" {
         pub type AIModuleWrapper;
+
         #[rust_name = "create_ai_module_wrapper"]
         fn createAIModuleWrapper(user_ai: &mut AimBox) -> UniquePtr<AIModuleWrapper>;
         #[rust_name = "aim_box"]
         pub fn getAimBox(self: Pin<&mut AIModuleWrapper>) -> &mut AimBox;
-
-        #[namespace = "BWAPI"]
-        type PlayerInterface;
-        #[namespace = "BWAPI"]
-        type UnitInterface;
     }
 
     extern "Rust" {
@@ -82,8 +82,8 @@ pub mod ffi {
     }
 }
 
-pub static BOX: OnceCell<AimBox> = OnceCell::new();
-fn hack() -> &'static AimBox { &BOX.get().unwrap() }
+pub static HACK_BOX: OnceCell<AimBox> = OnceCell::new();
+fn hack() -> &'static AimBox { &HACK_BOX.get().unwrap() }
 
 // region ----------- Shims to the bw::ai_module::AIModule trait ------------
 fn on_start(wrapper: Pin<&mut ffi::AIModuleWrapper>) {
