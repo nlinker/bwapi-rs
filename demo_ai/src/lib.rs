@@ -1,4 +1,4 @@
-use library::bw::ai_module::AIModule;
+use library::bw::ai_module::{AIModule, Event};
 use library::{ffi, AimBox};
 use library::bw::player::Player;
 use library::bw::position::Position;
@@ -22,73 +22,61 @@ pub struct DemoAI {
 }
 
 impl AIModule for DemoAI {
-    fn on_start(&mut self) {
-        println!("fn on_start()");
-    }
-
-    fn on_end(&mut self, is_winner: bool) {
-        println!("fn on_end(is_winner: {})", is_winner);
-    }
-
-    fn on_frame(&mut self) {
-        // too much of them
-        // println!("fn on_frame()");
-    }
-
-    fn on_send_text(&mut self, text: String) {
-        println!("fn on_send_text(text: {})", text);
-    }
-
-    fn on_receive_text(&mut self, player: Player, text: String) {
-        println!("fn on_receive_text(player: {:?}, text: {})", player, text)
-    }
-
-    fn on_player_left(&mut self, player: Player) {
-        println!("fn on_player_left(player: {:?})", player);
-    }
-
-    fn on_nuke_detect(&mut self, target: Position) {
-        println!("fn on_nuke_detect(target: {:?})", target);
-    }
-
-    fn on_unit_discover(&mut self, unit: Unit) {
-        println!("fn on_unit_discover(unit: {:?})", unit);
-    }
-
-    fn on_unit_evade(&mut self, unit: Unit) {
-        println!("fn on_unit_evade(unit: {:?})", unit);
-    }
-
-    fn on_unit_show(&mut self, unit: Unit) {
-        println!("fn on_unit_show(unit: {:?})", unit);
-    }
-
-    fn on_unit_hide(&mut self, unit: Unit) {
-        println!("fn on_unit_hide(unit: {:?})", unit);
-    }
-
-    fn on_unit_create(&mut self, unit: Unit) {
-        println!("fn on_unit_create(unit: {:?})", unit);
-    }
-
-    fn on_unit_destroy(&mut self, unit: Unit) {
-        println!("fn on_unit_destroy(unit: {:?})", unit);
-    }
-
-    fn on_unit_morph(&mut self, unit: Unit) {
-        println!("fn on_unit_morph(unit: {:?})", unit);
-    }
-
-    fn on_unit_renegade(&mut self, unit: Unit) {
-        println!("fn on_unit_renegade(unit: {:?})", unit);
-    }
-
-    fn on_save_game(&mut self, game_name: String) {
-        println!("fn on_save_game(game_name: {})", game_name);
-    }
-
-    fn on_unit_complete(&mut self, unit: Unit) {
-        println!("fn on_unit_complete(unit: {:?})", unit);
+    fn on_event(&mut self, event: Event) {
+        match event {
+            Event::OnStart() => {
+                println!("fn on_start()");
+            }
+            Event::OnEnd(is_winner) => {
+                println!("fn on_end(is_winner: {})", is_winner);
+            }
+            Event::OnFrame() => {
+                // too much of them
+                // println!("fn on_frame()");
+            }
+            Event::OnSendText(text) => {
+                println!("fn on_send_text(text: {})", text);
+            }
+            Event::OnReceiveText(player, text) => {
+                println!("fn on_receive_text(player: {:?}, text: {})", player, text);
+            }
+            Event::OnPlayerLeft(player) => {
+                println!("fn on_player_left(player: {:?})", player);
+            }
+            Event::OnNukeDetect(target) => {
+                println!("fn on_nuke_detect(target: {:?})", target);
+            }
+            Event::OnUnitDiscover(unit) => {
+                println!("fn on_unit_discover(unit: {:?})", unit);
+            }
+            Event::OnUnitEvade(unit) => {
+                println!("fn on_unit_evade(unit: {:?})", unit);
+            }
+            Event::OnUnitShow(unit) => {
+                println!("fn on_unit_show(unit: {:?})", unit);
+            }
+            Event::OnUnitHide(unit) => {
+                println!("fn on_unit_hide(unit: {:?})", unit);
+            }
+            Event::OnUnitCreate(unit) => {
+                println!("fn on_unit_create(unit: {:?})", unit);
+            }
+            Event::OnUnitDestroy(unit) => {
+                println!("fn on_unit_destroy(unit: {:?})", unit);
+            }
+            Event::OnUnitMorph(unit) => {
+                println!("fn on_unit_morph(unit: {:?})", unit);
+            }
+            Event::OnUnitRenegade(unit) => {
+                println!("fn on_unit_renegade(unit: {:?})", unit);
+            }
+            Event::OnSaveGame(game_name) => {
+                println!("fn on_save_game(game_name: {})", game_name);
+            }
+            Event::OnUnitComplete(unit) => {
+                println!("fn on_unit_complete(unit: {:?})", unit);
+            }
+        }
     }
 }
 

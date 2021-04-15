@@ -91,6 +91,7 @@ dependencies = [
  "cxx",
  "cxx-build",
  "once_cell",
+ "thin_trait_object",
 ]
 
 [[package]]
@@ -127,6 +128,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "replace_with"
+version = "0.1.7"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e3a8614ee435691de62bcffcf4a66d91b3594bf1428a5722e79103249a095690"
+
+[[package]]
 name = "scratch"
 version = "1.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -150,6 +157,19 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2dfed899f0eb03f32ee8c6a0aabdb8a7949659e3466561fc0adf54e26d88c5f4"
 dependencies = [
  "winapi-util",
+]
+
+[[package]]
+name = "thin_trait_object"
+version = "1.1.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e8488bcadd543cb17d3e229b3faa86a2c920889ba7dfe2e477a8f8e77a427210"
+dependencies = [
+ "once_cell",
+ "proc-macro2",
+ "quote",
+ "replace_with",
+ "syn",
 ]
 
 [[package]]
