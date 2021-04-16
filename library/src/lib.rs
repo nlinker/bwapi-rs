@@ -5,8 +5,10 @@ use cxx::CxxString;
 use std::fmt::{Debug, Formatter};
 use std::fmt;
 use std::pin::Pin;
-use crate::prelude::{AIModule, Event};
+use crate::prelude::{AIModule, Event, Game, GAME};
 use once_cell::sync::OnceCell;
+use std::ops::DerefMut;
+use std::sync::Arc;
 
 #[cxx::bridge]
 pub mod ffi_main {
@@ -175,4 +177,5 @@ pub extern "C" fn _Unwind_RaiseException() -> ! {
 #[allow(non_snake_case)]
 pub unsafe extern "C" fn gameInit(game: *const std::ffi::c_void) {
     println!("gameInit called: game = {:?}", game);
+    *GAME.lock().unwrap() = Game { raw: game as *const ffi::Game };
 }

@@ -1,6 +1,7 @@
 use library::prelude::*;
 use library::{ffi, AimBox};
 use cxx::UniquePtr;
+use std::borrow::Borrow;
 
 #[no_mangle]
 #[allow(non_snake_case)]
@@ -20,6 +21,7 @@ pub struct DemoAI {
 
 impl AIModule for DemoAI {
     fn on_event(&mut self, event: Event) {
+        let _game: &Game = GAME.lock().unwrap().borrow();
         match event {
             Event::OnStart() => {
                 println!("fn on_start()");
