@@ -9,11 +9,11 @@ pub struct Game {
 unsafe impl Send for Game {}
 
 impl Game {
-    pub fn send_text(&self, _text: &str) {
-        // ffi::Game
+    pub fn send_text(&self, text: &str) {
+        unsafe { ffi::send_text(self.raw as *mut _, text) }
     }
     pub fn get_frame_count(&self) -> i32 {
-        0
+        unsafe { ffi::get_frame_count(self.raw as *mut _) }
     }
 
 }

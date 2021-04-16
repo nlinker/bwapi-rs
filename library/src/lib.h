@@ -2,6 +2,7 @@
 
 #include "BWAPI/AIModule.h"
 #include "library/src/lib.rs.h"
+#include "../openbw/bwapilib/include/BWAPI/Game.h"
 
 int cpp_main();
 
@@ -54,3 +55,10 @@ public:
 };
 
 std::unique_ptr <AIModuleWrapper> createAIModuleWrapper(AimBox &box);
+
+void sendText(BWAPI::Game* game, rust::Str text) {
+    game->sendText(text.data());
+}
+int getFrameCount(BWAPI::Game* game) {
+    return game->getFrameCount();
+}

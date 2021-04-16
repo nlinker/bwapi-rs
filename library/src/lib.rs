@@ -48,7 +48,17 @@ pub mod ffi {
         pub type Game;
     }
 
+    // #[namespace = "BWAPI::Game"]
+    // unsafe extern "C++" {
+    //
+    // }
+
     unsafe extern "C++" {
+        #[cxx_name = "getFrameCount"]
+        unsafe fn get_frame_count(game: *mut Game) -> i32;
+        #[cxx_name = "sendText"]
+        unsafe fn send_text(game: *mut Game, text: &str);
+
         pub type AIModuleWrapper;
 
         #[rust_name = "create_ai_module_wrapper"]

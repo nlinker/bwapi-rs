@@ -4,6 +4,7 @@
 
 #include "lib.h"
 #include "library/src/lib.rs.h"
+#include "../openbw/bwapilib/include/BWAPI/Game.h"
 
 int cpp_main() {
 //    BW::Game bwgame;
