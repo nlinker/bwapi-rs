@@ -39,7 +39,7 @@ cd launcher
 # ai = ../target/debug/liblibrary.dylib
 vim bwapi-data/bwapi.ini
 
-DYLD_LIBRARY_PATH=library/bwapilib/lib ./openbw_launcher
+DYLD_LIBRARY_PATH=library/openbw/bwapilib/lib ./openbw_launcher
 ```
 
 ### Linux
@@ -53,7 +53,7 @@ TODO
 ### Remove CRLFs from BWAPI include header files
 ```bash
 pwd  # something like ~/rust/scai/bwapi-rice
-cd library/bwapi/include
+cd library/openbw/include
 find . -type f -print0 | xargs -0 dos2unix
 ```
 

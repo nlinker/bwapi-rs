@@ -6,6 +6,9 @@
 #include "library/src/lib.rs.h"
 
 int cpp_main() {
+//    BW::Game bwgame;
+//    std::unique_ptr<Game> = std::make_unique<Game>(bwgame);
+
     std::cout << "cpp_main started" << std::endl;
     AimBox &box = const_cast<AimBox &>(hack());
     auto ai = new AIModuleWrapper(box);

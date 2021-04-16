@@ -7,8 +7,6 @@ use std::fmt;
 use std::pin::Pin;
 use crate::prelude::{AIModule, Event, Game, GAME};
 use once_cell::sync::OnceCell;
-use std::ops::DerefMut;
-use std::sync::Arc;
 
 #[cxx::bridge]
 pub mod ffi_main {
@@ -40,7 +38,7 @@ pub mod ffi {
 
     #[namespace = "BWAPI"]
     unsafe extern "C++" {
-        include!("library/bwapilib/include/BWAPI.h");
+        include!("library/openbw/bwapilib/include/BWAPI.h");
 
         pub fn BWAPI_getRevision() -> i32;
         pub fn BWAPI_isDebug() -> bool;

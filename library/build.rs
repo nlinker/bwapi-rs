@@ -36,8 +36,8 @@ fn main() {
     //     .build();
     // log_var!(bwapi_build_dir);
 
-    let bwapi_include_dir = cur_dir.join("bwapilib").join("include");
-    let bwapi_lib_dir = cur_dir.join("bwapilib").join("lib");
+    let bwapi_include_dir = cur_dir.join("openbw").join("bwapilib").join("include");
+    let bwapi_lib_dir = cur_dir.join("openbw").join("bwapilib").join("lib");
 
     log_var!(bwapi_include_dir);
 
