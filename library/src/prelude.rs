@@ -1,7 +1,7 @@
 //! Commonly used items.
 //!
 //! ```
-//! use bwapi_xi::prelude::*;
+//! use library::prelude::*;
 //! ```
 
 pub use crate::bw::GAME;

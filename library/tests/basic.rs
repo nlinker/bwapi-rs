@@ -1,4 +1,4 @@
-use library::prelude::{AIModule, Event};
+use library::prelude::{AIModule, Event, Position};
 use library::{AimBox, HACK_BOX};
 use std::env;
 

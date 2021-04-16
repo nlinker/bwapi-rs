@@ -5,7 +5,7 @@ use cxx::CxxString;
 use std::fmt::{Debug, Formatter};
 use std::fmt;
 use std::pin::Pin;
-use crate::prelude::{AIModule, Event, Game, GAME};
+use crate::prelude::{AIModule, Event, Game, GAME, Position};
 use once_cell::sync::OnceCell;
 
 #[cxx::bridge]
@@ -20,7 +20,6 @@ pub mod ffi_main {
 /// provide a fixed size object for FFI.
 // TODO research why the definition below results in SEGFAULT
 pub struct AimBox(pub Box<dyn AIModule + Send + Sync>);
-// pub struct AimBox<T: AIModule>(Box<T>);
 
 #[cxx::bridge]
 pub mod ffi {

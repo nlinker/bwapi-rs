@@ -3,6 +3,7 @@ use library::{ffi, AimBox};
 use cxx::UniquePtr;
 use std::borrow::Borrow;
 
+
 #[no_mangle]
 #[allow(non_snake_case)]
 pub unsafe extern "C" fn newAIModule() -> *mut ffi::AIModuleWrapper {
@@ -80,8 +81,31 @@ impl AIModule for DemoAI {
 
 #[cfg(test)]
 mod tests {
+    use library::prelude::*;
+    use crate::DemoAI;
+
     #[test]
     fn it_works() {
         assert_eq!(2 + 2, 4);
+    }
+
+    #[test]
+    fn boxed_test() {
+
+        struct TestAI;
+
+        impl AIModule for TestAI {
+            fn on_event(&mut self, event: Event) {
+                match event {
+                    Event::OnNukeDetect(p) => {
+                        println!("nuke = {:?}", p);
+                    }
+                    _ => {}
+                }
+            }
+        }
+        let mut ai = DemoAI { name: "DemoAI here".to_string(), counter: 0 };
+        let mut ai = BoxedAIModule::new(ai);
+        ai.on_event(Event::OnNukeDetect(Position { x: 11, y: 22 }));
     }
 }

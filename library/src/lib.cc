@@ -11,21 +11,22 @@ int cpp_main() {
 //    std::unique_ptr<Game> = std::make_unique<Game>(bwgame);
 
     std::cout << "cpp_main started" << std::endl;
+    std::cout << "cpp AimBox size = " << sizeof(AimBox) << std::endl;
     AimBox &box = const_cast<AimBox &>(hack());
     auto ai = new AIModuleWrapper(box);
 
     BWAPI::Position target(11, 22);
-    BWAPI::Player player = reinterpret_cast<BWAPI::Player>(0xDEADBEEF);
-    BWAPI::Unit unit0 = reinterpret_cast<BWAPI::Unit>(0xF00D0000);
-    BWAPI::Unit unit1 = reinterpret_cast<BWAPI::Unit>(0xF00D0001);
-    BWAPI::Unit unit2 = reinterpret_cast<BWAPI::Unit>(0xF00D0002);
-    BWAPI::Unit unit3 = reinterpret_cast<BWAPI::Unit>(0xF00D0003);
-    BWAPI::Unit unit4 = reinterpret_cast<BWAPI::Unit>(0xF00D0004);
-    BWAPI::Unit unit5 = reinterpret_cast<BWAPI::Unit>(0xF00D0005);
-    BWAPI::Unit unit6 = reinterpret_cast<BWAPI::Unit>(0xF00D0006);
-    BWAPI::Unit unit7 = reinterpret_cast<BWAPI::Unit>(0xF00D0007);
+    auto player = reinterpret_cast<BWAPI::Player>(0xDEADBEEF);
+    auto unit0 = reinterpret_cast<BWAPI::Unit>(0xF00D0000);
+    auto unit1 = reinterpret_cast<BWAPI::Unit>(0xF00D0001);
+    auto unit2 = reinterpret_cast<BWAPI::Unit>(0xF00D0002);
+    auto unit3 = reinterpret_cast<BWAPI::Unit>(0xF00D0003);
+    auto unit4 = reinterpret_cast<BWAPI::Unit>(0xF00D0004);
+    auto unit5 = reinterpret_cast<BWAPI::Unit>(0xF00D0005);
+    auto unit6 = reinterpret_cast<BWAPI::Unit>(0xF00D0006);
+    auto unit7 = reinterpret_cast<BWAPI::Unit>(0xF00D0007);
     //BWAPI::Unit unit8 = reinterpret_cast<BWAPI::Unit>(0xF00D0008);
-    BWAPI::Unit unit9 = reinterpret_cast<BWAPI::Unit>(0xF00D0009);
+    auto unit9 = reinterpret_cast<BWAPI::Unit>(0xF00D0009);
     std::string s1("Hello sent");
     std::string s2("Hello received");
     std::string s3("Saving game name");
