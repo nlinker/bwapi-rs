@@ -104,8 +104,8 @@ mod tests {
                 }
             }
         }
-        let mut ai = DemoAI { name: "DemoAI here".to_string(), counter: 0 };
-        let mut ai = BoxedAIModule::new(ai);
+        let mut demo = DemoAI { name: "DemoAI here".to_string(), counter: 0 };
+        let mut ai = BoxedAIModule::new(demo);
         ai.on_event(Event::OnNukeDetect(Position { x: 11, y: 22 }));
     }
 }
