@@ -51,11 +51,17 @@ TODO
 ## Development environment small tasks
 
 ### Remove CRLFs from BWAPI include header files
-```bash
+```shell
 pwd  # something like ~/rust/scai/bwapi-rice
 cd library/openbw/include
 find . -type f -print0 | xargs -0 dos2unix
 ```
+
+### Remove exec flag from the files, copied from Windows
+```shell
+find /path/to/location -type f -print0 | xargs -0 chmod 644
+```
+
 
 ### Useful links
 
