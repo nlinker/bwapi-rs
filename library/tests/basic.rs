@@ -1,6 +1,5 @@
-use library::prelude::{AIModule, BoxedAIModule, Event, Position};
+use library::prelude::{AIModule, BoxedAIModule, Event};
 use library::HACK_BOX;
-use std::env;
 
 struct TestAI;
 impl AIModule for TestAI {
@@ -63,7 +62,7 @@ impl AIModule for TestAI {
 
 #[test]
 fn all_events() {
-    HACK_BOX.set(BoxedAIModule::new(TestAI));
+    HACK_BOX.set(BoxedAIModule::new(TestAI)).unwrap_or(());
     println!("BoxedAIModule size = {}", std::mem::size_of::<BoxedAIModule>());
     library::ffi_main::cpp_main();
 }

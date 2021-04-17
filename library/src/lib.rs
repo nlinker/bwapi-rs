@@ -7,10 +7,8 @@ use cxx::CxxString;
 use std::fmt::{Debug, Formatter};
 use std::fmt;
 use std::pin::Pin;
-use crate::prelude::{AIModule, Event, Game, GAME, Position, BoxedAIModule};
-use once_cell::sync::{OnceCell, Lazy};
-use std::ffi::c_void;
-use std::sync::Mutex;
+use crate::prelude::{AIModule, Event, Game, GAME, BoxedAIModule};
+use once_cell::sync::OnceCell;
 
 #[cxx::bridge]
 pub mod ffi_main {
@@ -96,7 +94,13 @@ pub mod ffi {
 
 // region ----------- Shims to the bw::ai_module::AIModule trait ------------
 fn on_start(wrapper: Pin<&mut ffi::AIModuleWrapper>) {
-    wrapper.get_box().on_event(Event::OnStart());
+    println!("get_box");
+    let ai = wrapper.get_box();
+    println!("ai.as_raw() = {:p}", ai.as_raw()); // TODO ai.as_raw() = 0x0
+    println!("&ai = {:p}", &ai);
+    println!("before");
+    ai.on_event(Event::OnStart());
+    println!("after");
 }
 fn on_end(wrapper: Pin<&mut ffi::AIModuleWrapper>, is_winner: bool) {
     wrapper.get_box().on_event(Event::OnEnd(is_winner));
