@@ -11,8 +11,7 @@ int cpp_main() {
 //    std::unique_ptr<Game> = std::make_unique<Game>(bwgame);
 
     std::cout << "cpp_main started" << std::endl;
-    std::cout << "cpp AimBox size = " << sizeof(AimBox) << std::endl;
-    AimBox &box = const_cast<AimBox &>(hack());
+    auto &box = const_cast<BoxedAIModule&>(hack());
     auto ai = new AIModuleWrapper(box);
 
     BWAPI::Position target(11, 22);
@@ -51,9 +50,17 @@ int cpp_main() {
     return 0;
 }
 
-std::unique_ptr <AIModuleWrapper> createAIModuleWrapper(AimBox &box) {
+std::unique_ptr <AIModuleWrapper> createAIModuleWrapper(BoxedAIModule& box) {
     return std::unique_ptr<AIModuleWrapper>(new AIModuleWrapper(box));
 }
 //void destroyAIModuleWrapper(std::unique_ptr<AIModuleWrapper> module) {
 //    delete reinterpret_cast<AIModuleWrapper*>(module);
 //}
+
+void sendText(BWAPI::Game *game, rust::Str text) {
+    game->sendText(text.data());
+}
+
+int getFrameCount(BWAPI::Game *game) {
+    return game->getFrameCount();
+}

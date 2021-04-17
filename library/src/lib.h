@@ -6,15 +6,15 @@
 
 int cpp_main();
 
-// NOTE: the implementation of the functions `on_*(*this, ..)` are in Rust,
-// so it is expected warnings from C++ compiler/IDE about no implementation found
+std::unique_ptr <AIModuleWrapper> createAIModuleWrapper(BoxedAIModule& box);
+
 class AIModuleWrapper : public BWAPI::AIModule {
 public:
-    AimBox &aimBox;
+    BoxedAIModule& moduleBox;
 public:
-    AIModuleWrapper(AimBox &box) : aimBox(box) {}
+    AIModuleWrapper(BoxedAIModule& box) : moduleBox(box) {}
 
-    AimBox &getAimBox() { return aimBox; }
+    BoxedAIModule& getBox() { return moduleBox; }
 
     void onStart() noexcept override { on_start(*this); }
 
@@ -54,11 +54,5 @@ public:
     void onUnitComplete(BWAPI::Unit unit) noexcept override { on_unit_complete(*this, unit); }
 };
 
-std::unique_ptr <AIModuleWrapper> createAIModuleWrapper(AimBox &box);
-
-void sendText(BWAPI::Game* game, rust::Str text) {
-    game->sendText(text.data());
-}
-int getFrameCount(BWAPI::Game* game) {
-    return game->getFrameCount();
-}
+void sendText(BWAPI::Game* game, rust::Str text);
+int getFrameCount(BWAPI::Game* game);

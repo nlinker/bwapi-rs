@@ -1,5 +1,5 @@
 use library::prelude::*;
-use library::{ffi, AimBox};
+use library::ffi;
 use cxx::UniquePtr;
 use std::borrow::Borrow;
 
@@ -8,9 +8,9 @@ use std::borrow::Borrow;
 #[allow(non_snake_case)]
 pub unsafe extern "C" fn newAIModule() -> *mut ffi::AIModuleWrapper {
     println!("newAIModule called!");
-    let r = DemoAI { name: "DemoAI here".to_string(), counter: 0 };
-    let mut b = AimBox(Box::new(r));
-    let ai: UniquePtr<ffi::AIModuleWrapper> = ffi::create_ai_module_wrapper(&mut b);
+    let mut demo = DemoAI { name: "DemoAI here".to_string(), counter: 0 };
+    let mut ai = BoxedAIModule::new(demo);
+    let ai: UniquePtr<ffi::AIModuleWrapper> = ffi::create_ai_module_wrapper(&mut ai);
     ai.into_raw()
 }
 

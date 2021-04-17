@@ -62,6 +62,11 @@ find . -type f -print0 | xargs -0 dos2unix
 find /path/to/location -type f -print0 | xargs -0 chmod 644
 ```
 
+### Clean up CMake build dir
+```shell
+cd cmake-build-debug
+cmake --build . --target clean
+```
 
 ### Useful links
 
