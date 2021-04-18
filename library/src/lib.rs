@@ -1,6 +1,5 @@
 #![feature(never_type)]
 #[allow(non_snake_case)]
-
 pub mod bw;
 pub mod prelude;
 
@@ -29,7 +28,7 @@ pub extern "C" fn _Unwind_RaiseException() -> ! {
 pub unsafe extern "C" fn gameInit(game: *const std::ffi::c_void) {
     println!("gameInit called: game = {:?}", game);
     *GAME.lock().unwrap() = Game {
-        raw: game as *const ffi::Game,
+        raw: game as *mut ffi::Game,
     };
 }
 
@@ -83,22 +82,6 @@ pub mod ffi {
         pub type UpgradeType;
         pub type WeaponType;
 
-     	pub type BulletTypes;
-     	pub type Colors;
-     	pub type DamageTypes;
-     	pub type Errors;
-     	pub type ExplosionTypes;
-     	pub type GameTypes;
-     	pub type Orders;
-     	pub type PlayerTypes;
-     	pub type Races;
-     	pub type TechTypes;
-     	pub type UnitCommandTypes;
-     	pub type UnitSizeTypes;
-     	pub type UnitTypes;
-     	pub type UpgradeTypes;
-     	pub type WeaponTypes;
-
         type Event;
     }
     // BWAPI::BulletInterface
@@ -127,10 +110,14 @@ pub mod ffi {
 
     // BWAPI::Game
     extern "C++" {
-        unsafe fn getFrameCount(game: *mut Game) -> i32;
-        unsafe fn sendText(game: *mut Game, text: *const c_char);
+        // unsafe fn getFrameCount(game: *mut Game) -> i32;
+        unsafe fn getFrameCount(self: &Game) -> i32;
+        unsafe fn sendText(game: *mut Game, text: &str);
+        // unsafe fn getForces(game: *mut Game) -> Forceset;
+        // unsafe fn getPlayers(game: *mut Game) -> Playerset;
+
         // not implemented yet
-        // unsafe fn allies(game: *mut Game) -> Playerset;
+        // unsafe fn allies(game: *mut Game) -> &Playerset;
         // unsafe fn canBuildHere(game: *mut Game, position: TilePosition, type_: UnitType, builder: *const UnitInterface, checkExplored: bool) -> bool;
         // unsafe fn canMake(game: *mut Game, type_: UnitType, builder: *const UnitInterface) -> bool;
         // unsafe fn canResearch(game: *mut Game, type_: TechType, unit: *const UnitInterface, checkCanIssueCommandType: bool) -> bool;
@@ -224,7 +211,7 @@ pub mod ffi {
         // unsafe fn printf(game: *mut Game, char: *const format);
         // unsafe fn restartGame(game: *mut Game);
         // unsafe fn resumeGame(game: *mut Game);
-        // unsafe fn me(game: *mut Game) -> *const PlayerInterface;
+        // unsafe fn self_player(game: *mut Game) -> *const PlayerInterface;
         // // unsafe fn sendText(game: *mut Game, text: *const c_char);
         // unsafe fn sendTextEx(game: *mut Game, toAllies: bool, char: *const format);
         // unsafe fn setAlliance(game: *mut Game, player: *const PlayerInterface, allied: bool, alliedVictory: bool) -> bool;

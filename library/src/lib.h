@@ -63,5 +63,5 @@ public:
     void onUnitComplete(BWAPI::Unit unit) noexcept override { on_unit_complete(*this, unit); }
 };
 
-void sendText(BWAPI::Game *game, const char* text);
-int getFrameCount(BWAPI::Game* game);
+void sendText(BWAPI::Game *game, rust::Str text);
+//int getFrameCount(BWAPI::Game* game);

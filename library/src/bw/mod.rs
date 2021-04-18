@@ -1,6 +1,6 @@
 use crate::bw::game::Game;
 use once_cell::sync::Lazy;
-use std::ptr::null;
+use std::ptr::{null, null_mut};
 use std::sync::{Arc, Mutex};
 
 pub mod ai_module;
@@ -11,7 +11,7 @@ pub mod unit;
 pub mod unit_type;
 
 /// Updated on gameInit call
-pub static GAME: Lazy<Arc<Mutex<Game>>> = Lazy::new(|| Arc::new(Mutex::new(Game { raw: null() })));
+pub static GAME: Lazy<Arc<Mutex<Game>>> = Lazy::new(|| Arc::new(Mutex::new(Game { raw: null_mut() })));
 
 pub fn bwapi_get_revision() -> i32 {
     // don't need the unsafe block

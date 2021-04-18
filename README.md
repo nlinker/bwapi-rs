@@ -52,9 +52,9 @@ TODO
 
 ## Differences from the original API
 
-1. Method `Game::self() -> Player` renamed to `me()` since `self` is a keyword in Rust.
+1. Method `Game::self() -> Player` renamed to `self_player()` since `self` is a keyword in Rust.
 2. Many overloaded methods "compressed" to one the most general method, since Rust 
-   has the only overloading on traits.
+   has the only overloading on traits. Others has suffixes.
 
 
 ## Development small tasks
@@ -81,8 +81,7 @@ TODO
   1. `(\w+)\s+(\w+)\s+\(\)` => `fn $2() -> $1;`
   2. `(\w+)\s+(\w+)\s+\((\w+) (\w+)\)` => `fn $2($4: $3) -> $1;` 
   3. `(\w+)\s+(\w+)\s+\((\w+) (\w+), (\w+) (\w+)\)` => `fn $2($4: $3, $6: $5) -> $1;` 
-  
-  As an example, it replaces
+  and so on. As an example, it replaces
   - `bool hasUnitTypeRequirement (UnitType unit, int amount)`
   - to `fn getBestUnit(best: const BestUnitFilter, pred: const UnitFilter, center: Position, radius: int) -> Unit`
   

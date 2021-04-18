@@ -237,5 +237,5 @@ pub enum UnitType {
     Buildings,
     Factories,
     Unknown,
-    MAX
+    MAX,
 }
