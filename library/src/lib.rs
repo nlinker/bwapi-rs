@@ -11,10 +11,10 @@ use crate::prelude::{AIModule, Event, Game, GAME, BoxedAIModule};
 use once_cell::sync::OnceCell;
 
 #[cxx::bridge]
-pub mod ffi_main {
+pub mod ffi_test {
     unsafe extern "C++" {
         include!("library/src/lib.h");
-        fn cpp_main() -> i32;
+        fn cpp_test() -> i32;
     }
 }
 
@@ -62,7 +62,7 @@ pub mod ffi {
         pub type AIModuleWrapper;
 
         #[rust_name = "create_ai_module_wrapper"]
-        fn createAIModuleWrapper(user_ai: &mut BoxedAIModule) -> UniquePtr<AIModuleWrapper>;
+        fn createAIModuleWrapper(user_ai: Box<BoxedAIModule>) -> UniquePtr<AIModuleWrapper>;
         #[rust_name = "get_box"]
         fn getBox(self: Pin<&mut AIModuleWrapper>) -> &mut BoxedAIModule;
     }
@@ -94,13 +94,7 @@ pub mod ffi {
 
 // region ----------- Shims to the bw::ai_module::AIModule trait ------------
 fn on_start(wrapper: Pin<&mut ffi::AIModuleWrapper>) {
-    println!("get_box");
-    let ai = wrapper.get_box();
-    println!("ai.as_raw() = {:p}", ai.as_raw()); // TODO ai.as_raw() = 0x0
-    println!("&ai = {:p}", &ai);
-    println!("before");
-    ai.on_event(Event::OnStart());
-    println!("after");
+    wrapper.get_box().on_event(Event::OnStart());
 }
 fn on_end(wrapper: Pin<&mut ffi::AIModuleWrapper>, is_winner: bool) {
     wrapper.get_box().on_event(Event::OnEnd(is_winner));

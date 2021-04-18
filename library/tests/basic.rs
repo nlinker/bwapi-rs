@@ -64,5 +64,5 @@ impl AIModule for TestAI {
 fn all_events() {
     HACK_BOX.set(BoxedAIModule::new(TestAI)).unwrap_or(());
     println!("BoxedAIModule size = {}", std::mem::size_of::<BoxedAIModule>());
-    library::ffi_main::cpp_main();
+    library::ffi_test::cpp_test();
 }

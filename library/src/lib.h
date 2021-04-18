@@ -4,17 +4,26 @@
 #include "library/src/lib.rs.h"
 #include "../openbw/bwapilib/include/BWAPI/Game.h"
 
-int cpp_main();
+int cpp_test();
 
-std::unique_ptr <AIModuleWrapper> createAIModuleWrapper(BoxedAIModule& box);
+// helper for debugging on the c++ side
+template <class T>
+void dump(T const *t) {
+    auto p = reinterpret_cast<unsigned long const *>(t);
+    for (size_t n = 0 ; n < sizeof(T) ; ++n)
+        printf("0x%012lx ", p[n]);
+    printf("\n");
+}
+
+std::unique_ptr <AIModuleWrapper> createAIModuleWrapper(rust::Box<BoxedAIModule> box);
 
 class AIModuleWrapper : public BWAPI::AIModule {
 public:
-    BoxedAIModule& moduleBox;
+    BoxedAIModule *moduleBox;
 public:
-    AIModuleWrapper(BoxedAIModule& box) : moduleBox(box) {}
+    AIModuleWrapper(BoxedAIModule *box): moduleBox(box)  {}
 
-    BoxedAIModule& getBox() { return moduleBox; }
+    BoxedAIModule& getBox() { return *moduleBox; }
 
     void onStart() noexcept override { on_start(*this); }
 

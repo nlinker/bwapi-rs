@@ -6,13 +6,13 @@
 #include "library/src/lib.rs.h"
 #include "../openbw/bwapilib/include/BWAPI/Game.h"
 
-int cpp_main() {
+int cpp_test() {
 //    BW::Game bwgame;
 //    std::unique_ptr<Game> = std::make_unique<Game>(bwgame);
 
-    std::cout << "cpp_main started" << std::endl;
+    std::cout << "cpp_test started" << std::endl;
     auto &box = const_cast<BoxedAIModule&>(hack());
-    auto ai = new AIModuleWrapper(box);
+    auto ai = new AIModuleWrapper(&box);
 
     BWAPI::Position target(11, 22);
     auto player = reinterpret_cast<BWAPI::Player>(0xDEADBEEF);
@@ -50,8 +50,8 @@ int cpp_main() {
     return 0;
 }
 
-std::unique_ptr <AIModuleWrapper> createAIModuleWrapper(BoxedAIModule& box) {
-    return std::unique_ptr<AIModuleWrapper>(new AIModuleWrapper(box));
+std::unique_ptr <AIModuleWrapper> createAIModuleWrapper(rust::Box<BoxedAIModule> box) {
+    return std::unique_ptr<AIModuleWrapper>(new AIModuleWrapper(box.into_raw()));
 }
 //void destroyAIModuleWrapper(std::unique_ptr<AIModuleWrapper> module) {
 //    delete reinterpret_cast<AIModuleWrapper*>(module);
