@@ -17,6 +17,8 @@ to [BWAPI](https://github.com/bwapi/bwapi). Main objectives:
   - _Client executable_ mode (more convenient to debug, but less performance, the
   game state is exchanged over network or pipe).
 
+__Warning:__ _the project is on the very early stage and pretty much unstable._
+
 ## Installation and run
 
 ### MacOS

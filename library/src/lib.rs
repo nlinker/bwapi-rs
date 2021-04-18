@@ -10,17 +10,26 @@ use std::pin::Pin;
 use crate::prelude::{AIModule, Event, Game, GAME, BoxedAIModule};
 use once_cell::sync::OnceCell;
 
-#[cxx::bridge]
-pub mod ffi_test {
-    unsafe extern "C++" {
-        include!("library/src/lib.h");
-        fn cpp_test() -> i32;
-    }
+#[cfg(windows)]
+#[no_mangle]
+pub extern "C" fn _Unwind_Resume() -> ! {
+    use std::process;
+    process::abort();
 }
 
-/// Box contains arbitrary user AiModule, needed to
-/// provide a fixed size object for FFI.
-// pub struct AimBox(pub Box<dyn AIModule + Send + Sync>);
+#[cfg(windows)]
+#[no_mangle]
+pub extern "C" fn _Unwind_RaiseException() -> ! {
+    use std::process;
+    process::abort();
+}
+
+#[no_mangle]
+#[allow(non_snake_case)]
+pub unsafe extern "C" fn gameInit(game: *const std::ffi::c_void) {
+    println!("gameInit called: game = {:?}", game);
+    *GAME.lock().unwrap() = Game { raw: game as *const ffi::Game };
+}
 
 #[cxx::bridge]
 pub mod ffi {
@@ -31,15 +40,9 @@ pub mod ffi {
         y: i32,
     }
 
-    extern "Rust" {
-        // #[namespace = "crate::bw::ai_module"]
-        type BoxedAIModule<'a>;
-    }
-
     #[namespace = "BWAPI"]
     unsafe extern "C++" {
         include!("library/openbw/bwapilib/include/BWAPI.h");
-
         pub fn BWAPI_getRevision() -> i32;
         pub fn BWAPI_isDebug() -> bool;
 
@@ -54,6 +57,9 @@ pub mod ffi {
         unsafe fn sendText(game: *mut Game, text: *const c_char);
     }
 
+    extern "Rust" {
+        type BoxedAIModule<'a>;
+    }
     unsafe extern "C++" {
         pub type AIModuleWrapper;
         #[rust_name = "create_ai_module_wrapper"]
@@ -163,23 +169,10 @@ impl Debug for ffi::AIModuleWrapper {
 pub static HACK_BOX: OnceCell<BoxedAIModule> = OnceCell::new();
 fn hack() -> &'static BoxedAIModule<'static> { &HACK_BOX.get().unwrap() }
 
-#[cfg(windows)]
-#[no_mangle]
-pub extern "C" fn _Unwind_Resume() -> ! {
-    use std::process;
-    process::abort();
+#[cxx::bridge]
+pub mod ffi_test {
+    unsafe extern "C++" {
+    include!("library/src/lib.h");
+    fn cpp_test() -> i32;
 }
-
-#[cfg(windows)]
-#[no_mangle]
-pub extern "C" fn _Unwind_RaiseException() -> ! {
-    use std::process;
-    process::abort();
-}
-
-#[no_mangle]
-#[allow(non_snake_case)]
-pub unsafe extern "C" fn gameInit(game: *const std::ffi::c_void) {
-    println!("gameInit called: game = {:?}", game);
-    *GAME.lock().unwrap() = Game { raw: game as *const ffi::Game };
 }
