@@ -31,7 +31,7 @@ impl AIModule for DemoAI {
             Event::OnFrame() => {
                 // println!("fn on_frame()");
                 let fc = game.get_frame_count();
-                if fc % 50 == 0 {
+                if fc % 10 == 0 {
                     game.send_text(&format!("Hello, SSCAIT!, frame count = {}", fc));
                 }
             }

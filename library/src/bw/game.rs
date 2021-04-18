@@ -1,4 +1,5 @@
 use crate::ffi;
+use std::ffi::{CString, NulError};
 
 #[derive(Debug)]
 pub struct Game {
@@ -10,10 +11,13 @@ unsafe impl Send for Game {}
 
 impl Game {
     pub fn send_text(&self, text: &str) {
-        unsafe { ffi::send_text(self.raw as *mut _, text) }
+        match CString::new(text) {
+            Ok(s) => unsafe { ffi::sendText(self.raw as *mut _, s.as_ptr()) },
+            Err(e) => println!("Warning: {}", e),
+        }
     }
     pub fn get_frame_count(&self) -> i32 {
-        unsafe { ffi::get_frame_count(self.raw as *mut _) }
+        unsafe { ffi::getFrameCount(self.raw as *mut _) }
     }
 
 }

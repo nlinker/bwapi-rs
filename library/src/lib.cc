@@ -57,8 +57,8 @@ std::unique_ptr <AIModuleWrapper> createAIModuleWrapper(rust::Box<BoxedAIModule>
 //    delete reinterpret_cast<AIModuleWrapper*>(module);
 //}
 
-void sendText(BWAPI::Game *game, rust::Str text) {
-    game->sendText(text.data());
+void sendText(BWAPI::Game *game, const char* text) {
+    game->sendText(text);
 }
 
 int getFrameCount(BWAPI::Game *game) {
