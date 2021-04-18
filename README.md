@@ -50,25 +50,43 @@ TODO
 ### Windows
 TODO
 
-## Development environment small tasks
+## Differences from the original API
 
-### Remove CRLFs from BWAPI include header files
-```shell
-pwd  # something like ~/rust/scai/bwapi-rice
-cd library/openbw/include
-find . -type f -print0 | xargs -0 dos2unix
-```
+1. Method `Game::self() -> Player` renamed to `me()` since `self` is a keyword in Rust.
+2. Many overloaded methods "compressed" to one the most general method, since Rust 
+   has the only overloading on traits.
 
-### Remove exec flag from the files, copied from Windows
-```shell
-find /path/to/location -type f -print0 | xargs -0 chmod 644
-```
 
-### Clean up CMake build dir
-```shell
-cd cmake-build-debug
-cmake --build . --target clean
-```
+## Development small tasks
+
+- Remove CRLFs from BWAPI include header files
+  ```shell
+  pwd  # something like ~/rust/scai/bwapi-rice
+  cd library/openbw/include
+  find . -type f -print0 | xargs -0 dos2unix
+  ```
+
+- Remove exec flag from the files, copied from Windows
+  ```shell
+  find /path/to/location -type f -print0 | xargs -0 chmod 644
+  ```
+
+- Clean up CMake build dir
+  ```shell
+  cd cmake-build-debug
+  cmake --build . --target clean
+  ```
+
+- Regex to swap C++ arguments to Rusty style
+  1. `(\w+)\s+(\w+)\s+\(\)` => `fn $2() -> $1;`
+  2. `(\w+)\s+(\w+)\s+\((\w+) (\w+)\)` => `fn $2($4: $3) -> $1;` 
+  3. `(\w+)\s+(\w+)\s+\((\w+) (\w+), (\w+) (\w+)\)` => `fn $2($4: $3, $6: $5) -> $1;` 
+  
+  As an example, it replaces
+  - `bool hasUnitTypeRequirement (UnitType unit, int amount)`
+  - to `fn getBestUnit(best: const BestUnitFilter, pred: const UnitFilter, center: Position, radius: int) -> Unit`
+  
+
 
 ### Useful links
 

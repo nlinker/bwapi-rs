@@ -8,6 +8,7 @@ pub mod game;
 pub mod player;
 pub mod position;
 pub mod unit;
+pub mod unit_type;
 
 /// Updated on gameInit call
 pub static GAME: Lazy<Arc<Mutex<Game>>> = Lazy::new(|| Arc::new(Mutex::new(Game { raw: null() })));
