@@ -1,5 +1,5 @@
 use crate::ffi;
-use std::ffi::{CString, NulError};
+use std::ffi::CString;
 
 #[derive(Debug)]
 pub struct Game {
