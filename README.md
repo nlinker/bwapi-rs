@@ -38,7 +38,7 @@ cp broodat.mpq patch_rt.mpq stardat.mpq target/debug
 cd launcher
 
 # make sure this path is correct
-# ai = ../target/debug/liblibrary.dylib
+# ai = ../target/debug/demo_ai.dylib
 vim bwapi-data/bwapi.ini
 
 DYLD_LIBRARY_PATH=library/openbw/bwapilib/lib ./openbw_launcher

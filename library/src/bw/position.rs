@@ -1,4 +1,3 @@
-
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash, Ord, PartialOrd)]
 pub struct Position {
     pub x: i32,

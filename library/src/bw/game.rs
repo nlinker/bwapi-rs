@@ -19,5 +19,4 @@ impl Game {
     pub fn get_frame_count(&self) -> i32 {
         unsafe { ffi::getFrameCount(self.raw as *mut _) }
     }
-
 }

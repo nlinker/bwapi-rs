@@ -3,12 +3,12 @@
 pub mod bw;
 pub mod prelude;
 
+use crate::prelude::{AIModule, BoxedAIModule, Event, Game, GAME};
 use cxx::CxxString;
-use std::fmt::{Debug, Formatter};
-use std::fmt;
-use std::pin::Pin;
-use crate::prelude::{AIModule, Event, Game, GAME, BoxedAIModule};
 use once_cell::sync::OnceCell;
+use std::fmt;
+use std::fmt::{Debug, Formatter};
+use std::pin::Pin;
 
 #[cfg(windows)]
 #[no_mangle]
@@ -28,7 +28,9 @@ pub extern "C" fn _Unwind_RaiseException() -> ! {
 #[allow(non_snake_case)]
 pub unsafe extern "C" fn gameInit(game: *const std::ffi::c_void) {
     println!("gameInit called: game = {:?}", game);
-    *GAME.lock().unwrap() = Game { raw: game as *const ffi::Game };
+    *GAME.lock().unwrap() = Game {
+        raw: game as *const ffi::Game,
+    };
 }
 
 #[cxx::bridge]
@@ -93,7 +95,7 @@ pub mod ffi {
     }
 }
 
-// region ----------- Shims to the bw::ai_module::AIModule trait ------------
+//region ----------- Shims to the bw::ai_module::AIModule trait ------------
 fn on_start(wrapper: Pin<&mut ffi::AIModuleWrapper>) {
     wrapper.get_box().on_event(Event::OnStart());
 }
@@ -108,14 +110,19 @@ fn on_send_text(wrapper: Pin<&mut ffi::AIModuleWrapper>, text: &CxxString) {
 }
 fn on_receive_text(wrapper: Pin<&mut ffi::AIModuleWrapper>, player: *const ffi::PlayerInterface, text: &CxxString) {
     let player = crate::bw::player::Player { raw: player };
-    wrapper.get_box().on_event(Event::OnReceiveText(player, text.to_string()));
+    wrapper
+        .get_box()
+        .on_event(Event::OnReceiveText(player, text.to_string()));
 }
 fn on_player_left(wrapper: Pin<&mut ffi::AIModuleWrapper>, player: *const ffi::PlayerInterface) {
     let player = crate::bw::player::Player { raw: player };
     wrapper.get_box().on_event(Event::OnPlayerLeft(player));
 }
 fn on_nuke_detect(wrapper: Pin<&mut ffi::AIModuleWrapper>, target: ffi::Position) {
-    let target = crate::bw::position::Position { x: target.x, y: target.y };
+    let target = crate::bw::position::Position {
+        x: target.x,
+        y: target.y,
+    };
     wrapper.get_box().on_event(Event::OnNukeDetect(target));
 }
 fn on_unit_discover(wrapper: Pin<&mut ffi::AIModuleWrapper>, unit: *const ffi::UnitInterface) {
@@ -157,7 +164,7 @@ fn on_unit_complete(wrapper: Pin<&mut ffi::AIModuleWrapper>, unit: *const ffi::U
     let unit = crate::bw::unit::Unit { raw: unit };
     wrapper.get_box().on_event(Event::OnUnitComplete(unit));
 }
-// ------------------- endregion -------------------
+//------------------- endregion -------------------
 
 impl Debug for ffi::AIModuleWrapper {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
@@ -167,12 +174,14 @@ impl Debug for ffi::AIModuleWrapper {
 
 // used for testing
 pub static HACK_BOX: OnceCell<BoxedAIModule> = OnceCell::new();
-fn hack() -> &'static BoxedAIModule<'static> { &HACK_BOX.get().unwrap() }
+fn hack() -> &'static BoxedAIModule<'static> {
+    &HACK_BOX.get().unwrap()
+}
 
 #[cxx::bridge]
 pub mod ffi_test {
     unsafe extern "C++" {
-    include!("library/src/lib.h");
-    fn cpp_test() -> i32;
-}
+        include!("library/src/lib.h");
+        fn cpp_test() -> i32;
+    }
 }
