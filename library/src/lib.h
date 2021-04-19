@@ -37,10 +37,7 @@ public:
 
     void onPlayerLeft(BWAPI::Player player) noexcept override { on_player_left(*this, player); }
 
-    void onNukeDetect(BWAPI::Position target) noexcept override {
-        Position *p = reinterpret_cast<Position *>(&target);
-        on_nuke_detect(*this, *p);
-    }
+    void onNukeDetect(BWAPI::Position target) noexcept override { on_nuke_detect(*this, target); }
 
     void onUnitDiscover(BWAPI::Unit unit) noexcept override { on_unit_discover(*this, unit); }
 

@@ -36,15 +36,11 @@ pub unsafe extern "C" fn gameInit(game: *const std::ffi::c_void) {
 #[cxx::bridge]
 pub mod ffi {
 
-    #[derive(Debug)]
-    struct Position {
-        x: i32,
-        y: i32,
-    }
-    #[derive(Debug)]
-    struct UnitType {
-        repr: i32,
-    }
+    // #[derive(Debug)]
+    // struct Position {
+    //     x: i32,
+    //     y: i32,
+    // }
 
     #[namespace = "BWAPI"]
     unsafe extern "C++" {
@@ -72,7 +68,6 @@ pub mod ffi {
         pub type TechType;
         pub type UnitCommandType;
         pub type UnitSizeType;
-        pub type UnitType;
         pub type UpgradeType;
         pub type WeaponType;
 
@@ -82,8 +77,10 @@ pub mod ffi {
         type Playerset;
         type Unitset;
 
-        #[namespace = "BWAPI"]
+        type Position = crate::bw::position::Position;
         type TilePosition = crate::bw::position::TilePosition;
+        type WalkPosition = crate::bw::position::WalkPosition;
+        type UnitType = crate::bw::unit_type::UnitType;
     }
     // bool (BWAPI::Game::*)(::BWAPI::TilePosition, ::BWAPI::UnitType, const ::BWAPI::UnitInterface *, bool) const
     // bool (BWAPI::Game::*)(BWAPI::TilePosition, BWAPI::UnitType, BWAPI::Unit, bool)
@@ -122,6 +119,7 @@ pub mod ffi {
         unsafe fn getAllUnits(self: &Game) -> &Unitset;
         unsafe fn allies(self: Pin<&mut Game>) -> Pin<&mut Playerset>;
         unsafe fn canBuildHere(self: Pin<&mut Game>, position: TilePosition, uType: UnitType, builder: *mut UnitInterface, checkExplored: bool) -> bool;
+        unsafe fn enemy(self: &Game) -> *mut PlayerInterface;
 
         // not implemented yet
         // unsafe fn canMake(game: *mut Game, type_: UnitType, builder: *const UnitInterface) -> bool;

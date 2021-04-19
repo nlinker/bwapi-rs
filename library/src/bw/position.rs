@@ -1,5 +1,3 @@
-use cxx::{type_id, ExternType};
-
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash, Ord, PartialOrd)]
 pub struct Position {
     pub x: i32,
@@ -19,19 +17,19 @@ pub struct WalkPosition {
 }
 
 // required for ffi layer
-unsafe impl ExternType for Position {
-    type Id = type_id!("BWAPI::Position");
+unsafe impl cxx::ExternType for Position {
+    type Id = cxx::type_id!("BWAPI::Position");
     type Kind = cxx::kind::Trivial;
 }
 
 // required for ffi layer
-unsafe impl ExternType for TilePosition {
-    type Id = type_id!("BWAPI::TilePosition");
+unsafe impl cxx::ExternType for TilePosition {
+    type Id = cxx::type_id!("BWAPI::TilePosition");
     type Kind = cxx::kind::Trivial;
 }
 
 // required for ffi layer
-unsafe impl ExternType for WalkPosition {
-    type Id = type_id!("BWAPI::WalkPosition");
+unsafe impl cxx::ExternType for WalkPosition {
+    type Id = cxx::type_id!("BWAPI::WalkPosition");
     type Kind = cxx::kind::Trivial;
 }
