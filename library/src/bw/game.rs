@@ -1,5 +1,4 @@
 use crate::ffi;
-use std::ffi::CString;
 
 #[derive(Debug)]
 pub struct Game {
@@ -17,4 +16,7 @@ impl Game {
         unsafe { (*self.raw).getFrameCount() }
         // unsafe { ffi::getFrameCount(self.raw) }
     }
+    // fn get_forces(self: &Game) -> impl Iterator<Force> {
+    //
+    // }
 }

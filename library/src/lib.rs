@@ -36,20 +36,14 @@ pub unsafe extern "C" fn gameInit(game: *const std::ffi::c_void) {
 #[cxx::bridge]
 pub mod ffi {
 
-    #[derive(Debug, Copy, Clone)]
+    #[derive(Debug)]
     struct Position {
         x: i32,
         y: i32,
     }
-    #[derive(Debug, Copy, Clone)]
-    struct TilePosition {
-        x: i32,
-        y: i32,
-    }
-    #[derive(Debug, Copy, Clone)]
-    struct WalkPosition {
-        x: i32,
-        y: i32,
+    #[derive(Debug)]
+    struct UnitType {
+        repr: i32,
     }
 
     #[namespace = "BWAPI"]
@@ -83,7 +77,17 @@ pub mod ffi {
         pub type WeaponType;
 
         type Event;
+
+        type Forceset;
+        type Playerset;
+        type Unitset;
+
+        #[namespace = "BWAPI"]
+        type TilePosition = crate::bw::position::TilePosition;
     }
+    // bool (BWAPI::Game::*)(::BWAPI::TilePosition, ::BWAPI::UnitType, const ::BWAPI::UnitInterface *, bool) const
+    // bool (BWAPI::Game::*)(BWAPI::TilePosition, BWAPI::UnitType, BWAPI::Unit, bool)
+
     // BWAPI::BulletInterface
     // extern "C++" {
     //     unsafe fn exists(raw: *const BulletInterface) -> bool;
@@ -113,12 +117,13 @@ pub mod ffi {
         // unsafe fn getFrameCount(game: *mut Game) -> i32;
         unsafe fn getFrameCount(self: &Game) -> i32;
         unsafe fn sendText(game: *mut Game, text: &str);
-        // unsafe fn getForces(game: *mut Game) -> Forceset;
-        // unsafe fn getPlayers(game: *mut Game) -> Playerset;
+        unsafe fn getForces(self: &Game) -> &Forceset;
+        unsafe fn getPlayers(self: &Game) -> &Playerset;
+        unsafe fn getAllUnits(self: &Game) -> &Unitset;
+        unsafe fn allies(self: Pin<&mut Game>) -> Pin<&mut Playerset>;
+        unsafe fn canBuildHere(self: Pin<&mut Game>, position: TilePosition, uType: UnitType, builder: *mut UnitInterface, checkExplored: bool) -> bool;
 
         // not implemented yet
-        // unsafe fn allies(game: *mut Game) -> &Playerset;
-        // unsafe fn canBuildHere(game: *mut Game, position: TilePosition, type_: UnitType, builder: *const UnitInterface, checkExplored: bool) -> bool;
         // unsafe fn canMake(game: *mut Game, type_: UnitType, builder: *const UnitInterface) -> bool;
         // unsafe fn canResearch(game: *mut Game, type_: TechType, unit: *const UnitInterface, checkCanIssueCommandType: bool) -> bool;
         // unsafe fn canUpgrade(game: *mut Game, type_: UpgradeType, unit: *const UnitInterface, checkCanIssueCommandType: bool) -> bool;
@@ -128,7 +133,6 @@ pub mod ffi {
         // unsafe fn enemies(game: *mut Game) -> Playerset;
         // unsafe fn enemy(game: *mut Game) -> *const PlayerInterface;
         // unsafe fn getAllRegions(game: *mut Game) -> Regionset;
-        // unsafe fn getAllUnits(game: *mut Game) -> Unitset;
         // unsafe fn getAPM(game: *mut Game, includeSelects: bool) -> i32;
         // unsafe fn getAverageFPS(game: *mut Game) -> double;
         // unsafe fn getBestUnit(game: *mut Game, best: BestUnitFilter, pred: UnitFilter, center: Position, radius: i32) -> *const UnitInterface;

@@ -1,7 +1,9 @@
-use crate::bw::game::Game;
-use once_cell::sync::Lazy;
-use std::ptr::{null, null_mut};
+use std::ptr::null_mut;
 use std::sync::{Arc, Mutex};
+
+use once_cell::sync::Lazy;
+
+use crate::bw::game::Game;
 
 pub mod ai_module;
 pub mod game;
