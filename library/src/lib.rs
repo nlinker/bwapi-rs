@@ -36,12 +36,6 @@ pub unsafe extern "C" fn gameInit(game: *const std::ffi::c_void) {
 #[cxx::bridge]
 pub mod ffi {
 
-    // #[derive(Debug)]
-    // struct Position {
-    //     x: i32,
-    //     y: i32,
-    // }
-
     #[namespace = "BWAPI"]
     unsafe extern "C++" {
         include!("library/openbw/bwapilib/include/BWAPI.h");
@@ -73,9 +67,9 @@ pub mod ffi {
 
         type Event;
 
-        type Forceset;
-        type Playerset;
-        type Unitset;
+        pub type Forceset;
+        pub type Playerset;
+        pub type Unitset;
 
         type Position = crate::bw::position::Position;
         type TilePosition = crate::bw::position::TilePosition;
@@ -111,9 +105,10 @@ pub mod ffi {
 
     // BWAPI::Game
     extern "C++" {
-        // unsafe fn getFrameCount(game: *mut Game) -> i32;
-        unsafe fn getFrameCount(self: &Game) -> i32;
+        // methods that need manual shims to C++
         unsafe fn sendText(game: *mut Game, text: &str);
+
+        unsafe fn getFrameCount(self: &Game) -> i32;
         unsafe fn getForces(self: &Game) -> &Forceset;
         unsafe fn getPlayers(self: &Game) -> &Playerset;
         unsafe fn getAllUnits(self: &Game) -> &Unitset;
@@ -132,7 +127,7 @@ pub mod ffi {
         // unsafe fn enemy(game: *mut Game) -> *const PlayerInterface;
         // unsafe fn getAllRegions(game: *mut Game) -> Regionset;
         // unsafe fn getAPM(game: *mut Game, includeSelects: bool) -> i32;
-        // unsafe fn getAverageFPS(game: *mut Game) -> double;
+        // unsafe fn getAverageFPS(game: *mut Game) -> f32;
         // unsafe fn getBestUnit(game: *mut Game, best: BestUnitFilter, pred: UnitFilter, center: Position, radius: i32) -> *const UnitInterface;
         // unsafe fn getBuildLocation(game: *mut Game, unitType: UnitType, desiredPosition: TilePosition, maxRange: i32, creep: bool) -> TilePosition;
         // unsafe fn getBullets(game: *mut Game) -> Bulletset;
@@ -241,33 +236,33 @@ pub mod ffi {
 
     // BWAPI::PlayerInterface
     // extern "C++" {
-    //     fn allUnitCount(unit: UnitType) -> int;
-    //     fn armor(unit: UnitType) -> int;
-    //     fn completedUnitCount(unit: UnitType) -> int;
-    //     fn damage(wpn: WeaponType) -> int;
-    //     fn deadUnitCount(unit: UnitType) -> int;
-    //     fn gas() -> int;
-    //     fn gatheredGas() -> int;
-    //     fn gatheredMinerals() -> int;
-    //     fn getBuildingScore() -> int;
+    //     fn allUnitCount(unit: UnitType) -> i32;
+    //     fn armor(unit: UnitType) -> i32;
+    //     fn completedUnitCount(unit: UnitType) -> i32;
+    //     fn damage(wpn: WeaponType) -> i32;
+    //     fn deadUnitCount(unit: UnitType) -> i32;
+    //     fn gas() -> i32;
+    //     fn gatheredGas() -> i32;
+    //     fn gatheredMinerals() -> i32;
+    //     fn getBuildingScore() -> i32;
     //     fn getColor() -> Color;
-    //     fn getCustomScore() -> int;
+    //     fn getCustomScore() -> i32;
     //     fn getForce() -> Force;
-    //     fn getID() -> int;
-    //     fn getKillScore() -> int;
-    //     fn getMaxUpgradeLevel(upgrade: UpgradeType) -> int;
+    //     fn getID() -> i32;
+    //     fn getKillScore() -> i32;
+    //     fn getMaxUpgradeLevel(upgrade: UpgradeType) -> i32;
     //     fn getName() -> string;
     //     fn getRace() -> Race;
-    //     fn getRazingScore() -> int;
+    //     fn getRazingScore() -> i32;
     //     fn getStartLocation() -> TilePosition;
     //     fn getTextColor() -> char;
     //     fn getType() -> PlayerType;
     //     fn getUnits() -> Unitset;
-    //     fn getUnitScore() -> int;
-    //     fn getUpgradeLevel(upgrade: UpgradeType) -> int;
+    //     fn getUnitScore() -> i32;
+    //     fn getUpgradeLevel(upgrade: UpgradeType) -> i32;
     //     fn hasResearched(tech: TechType) -> bool;
-    //     fn hasUnitTypeRequirement (unit: UnitType, amount: int) -> bool;
-    //     fn incompleteUnitCount(unit: UnitType) -> int;
+    //     fn hasUnitTypeRequirement (unit: UnitType, amount: i32) -> bool;
+    //     fn incompleteUnitCount(unit: UnitType) -> i32;
     //     fn isAlly(player: Player) -> bool;
     //     fn isDefeated() -> bool;
     //     fn isEnemy(player: Player) -> bool;
@@ -278,23 +273,23 @@ pub mod ffi {
     //     fn isUnitAvailable(unit: UnitType) -> bool;
     //     fn isUpgrading(upgrade: UpgradeType) -> bool;
     //     fn isVictorious() -> bool;
-    //     fn killedUnitCount(unit: UnitType) -> int;
+    //     fn killedUnitCount(unit: UnitType) -> i32;
     //     fn leftGame() -> bool;
-    //     fn maxEnergy(unit: UnitType) -> int;
-    //     fn minerals() -> int;
-    //     fn refundedGas() -> int;
-    //     fn refundedMinerals() -> int;
-    //     fn repairedGas() -> int;
-    //     fn repairedMinerals() -> int;
-    //     fn sightRange(unit: UnitType) -> int;
-    //     fn spentGas() -> int;
-    //     fn spentMinerals() -> int;
-    //     fn supplyTotal(race: Race) -> int;
-    //     fn supplyUsed(race: Race) -> int;
-    //     fn topSpeed(unit: UnitType) -> double;
-    //     fn visibleUnitCount(unit: UnitType) -> int;
-    //     fn weaponDamageCooldown(unit: UnitType) -> int;
-    //     fn weaponMaxRange(weapon: WeaponType) -> int;
+    //     fn maxEnergy(unit: UnitType) -> i32;
+    //     fn minerals() -> i32;
+    //     fn refundedGas() -> i32;
+    //     fn refundedMinerals() -> i32;
+    //     fn repairedGas() -> i32;
+    //     fn repairedMinerals() -> i32;
+    //     fn sightRange(unit: UnitType) -> i32;
+    //     fn spentGas() -> i32;
+    //     fn spentMinerals() -> i32;
+    //     fn supplyTotal(race: Race) -> i32;
+    //     fn supplyUsed(race: Race) -> i32;
+    //     fn topSpeed(unit: UnitType) -> f32;
+    //     fn visibleUnitCount(unit: UnitType) -> i32;
+    //     fn weaponDamageCooldown(unit: UnitType) -> i32;
+    //     fn weaponMaxRange(weapon: WeaponType) -> i32;
     // }
 
     // BWAPI::RegionInterface

@@ -1,4 +1,5 @@
 use crate::ffi;
+use crate::bw::force::Force;
 
 #[derive(Debug)]
 pub struct Game {
@@ -16,7 +17,20 @@ impl Game {
         unsafe { (*self.raw).getFrameCount() }
         // unsafe { ffi::getFrameCount(self.raw) }
     }
-    // fn get_forces(self: &Game) -> impl Iterator<Force> {
-    //
-    // }
+    pub fn get_forces(self: &Game) -> Vec<Force> {
+        let force_set: &ffi::Forceset = unsafe { (*self.raw).getForces() };
+        unreachable!()
+    }
+}
+
+pub struct ForceIterator {
+    pub raw: *mut ffi::Forceset;
+}
+
+impl ForceIterator {
+    fn new(r: &ffi::Forceset) -> Self {
+        Self {
+            raw: &r as *mut ffi::Forceset
+        }
+    }
 }

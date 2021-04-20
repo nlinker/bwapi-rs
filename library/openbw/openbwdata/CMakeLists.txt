@@ -17,8 +17,9 @@ endif()
 
 include_directories(
   ../Util/Source
-  ../BWAPI/openbw
-  ../BWAPI/Source
+  ../openbw-ui
+  ../bwapi/Source
+  ../bwapilib/include
   ${OPENBW_DIR}
 )
 

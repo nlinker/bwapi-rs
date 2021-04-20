@@ -6,11 +6,13 @@ use once_cell::sync::Lazy;
 use crate::bw::game::Game;
 
 pub mod ai_module;
+pub mod force;
 pub mod game;
 pub mod player;
 pub mod position;
 pub mod unit;
 pub mod unit_type;
+pub mod iterator;
 
 /// Updated on gameInit call
 pub static GAME: Lazy<Arc<Mutex<Game>>> = Lazy::new(|| Arc::new(Mutex::new(Game { raw: null_mut() })));

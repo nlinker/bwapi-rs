@@ -1,15 +1,12 @@
-#include <BWAPI.h>
-#include <BWAPI/Game.h>
-#include <BWAPI/AIModule.h>
+//#include <BWAPI.h>
+//#include <BWAPI/Game.h>
+//#include <BWAPI/AIModule.h>
 
 #include "lib.h"
 #include "library/src/lib.rs.h"
 #include "../openbw/bwapilib/include/BWAPI/Game.h"
 
 int cpp_test() {
-//    BW::Game bwgame;
-//    std::unique_ptr<Game> = std::make_unique<Game>(bwgame);
-
     std::cout << "cpp_test started" << std::endl;
     auto &box = const_cast<BoxedAIModule&>(hack());
     auto ai = new AIModuleWrapper(&box);
