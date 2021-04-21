@@ -30,18 +30,24 @@ DYLD_LIBRARY_PATH=library/bwapilib/lib cargo run --package library --bin library
 ```
 
 To run inside OpenBW you need to take `broodat.mpq`, `patch_rt.mpq` and `stardat.mpq` from BW,
-distribution, make sure the version is `1.16.1`.
+distribution, make sure the version is `1.16.1`. Check their hashes to be ensure they have the
+version needed.
 
 ```shell
+sha1sum *.mpq
+# f05fb5bb9bb17d9565f0534609dcbcf221a6721f  broodat.mpq
+# e97bfe875b17ca6b85a58026188d814956dff503  patch_rt.mpq
+# 25a613851fe9e0d20d2f073525277bc01d291c92  stardat.mpq
+
 cargo build
 cp broodat.mpq patch_rt.mpq stardat.mpq target/debug
 cd launcher
 
 # make sure this path is correct
-# ai = ../target/debug/demo_ai.dylib
+# ai = ../target/debug/libdemo_ai.dylib
 vim bwapi-data/bwapi.ini
 
-DYLD_LIBRARY_PATH=library/openbw/bwapilib/lib ./openbw_launcher
+cd ../demo_ai && cargo build && cd ../launcher && ./openbw_launcher
 ```
 
 ### Linux

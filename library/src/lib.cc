@@ -55,6 +55,20 @@ std::unique_ptr <AIModuleWrapper> createAIModuleWrapper(rust::Box<BoxedAIModule>
 //}
 
 void sendText(BWAPI::Game *game, rust::Str text) {
+    using namespace BWAPI;
+
+    printTypeInfo(&Broodwar);
+    printTypeInfo(&game->getForces());
+    printTypeInfo(&game->getAllUnits());
+    printTypeInfo(game->self());
+
+    //    printTypeInfo(reinterpret_cast<const void*>(game));
+    //    printTypeInfo(reinterpret_cast<const void*>(&game->getForces()));
+    //    printTypeInfo(reinterpret_cast<const void*>(&game->getAllUnits()));
+    //    printTypeInfo(reinterpret_cast<const void*>(game->self()));
+    //    printTypeInfo(reinterpret_cast<const void*>(&game->self()->getUnits()));
+    //    std::cout << game->getForces();
+
     std::string s(text);
     game->sendText(s.c_str());
 }
@@ -62,3 +76,41 @@ void sendText(BWAPI::Game *game, rust::Str text) {
 //int getFrameCount(BWAPI::Game *game) {
 //    return game->getFrameCount();
 //}
+
+//    for (auto &u : game->self()->getUnits()) {
+//        // First line is command
+//        std::ostringstream debug;
+//        debug << "cmd=" << u->getLastCommand().getType() << ";f="
+//              << (Broodwar->getFrameCount() - u->getLastCommandFrame());
+//        if (u->getLastCommand().getTarget()) {
+//            debug << ";tgt=" << u->getLastCommand().getTarget()->getType()
+//                  << "#" << u->getLastCommand().getTarget()->getID()
+//                  << "@" << WalkPosition(u->getLastCommand().getTarget()->getPosition())
+//                  << ";d=" << u->getLastCommand().getTarget()->getDistance(u);
+//        } else if (u->getLastCommand().getTargetPosition()) {
+//            debug << ";tgt=" << WalkPosition(u->getLastCommand().getTargetPosition());
+//        }
+//
+//        // Next line is order
+//        debug << "\nord=" << u->getOrder() << ";t=" << u->getOrderTimer();
+//        if (u->getOrderTarget()) {
+//            debug << ";tgt=" << u->getOrderTarget()->getType()
+//                  << "#" << u->getOrderTarget()->getID()
+//                  << "@" << WalkPosition(u->getOrderTarget()->getPosition())
+//                  << ";d=" << u->getOrderTarget()->getDistance(u);
+//        } else if (u->getOrderTargetPosition()) {
+//            debug << ";tgt=" << WalkPosition(u->getOrderTargetPosition());
+//        }
+//
+//        // Last line is movement data
+//        debug << "\n";
+//        if (u->getType().topSpeed() > 0.001) {
+//            auto speed = sqrt(u->getVelocityX() * u->getVelocityX()
+//                              + u->getVelocityY() * u->getVelocityY());
+//            debug << "spd=" << ((int) (100.0 * speed / u->getType().topSpeed()))
+//                  << ";mvng=" << u->isMoving()
+//                  << ";stk=" << u->isStuck();
+//        }
+//
+//        std::cout << debug.str() << std::endl;
+//    }

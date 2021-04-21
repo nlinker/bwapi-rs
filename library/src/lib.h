@@ -1,5 +1,9 @@
 #pragma once
 
+// https://github.com/dtolnay/cxx/issues/796
+using c_void = void;
+
+#include "nameof.hpp"
 #include "BWAPI/AIModule.h"
 #include "library/src/lib.rs.h"
 #include "../openbw/bwapilib/include/BWAPI/Game.h"
@@ -62,3 +66,9 @@ public:
 
 void sendText(BWAPI::Game *game, rust::Str text);
 //int getFrameCount(BWAPI::Game* game);
+// void printTypeInfo(const void *obj);
+
+template <typename T>
+void printTypeInfo(T obj) {
+    std::cout << "typeof(" << obj << ") = " << NAMEOF_TYPE(T) << std::endl;
+}

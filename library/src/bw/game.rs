@@ -19,18 +19,18 @@ impl Game {
     }
     pub fn get_forces(self: &Game) -> Vec<Force> {
         let force_set: &ffi::Forceset = unsafe { (*self.raw).getForces() };
-        unreachable!()
+        vec![]
     }
 }
 
 pub struct ForceIterator {
-    pub raw: *mut ffi::Forceset;
+    pub raw: *mut ffi::Forceset
 }
 
-impl ForceIterator {
-    fn new(r: &ffi::Forceset) -> Self {
-        Self {
-            raw: &r as *mut ffi::Forceset
-        }
-    }
-}
+// impl ForceIterator {
+//     fn new(r: &ffi::Forceset) -> Self {
+//         Self {
+//             raw: r as *mut ffi::Forceset
+//         }
+//     }
+// }
