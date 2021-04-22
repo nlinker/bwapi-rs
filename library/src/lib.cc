@@ -54,24 +54,35 @@ std::unique_ptr <AIModuleWrapper> createAIModuleWrapper(rust::Box<BoxedAIModule>
 //    delete reinterpret_cast<AIModuleWrapper*>(module);
 //}
 
-void sendText(BWAPI::Game *game, rust::Str text) {
-    using namespace BWAPI;
+void Game_sendText(BWAPI::Game *game, rust::Str text) {
 
-    printTypeInfo(&Broodwar);
-    printTypeInfo(&game->getForces());
-    printTypeInfo(&game->getAllUnits());
-    printTypeInfo(game->self());
-
-    //    printTypeInfo(reinterpret_cast<const void*>(game));
-    //    printTypeInfo(reinterpret_cast<const void*>(&game->getForces()));
-    //    printTypeInfo(reinterpret_cast<const void*>(&game->getAllUnits()));
-    //    printTypeInfo(reinterpret_cast<const void*>(game->self()));
-    //    printTypeInfo(reinterpret_cast<const void*>(&game->self()->getUnits()));
-    //    std::cout << game->getForces();
+//    auto units = game->getAllUnits();
+//    auto it = units.begin();
+//    auto end = units.end();
+//    auto cond = it != end;
+//    auto unit = *it;
+//    printTypeInfo("units", &units);
+//    printTypeInfo("it", &it);
+//    printTypeInfo("end", &end);
+//    printTypeInfo("cond", &cond);
+//    printTypeInfo("unit", unit);
 
     std::string s(text);
     game->sendText(s.c_str());
 }
+
+//    using namespace BWAPI;
+//
+//    printTypeInfo(&Broodwar);
+//    printTypeInfo(&game->getForces());
+//    printTypeInfo(&game->getAllUnits());
+//    printTypeInfo(game->self());
+//    printTypeInfo(reinterpret_cast<const void*>(game));
+//    printTypeInfo(reinterpret_cast<const void*>(&game->getForces()));
+//    printTypeInfo(reinterpret_cast<const void*>(&game->getAllUnits()));
+//    printTypeInfo(reinterpret_cast<const void*>(game->self()));
+//    printTypeInfo(reinterpret_cast<const void*>(&game->self()->getUnits()));
+//    std::cout << game->getForces();
 
 //int getFrameCount(BWAPI::Game *game) {
 //    return game->getFrameCount();

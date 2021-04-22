@@ -64,11 +64,21 @@ public:
     void onUnitComplete(BWAPI::Unit unit) noexcept override { on_unit_complete(*this, unit); }
 };
 
-void sendText(BWAPI::Game *game, rust::Str text);
+void Game_sendText(BWAPI::Game *game, rust::Str text);
 //int getFrameCount(BWAPI::Game* game);
 // void printTypeInfo(const void *obj);
 
-template <typename T>
-void printTypeInfo(T obj) {
-    std::cout << "typeof(" << obj << ") = " << NAMEOF_TYPE(T) << std::endl;
+template<typename T>
+struct is_pointer { static const bool value = false; };
+
+template<typename T>
+struct is_pointer<T*> { static const bool value = true; };
+
+template<typename T>
+void printTypeInfo(const char * desc, T obj) {
+    if (is_pointer<T>::value) {
+        std::cout << desc << ", typeof(" << obj << ") = " << NAMEOF_TYPE(T) << std::endl;
+    } else {
+        std::cout << desc << ", typeof(_) = " << NAMEOF_TYPE(T) << std::endl;
+    }
 }

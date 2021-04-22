@@ -106,7 +106,7 @@ pub mod ffi {
     // BWAPI::Game
     extern "C++" {
         // methods that need manual shims to C++
-        unsafe fn sendText(game: *mut Game, text: &str);
+        unsafe fn Game_sendText(game: *mut Game, text: &str);
 
         unsafe fn getFrameCount(self: &Game) -> i32;
         unsafe fn getForces(self: &Game) -> &Forceset;
