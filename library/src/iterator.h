@@ -1,7 +1,7 @@
 #pragma once
 
 template<class Container>
-class OwningIterator {
+class OwnIterator {
 public:
     using IterType = typename std::remove_const<typename Container::const_iterator>::type;
     using Out = typename std::iterator_traits<typename Container::const_iterator>::value_type;
@@ -9,7 +9,8 @@ private:
     Container container;
     IterType iter;
 public:
-    OwningIterator(Container c) : container(std::move(c)), iter(container.begin()) {}
+    OwnIterator(Container c) : container(std::move(c)), iter(container.begin()) {}
+
     Out next() const {
         if (iter != container.end()) {
             auto item = iter;
@@ -19,13 +20,14 @@ public:
             return nullptr;
         }
     }
+
     unsigned long size() const {
         return container.size();
     }
 };
 
 template<class Container>
-class BorrowingIterator {
+class RefIterator {
 public:
     using IterType = typename std::remove_const<typename Container::const_iterator>::type;
     using Out = typename std::iterator_traits<typename Container::const_iterator>::value_type;
@@ -33,7 +35,8 @@ private:
     Container container;
     IterType iter;
 public:
-    BorrowingIterator(const Container& c) : container(c), iter(container.begin()) {}
+    RefIterator(const Container &c) : container(c), iter(container.begin()) {}
+
     Out next() {
         if (iter != container.end()) {
             auto item = iter;
@@ -43,6 +46,7 @@ public:
             return nullptr;
         }
     }
+
     unsigned long size() const {
         return container.size();
     }

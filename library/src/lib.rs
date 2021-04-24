@@ -112,9 +112,10 @@ pub mod ffi {
         // unsafe fn UnitIterator_get(it: Pin<&mut UnitIterator>) -> *mut UnitInterface;
         // fn UnitIterator_next(it: Pin<&mut UnitIterator>);
         // fn UnitIterator_size(it: Pin<&mut UnitIterator>) -> usize;
-
-        pub fn Game_getAllUnits(container: &Unitset) -> &CxxVector<Unit>;
-        pub fn Unit_getId(unit: &Unit) -> i32;
+        pub type UnitsetRefIterator;
+        pub fn buildUnitset(container: &Unitset) -> UniquePtr<UnitsetRefIterator>;
+        pub unsafe fn UnitsetRefIterator_next(uri: Pin<&mut UnitsetRefIterator>) -> *const UnitInterface;
+        pub unsafe fn Unit_getId(unit: *const UnitInterface) -> i32;
     }
 
     // BWAPI::Game

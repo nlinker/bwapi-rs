@@ -34,7 +34,7 @@ impl AIModule for DemoAI {
                 if fc % 10 == 0 {
                     game.send_text(&format!("Hello, SSCAIT!, frame count = {}", fc));
                     for u in game.get_all_units() {
-                        game.send_text(&format!("force = {:?}", u))
+                        game.send_text(&format!("unit = {:?} with id {}", u, u.id()))
                     }
                 }
             }

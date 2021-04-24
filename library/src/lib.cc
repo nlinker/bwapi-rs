@@ -6,8 +6,6 @@
 #include "library/src/lib.rs.h"
 #include "BWAPI/Game.h"
 #include "BWAPI/Unit.h"
-//#include "../openbw/include/BWAPI/Game.h"
-//#include "../openbw/include/BWAPI/Unit.h"
 
 int cpp_test() {
     std::cout << "cpp_test started" << std::endl;
@@ -62,20 +60,14 @@ void sendText(BWAPI::Game *game, rust::Str text) {
     game->sendText(s.c_str());
 }
 
-const std::vector<BWAPI::Unit>& Game_getAllUnits(const BWAPI::Unitset &container) {
-    auto *v = new std::vector<BWAPI::Unit>();
-    BorrowingIterator<BWAPI::Unitset> it(container);
-    while (true) {
-        auto unit = it.next();
-        if (unit == nullptr) {
-            break;
-        } else {
-            v->push_back(unit);
-        }
-    }
-    return *v;
+std::unique_ptr<UnitsetRefIterator> buildUnitset(const BWAPI::Unitset &container) {
+    return std::unique_ptr<UnitsetRefIterator>(new RefIterator(container));
 }
 
-int Unit_getId(BWAPI::UnitInterface *const &unit) {
+const BWAPI::UnitInterface *UnitsetRefIterator_next(UnitsetRefIterator &uri) {
+    return uri.next();
+}
+
+int Unit_getId(const BWAPI::UnitInterface *unit) {
     return unit->getID();
 }

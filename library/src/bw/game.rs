@@ -1,9 +1,7 @@
 use crate::ffi;
-use crate::bw::force::Force;
-use std::marker::PhantomData;
 use crate::bw::unit::Unit;
-use cxx::CxxVector;
-use crate::ffi::Unit_getId;
+use cxx::UniquePtr;
+use std::ptr::null;
 
 #[derive(Debug)]
 pub struct Game {
@@ -25,17 +23,26 @@ impl Game {
     //     let force_set: &ffi::Forceset = unsafe { (*self.raw).getForces() };
     //     vec![]
     // }
-    pub fn get_all_units(&self) -> Vec<Unit> {
+    pub fn get_all_units(&self) -> UnitRefIterator {
         let unit_set: &ffi::Unitset = unsafe { (*self.raw).getAllUnits() };
-        let xs: &CxxVector<ffi::Unit> = ffi::Game_getAllUnits(unit_set);
-        for i in 0..xs.len() {
-            println!("{:?}", xs.get(i).map(|u| Unit_getId(&u)));
-        }
-        // UnitIterator::new(unit_set)
-
-        vec![]
+        let it = ffi::buildUnitset(unit_set);
+        UnitRefIterator(it)
     }
+}
 
+pub struct UnitRefIterator(UniquePtr<ffi::UnitsetRefIterator>);
+
+impl Iterator for UnitRefIterator {
+    type Item = Unit;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        let raw = unsafe { ffi::UnitsetRefIterator_next(self.0.pin_mut()) };
+        if raw != null() {
+            Some(Unit { raw })
+        } else {
+            None
+        }
+    }
 }
 
 // pub struct UnitIterator {

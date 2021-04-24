@@ -1,40 +1,14 @@
 #pragma once
 
-// https://github.com/dtolnay/cxx/issues/796
-using c_void = void;
-
-#include "nameof.hpp"
+#include "aim.h"
+#include "aliases.h"
 #include "iterator.h"
-#include "library/src/lib.rs.h"
 #include "BWAPI/AIModule.h"
 #include "BWAPI/Game.h"
 #include "BWAPI/Unit.h"
+#include "library/src/lib.rs.h"
 
 int cpp_test();
-
-// helper for debugging on the c++ side
-template <class T>
-void dump(T const *t) {
-    auto p = reinterpret_cast<unsigned long const *>(t);
-    for (size_t n = 0 ; n < sizeof(T) ; ++n)
-        printf("0x%012lx ", p[n]);
-    printf("\n");
-}
-
-template<typename T>
-struct is_pointer { static const bool value = false; };
-
-template<typename T>
-struct is_pointer<T*> { static const bool value = true; };
-
-template<typename T>
-void printTypeInfo(const char * desc, T obj) {
-    if (is_pointer<T>::value) {
-        std::cout << desc << ", typeof(" << obj << ") = " << NAMEOF_TYPE(T) << std::endl;
-    } else {
-        std::cout << desc << ", typeof(_) = " << NAMEOF_TYPE(T) << std::endl;
-    }
-}
 
 // api-specific stuff below
 
@@ -85,6 +59,8 @@ public:
 
 void sendText(BWAPI::Game *game, rust::Str text);
 
-const std::vector<BWAPI::Unit>& Game_getAllUnits(const BWAPI::Unitset &container);
+std::unique_ptr<UnitsetRefIterator> buildUnitset(const BWAPI::Unitset &container);
 
-int Unit_getId(BWAPI::UnitInterface *const &unit);
+const BWAPI::UnitInterface * UnitsetRefIterator_next(UnitsetRefIterator& uri);
+
+int Unit_getId(const BWAPI::UnitInterface *unit);
