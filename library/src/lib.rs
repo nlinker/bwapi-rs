@@ -2,6 +2,7 @@
 #[allow(non_snake_case)]
 pub mod bw;
 pub mod prelude;
+pub mod from_raw;
 
 use crate::prelude::{AIModule, BoxedAIModule, Event, Game, GAME};
 use cxx::CxxString;
@@ -9,6 +10,8 @@ use once_cell::sync::OnceCell;
 use std::fmt;
 use std::fmt::{Debug, Formatter};
 use std::pin::Pin;
+use crate::from_raw::FromRaw;
+use std::ffi::c_void;
 
 #[cfg(windows)]
 #[no_mangle]
@@ -105,28 +108,24 @@ pub mod ffi {
     // }
 
     unsafe extern "C++" {
-        // pub type UnitIterator;
+        type c_void;
+        pub type IteratorBase;
+        pub unsafe fn next(self: Pin<&mut IteratorBase>) -> *const c_void;
+        pub unsafe fn size(self: &IteratorBase) -> usize;
 
-        // fn next(iter: IteratorBase) -> &UnitIterator;
-        // fn UnitIterator_isValid(it: Pin<&mut UnitIterator>) -> bool;
-        // unsafe fn UnitIterator_get(it: Pin<&mut UnitIterator>) -> *mut UnitInterface;
-        // fn UnitIterator_next(it: Pin<&mut UnitIterator>);
-        // fn UnitIterator_size(it: Pin<&mut UnitIterator>) -> usize;
-        pub type UnitsetRefIterator;
-        pub fn buildUnitset(container: &Unitset) -> UniquePtr<UnitsetRefIterator>;
-        pub unsafe fn UnitsetRefIterator_next(uri: Pin<&mut UnitsetRefIterator>) -> *const UnitInterface;
         pub unsafe fn Unit_getId(unit: *const UnitInterface) -> i32;
     }
 
     // BWAPI::Game
     extern "C++" {
+
         // methods that need manual shims to C++
         unsafe fn sendText(game: *mut Game, text: &str);
+        unsafe fn getAllUnits(game: *mut Game) -> UniquePtr<IteratorBase>;
 
         unsafe fn getFrameCount(self: &Game) -> i32;
         unsafe fn getForces(self: &Game) -> &Forceset;
         unsafe fn getPlayers(self: &Game) -> &Playerset;
-        unsafe fn getAllUnits(self: &Game) -> &Unitset;
         unsafe fn allies(self: Pin<&mut Game>) -> Pin<&mut Playerset>;
         unsafe fn canBuildHere(self: Pin<&mut Game>, position: TilePosition, uType: UnitType, builder: *mut UnitInterface, checkExplored: bool) -> bool;
         unsafe fn enemy(self: &Game) -> *mut PlayerInterface;
@@ -659,13 +658,13 @@ fn on_send_text(wrapper: Pin<&mut ffi::AIModuleWrapper>, text: &CxxString) {
     wrapper.get_box().on_event(Event::OnSendText(text.to_string()));
 }
 fn on_receive_text(wrapper: Pin<&mut ffi::AIModuleWrapper>, player: *const ffi::PlayerInterface, text: &CxxString) {
-    let player = crate::bw::player::Player { raw: player };
+    let player = unsafe { crate::bw::player::Player::from_raw(player as *const c_void) };
     wrapper
         .get_box()
         .on_event(Event::OnReceiveText(player, text.to_string()));
 }
 fn on_player_left(wrapper: Pin<&mut ffi::AIModuleWrapper>, player: *const ffi::PlayerInterface) {
-    let player = crate::bw::player::Player { raw: player };
+    let player = unsafe { crate::bw::player::Player::from_raw(player as *const c_void) };
     wrapper.get_box().on_event(Event::OnPlayerLeft(player));
 }
 fn on_nuke_detect(wrapper: Pin<&mut ffi::AIModuleWrapper>, target: ffi::Position) {
@@ -676,42 +675,42 @@ fn on_nuke_detect(wrapper: Pin<&mut ffi::AIModuleWrapper>, target: ffi::Position
     wrapper.get_box().on_event(Event::OnNukeDetect(target));
 }
 fn on_unit_discover(wrapper: Pin<&mut ffi::AIModuleWrapper>, unit: *const ffi::UnitInterface) {
-    let unit = crate::bw::unit::Unit { raw: unit };
+    let unit = unsafe { crate::bw::unit::Unit::from_raw(unit as *const c_void) };
     wrapper.get_box().on_event(Event::OnUnitDiscover(unit));
 }
 fn on_unit_evade(wrapper: Pin<&mut ffi::AIModuleWrapper>, unit: *const ffi::UnitInterface) {
-    let unit = crate::bw::unit::Unit { raw: unit };
+    let unit = unsafe { crate::bw::unit::Unit::from_raw(unit as *const c_void) };
     wrapper.get_box().on_event(Event::OnUnitEvade(unit));
 }
 fn on_unit_show(wrapper: Pin<&mut ffi::AIModuleWrapper>, unit: *const ffi::UnitInterface) {
-    let unit = crate::bw::unit::Unit { raw: unit };
+    let unit = unsafe { crate::bw::unit::Unit::from_raw(unit as *const c_void) };
     wrapper.get_box().on_event(Event::OnUnitShow(unit));
 }
 fn on_unit_hide(wrapper: Pin<&mut ffi::AIModuleWrapper>, unit: *const ffi::UnitInterface) {
-    let unit = crate::bw::unit::Unit { raw: unit };
+    let unit = unsafe { crate::bw::unit::Unit::from_raw(unit as *const c_void) };
     wrapper.get_box().on_event(Event::OnUnitHide(unit));
 }
 fn on_unit_create(wrapper: Pin<&mut ffi::AIModuleWrapper>, unit: *const ffi::UnitInterface) {
-    let unit = crate::bw::unit::Unit { raw: unit };
+    let unit = unsafe { crate::bw::unit::Unit::from_raw(unit as *const c_void) };
     wrapper.get_box().on_event(Event::OnUnitCreate(unit));
 }
 fn on_unit_destroy(wrapper: Pin<&mut ffi::AIModuleWrapper>, unit: *const ffi::UnitInterface) {
-    let unit = crate::bw::unit::Unit { raw: unit };
+    let unit = unsafe { crate::bw::unit::Unit::from_raw(unit as *const c_void) };
     wrapper.get_box().on_event(Event::OnUnitDestroy(unit));
 }
 fn on_unit_morph(wrapper: Pin<&mut ffi::AIModuleWrapper>, unit: *const ffi::UnitInterface) {
-    let unit = crate::bw::unit::Unit { raw: unit };
+    let unit = unsafe { crate::bw::unit::Unit::from_raw(unit as *const c_void) };
     wrapper.get_box().on_event(Event::OnUnitMorph(unit));
 }
 fn on_unit_renegade(wrapper: Pin<&mut ffi::AIModuleWrapper>, unit: *const ffi::UnitInterface) {
-    let unit = crate::bw::unit::Unit { raw: unit };
+    let unit = unsafe { crate::bw::unit::Unit::from_raw(unit as *const c_void) };
     wrapper.get_box().on_event(Event::OnUnitRenegade(unit));
 }
 fn on_save_game(wrapper: Pin<&mut ffi::AIModuleWrapper>, game_name: &CxxString) {
     wrapper.get_box().on_event(Event::OnSaveGame(game_name.to_string()));
 }
 fn on_unit_complete(wrapper: Pin<&mut ffi::AIModuleWrapper>, unit: *const ffi::UnitInterface) {
-    let unit = crate::bw::unit::Unit { raw: unit };
+    let unit = unsafe { crate::bw::unit::Unit::from_raw(unit as *const c_void) };
     wrapper.get_box().on_event(Event::OnUnitComplete(unit));
 }
 //------------------- endregion -------------------

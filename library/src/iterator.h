@@ -1,21 +1,27 @@
 #pragma once
 
+class IteratorBase {
+public:
+    virtual ~IteratorBase() {}
+    virtual const void *next() = 0;
+    virtual unsigned long size() const = 0;
+};
+
 template<class Container>
-class OwnIterator {
+class OwnIterator : public IteratorBase {
 public:
     using IterType = typename std::remove_const<typename Container::const_iterator>::type;
-    using Out = typename std::iterator_traits<typename Container::const_iterator>::value_type;
 private:
     Container container;
     IterType iter;
 public:
     OwnIterator(Container c) : container(std::move(c)), iter(container.begin()) {}
 
-    Out next() const {
+    const void *next() {
         if (iter != container.end()) {
-            auto item = iter;
+            auto cur = iter;
             ++iter;
-            return *item;
+            return reinterpret_cast<void *>(*cur);
         } else {
             return nullptr;
         }
@@ -27,21 +33,20 @@ public:
 };
 
 template<class Container>
-class RefIterator {
+class RefIterator : public IteratorBase {
 public:
     using IterType = typename std::remove_const<typename Container::const_iterator>::type;
-    using Out = typename std::iterator_traits<typename Container::const_iterator>::value_type;
 private:
     Container container;
     IterType iter;
 public:
     RefIterator(const Container &c) : container(c), iter(container.begin()) {}
 
-    Out next() {
+    const void *next() {
         if (iter != container.end()) {
-            auto item = iter;
+            auto cur = iter;
             ++iter;
-            return *item;
+            return reinterpret_cast<void *>(*cur);
         } else {
             return nullptr;
         }

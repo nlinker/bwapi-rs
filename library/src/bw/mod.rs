@@ -1,8 +1,7 @@
 use std::ptr::null_mut;
 use std::sync::{Arc, Mutex};
-
 use once_cell::sync::Lazy;
-
+use std::ffi::c_void;
 use crate::bw::game::Game;
 
 pub mod ai_module;

@@ -32,10 +32,14 @@ impl AIModule for DemoAI {
                 // println!("fn on_frame()");
                 let fc = game.get_frame_count();
                 if fc % 10 == 0 {
-                    game.send_text(&format!("Hello, SSCAIT!, frame count = {}", fc));
                     for u in game.get_all_units() {
-                        game.send_text(&format!("unit = {:?} with id {}", u, u.id()))
+                        game.send_text(&format!("unit = {:?} with id {}", u, u.id()));
                     }
+                    game.send_text(&format!("---"));
+                    for u in game.get_all_units() {
+                        game.send_text(&format!("unit = {:?} with id {}", u, u.id()));
+                    }
+                    game.send_text(&format!("Hello, SSCAIT!, frame count = {}", fc));
                 }
             }
             Event::OnSendText(text) => {

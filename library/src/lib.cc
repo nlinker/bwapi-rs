@@ -1,7 +1,3 @@
-//#include <BWAPI.h>
-//#include <BWAPI/Game.h>
-//#include <BWAPI/AIModule.h>
-
 #include "lib.h"
 #include "library/src/lib.rs.h"
 #include "BWAPI/Game.h"
@@ -9,7 +5,7 @@
 
 int cpp_test() {
     std::cout << "cpp_test started" << std::endl;
-    auto &box = const_cast<BoxedAIModule&>(hack());
+    auto &box = const_cast<BoxedAIModule &>(hack());
     auto ai = new AIModuleWrapper(&box);
 
     BWAPI::Position target(11, 22);
@@ -48,7 +44,7 @@ int cpp_test() {
     return 0;
 }
 
-std::unique_ptr <AIModuleWrapper> createAIModuleWrapper(rust::Box<BoxedAIModule> box) {
+std::unique_ptr <AIModuleWrapper> createAIModuleWrapper(rust::Box <BoxedAIModule> box) {
     return std::unique_ptr<AIModuleWrapper>(new AIModuleWrapper(box.into_raw()));
 }
 //void destroyAIModuleWrapper(std::unique_ptr<AIModuleWrapper> module) {
@@ -60,14 +56,13 @@ void sendText(BWAPI::Game *game, rust::Str text) {
     game->sendText(s.c_str());
 }
 
-std::unique_ptr<UnitsetRefIterator> buildUnitset(const BWAPI::Unitset &container) {
-    return std::unique_ptr<UnitsetRefIterator>(new RefIterator(container));
+std::unique_ptr<IteratorBase> getAllUnits(BWAPI::Game *game) {
+    auto xs = game->getAllUnits();
+    return std::unique_ptr<IteratorBase>(new RefIterator<BWAPI::Unitset>(xs));
 }
 
-const BWAPI::UnitInterface *UnitsetRefIterator_next(UnitsetRefIterator &uri) {
-    return uri.next();
-}
 
 int Unit_getId(const BWAPI::UnitInterface *unit) {
     return unit->getID();
 }
+
