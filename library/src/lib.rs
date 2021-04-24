@@ -38,7 +38,7 @@ pub mod ffi {
 
     #[namespace = "BWAPI"]
     unsafe extern "C++" {
-        include!("library/openbw/bwapilib/include/BWAPI.h");
+        include!("library/openbw/include/BWAPI.h");
         pub fn BWAPI_getRevision() -> i32;
         pub fn BWAPI_isDebug() -> bool;
 
@@ -49,6 +49,7 @@ pub mod ffi {
         pub type RegionInterface;
         pub type TournamentModule;
         pub type UnitInterface;
+        pub type Unit;
 
         pub type BulletType;
         pub type Color;
@@ -103,10 +104,23 @@ pub mod ffi {
     //     unsafe fn getPlayers () -> Playerset;
     // }
 
+    unsafe extern "C++" {
+        // pub type UnitIterator;
+
+        // fn next(iter: IteratorBase) -> &UnitIterator;
+        // fn UnitIterator_isValid(it: Pin<&mut UnitIterator>) -> bool;
+        // unsafe fn UnitIterator_get(it: Pin<&mut UnitIterator>) -> *mut UnitInterface;
+        // fn UnitIterator_next(it: Pin<&mut UnitIterator>);
+        // fn UnitIterator_size(it: Pin<&mut UnitIterator>) -> usize;
+
+        pub fn Game_getAllUnits(container: &Unitset) -> &CxxVector<Unit>;
+        pub fn Unit_getId(unit: &Unit) -> i32;
+    }
+
     // BWAPI::Game
     extern "C++" {
         // methods that need manual shims to C++
-        unsafe fn Game_sendText(game: *mut Game, text: &str);
+        unsafe fn sendText(game: *mut Game, text: &str);
 
         unsafe fn getFrameCount(self: &Game) -> i32;
         unsafe fn getForces(self: &Game) -> &Forceset;

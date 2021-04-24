@@ -4,7 +4,10 @@
 
 #include "lib.h"
 #include "library/src/lib.rs.h"
-#include "../openbw/bwapilib/include/BWAPI/Game.h"
+#include "BWAPI/Game.h"
+#include "BWAPI/Unit.h"
+//#include "../openbw/include/BWAPI/Game.h"
+//#include "../openbw/include/BWAPI/Unit.h"
 
 int cpp_test() {
     std::cout << "cpp_test started" << std::endl;
@@ -54,74 +57,25 @@ std::unique_ptr <AIModuleWrapper> createAIModuleWrapper(rust::Box<BoxedAIModule>
 //    delete reinterpret_cast<AIModuleWrapper*>(module);
 //}
 
-void Game_sendText(BWAPI::Game *game, rust::Str text) {
-
-//    auto units = game->getAllUnits();
-//    auto it = units.begin();
-//    auto end = units.end();
-//    auto cond = it != end;
-//    auto unit = *it;
-//    printTypeInfo("units", &units);
-//    printTypeInfo("it", &it);
-//    printTypeInfo("end", &end);
-//    printTypeInfo("cond", &cond);
-//    printTypeInfo("unit", unit);
-
+void sendText(BWAPI::Game *game, rust::Str text) {
     std::string s(text);
     game->sendText(s.c_str());
 }
 
-//    using namespace BWAPI;
-//
-//    printTypeInfo(&Broodwar);
-//    printTypeInfo(&game->getForces());
-//    printTypeInfo(&game->getAllUnits());
-//    printTypeInfo(game->self());
-//    printTypeInfo(reinterpret_cast<const void*>(game));
-//    printTypeInfo(reinterpret_cast<const void*>(&game->getForces()));
-//    printTypeInfo(reinterpret_cast<const void*>(&game->getAllUnits()));
-//    printTypeInfo(reinterpret_cast<const void*>(game->self()));
-//    printTypeInfo(reinterpret_cast<const void*>(&game->self()->getUnits()));
-//    std::cout << game->getForces();
+const std::vector<BWAPI::Unit>& Game_getAllUnits(const BWAPI::Unitset &container) {
+    auto *v = new std::vector<BWAPI::Unit>();
+    BorrowingIterator<BWAPI::Unitset> it(container);
+    while (true) {
+        auto unit = it.next();
+        if (unit == nullptr) {
+            break;
+        } else {
+            v->push_back(unit);
+        }
+    }
+    return *v;
+}
 
-//int getFrameCount(BWAPI::Game *game) {
-//    return game->getFrameCount();
-//}
-
-//    for (auto &u : game->self()->getUnits()) {
-//        // First line is command
-//        std::ostringstream debug;
-//        debug << "cmd=" << u->getLastCommand().getType() << ";f="
-//              << (Broodwar->getFrameCount() - u->getLastCommandFrame());
-//        if (u->getLastCommand().getTarget()) {
-//            debug << ";tgt=" << u->getLastCommand().getTarget()->getType()
-//                  << "#" << u->getLastCommand().getTarget()->getID()
-//                  << "@" << WalkPosition(u->getLastCommand().getTarget()->getPosition())
-//                  << ";d=" << u->getLastCommand().getTarget()->getDistance(u);
-//        } else if (u->getLastCommand().getTargetPosition()) {
-//            debug << ";tgt=" << WalkPosition(u->getLastCommand().getTargetPosition());
-//        }
-//
-//        // Next line is order
-//        debug << "\nord=" << u->getOrder() << ";t=" << u->getOrderTimer();
-//        if (u->getOrderTarget()) {
-//            debug << ";tgt=" << u->getOrderTarget()->getType()
-//                  << "#" << u->getOrderTarget()->getID()
-//                  << "@" << WalkPosition(u->getOrderTarget()->getPosition())
-//                  << ";d=" << u->getOrderTarget()->getDistance(u);
-//        } else if (u->getOrderTargetPosition()) {
-//            debug << ";tgt=" << WalkPosition(u->getOrderTargetPosition());
-//        }
-//
-//        // Last line is movement data
-//        debug << "\n";
-//        if (u->getType().topSpeed() > 0.001) {
-//            auto speed = sqrt(u->getVelocityX() * u->getVelocityX()
-//                              + u->getVelocityY() * u->getVelocityY());
-//            debug << "spd=" << ((int) (100.0 * speed / u->getType().topSpeed()))
-//                  << ";mvng=" << u->isMoving()
-//                  << ";stk=" << u->isStuck();
-//        }
-//
-//        std::cout << debug.str() << std::endl;
-//    }
+int Unit_getId(BWAPI::UnitInterface *const &unit) {
+    return unit->getID();
+}

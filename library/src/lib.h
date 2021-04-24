@@ -4,9 +4,11 @@
 using c_void = void;
 
 #include "nameof.hpp"
-#include "BWAPI/AIModule.h"
+#include "iterator.h"
 #include "library/src/lib.rs.h"
-#include "../openbw/bwapilib/include/BWAPI/Game.h"
+#include "BWAPI/AIModule.h"
+#include "BWAPI/Game.h"
+#include "BWAPI/Unit.h"
 
 int cpp_test();
 
@@ -18,6 +20,23 @@ void dump(T const *t) {
         printf("0x%012lx ", p[n]);
     printf("\n");
 }
+
+template<typename T>
+struct is_pointer { static const bool value = false; };
+
+template<typename T>
+struct is_pointer<T*> { static const bool value = true; };
+
+template<typename T>
+void printTypeInfo(const char * desc, T obj) {
+    if (is_pointer<T>::value) {
+        std::cout << desc << ", typeof(" << obj << ") = " << NAMEOF_TYPE(T) << std::endl;
+    } else {
+        std::cout << desc << ", typeof(_) = " << NAMEOF_TYPE(T) << std::endl;
+    }
+}
+
+// api-specific stuff below
 
 std::unique_ptr <AIModuleWrapper> createAIModuleWrapper(rust::Box<BoxedAIModule> box);
 
@@ -64,21 +83,8 @@ public:
     void onUnitComplete(BWAPI::Unit unit) noexcept override { on_unit_complete(*this, unit); }
 };
 
-void Game_sendText(BWAPI::Game *game, rust::Str text);
-//int getFrameCount(BWAPI::Game* game);
-// void printTypeInfo(const void *obj);
+void sendText(BWAPI::Game *game, rust::Str text);
 
-template<typename T>
-struct is_pointer { static const bool value = false; };
+const std::vector<BWAPI::Unit>& Game_getAllUnits(const BWAPI::Unitset &container);
 
-template<typename T>
-struct is_pointer<T*> { static const bool value = true; };
-
-template<typename T>
-void printTypeInfo(const char * desc, T obj) {
-    if (is_pointer<T>::value) {
-        std::cout << desc << ", typeof(" << obj << ") = " << NAMEOF_TYPE(T) << std::endl;
-    } else {
-        std::cout << desc << ", typeof(_) = " << NAMEOF_TYPE(T) << std::endl;
-    }
-}
+int Unit_getId(BWAPI::UnitInterface *const &unit);
