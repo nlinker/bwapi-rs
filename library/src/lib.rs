@@ -114,6 +114,7 @@ pub mod ffi {
         pub unsafe fn size(self: &IteratorBase) -> usize;
 
         pub unsafe fn Unit_getId(unit: *const UnitInterface) -> i32;
+        pub unsafe fn Unit_getType(unit: *const UnitInterface) -> UnitType;
     }
 
     // BWAPI::Game

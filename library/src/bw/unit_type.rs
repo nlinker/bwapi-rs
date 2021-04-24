@@ -1,6 +1,6 @@
 #[repr(i32)]
 #[allow(non_camel_case_types)]
-#[derive(PartialEq, PartialOrd, Copy, Clone)]
+#[derive(PartialEq, PartialOrd, Copy, Clone, Debug)]
 pub enum UnitType {
     Terran_Marine = 0,
     Terran_Ghost,

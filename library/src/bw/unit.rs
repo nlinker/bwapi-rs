@@ -1,6 +1,7 @@
 use crate::ffi;
 use crate::from_raw::FromRaw;
 use std::ffi::c_void;
+use crate::bw::unit_type::UnitType;
 
 #[derive(Debug, Clone)]
 pub struct Unit {
@@ -23,5 +24,8 @@ impl Unit {
 
     pub fn id(&self) -> i32 {
         unsafe { ffi::Unit_getId(self.raw) }
+    }
+    pub fn type_(&self) -> UnitType {
+        unsafe { ffi::Unit_getType(self.raw) }
     }
 }

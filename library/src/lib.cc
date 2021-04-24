@@ -66,3 +66,7 @@ int Unit_getId(const BWAPI::UnitInterface *unit) {
     return unit->getID();
 }
 
+BWAPI::UnitType Unit_getType(const BWAPI::UnitInterface *unit) {
+    return unit->getType();
+}
+

@@ -44,3 +44,4 @@ void sendText(BWAPI::Game *game, rust::Str text);
 std::unique_ptr<IteratorBase> getAllUnits(BWAPI::Game *game);
 
 int Unit_getId(const BWAPI::UnitInterface *unit);
+BWAPI::UnitType Unit_getType(const BWAPI::UnitInterface *unit);
