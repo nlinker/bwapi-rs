@@ -47,9 +47,19 @@ int cpp_test() {
 std::unique_ptr <AIModuleWrapper> createAIModuleWrapper(rust::Box <BoxedAIModule> box) {
     return std::unique_ptr<AIModuleWrapper>(new AIModuleWrapper(box.into_raw()));
 }
-//void destroyAIModuleWrapper(std::unique_ptr<AIModuleWrapper> module) {
-//    delete reinterpret_cast<AIModuleWrapper*>(module);
-//}
+
+// ==================== Game ====================
+
+void Game_debug(BWAPI::Game *game) {
+    std::ostringstream os;
+    os << "--- all units count: " << game->getAllUnits().size();
+    game->sendText(os.str().c_str());
+    for (auto& unit : game->getAllUnits()) {
+        std::ostringstream os;
+        os << "id:" << unit->getID();// << " type:" << unit->getType();
+        game->sendText(os.str().c_str());
+    }
+}
 
 void sendText(BWAPI::Game *game, rust::Str text) {
     std::string s(text);
@@ -60,7 +70,6 @@ std::unique_ptr<IteratorBase> getAllUnits(BWAPI::Game *game) {
     auto xs = game->getAllUnits();
     return std::unique_ptr<IteratorBase>(new RefIterator<BWAPI::Unitset>(xs));
 }
-
 
 int Unit_getId(const BWAPI::UnitInterface *unit) {
     return unit->getID();

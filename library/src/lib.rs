@@ -119,6 +119,7 @@ pub mod ffi {
 
     // BWAPI::Game
     extern "C++" {
+        unsafe fn Game_debug(game: *mut Game);
 
         // methods that need manual shims to C++
         unsafe fn sendText(game: *mut Game, text: &str);

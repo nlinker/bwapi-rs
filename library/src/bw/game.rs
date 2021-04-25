@@ -2,8 +2,6 @@ use crate::ffi;
 use crate::bw::unit::Unit;
 use cxx::UniquePtr;
 use std::ptr::null;
-use std::ops::Deref;
-use std::pin::Pin;
 use crate::from_raw::FromRaw;
 
 #[derive(Debug)]
@@ -15,6 +13,9 @@ pub struct Game {
 unsafe impl Send for Game {}
 
 impl Game {
+    pub fn debug(&self) {
+        unsafe { ffi::Game_debug(self.raw) };
+    }
     pub fn send_text(&self, text: &str) {
         unsafe { ffi::sendText(self.raw, text) }
     }

@@ -40,6 +40,7 @@ public:
     void onUnitComplete(BWAPI::Unit unit) noexcept override { on_unit_complete(*this, unit); }
 };
 
+void Game_debug(BWAPI::Game *game);
 void sendText(BWAPI::Game *game, rust::Str text);
 std::unique_ptr<IteratorBase> getAllUnits(BWAPI::Game *game);
 

@@ -1,8 +1,15 @@
 #pragma once
 
+#include <iostream>
+#include <chrono>
+#include <ctime>
+
 class IteratorBase {
 public:
-    virtual ~IteratorBase() {}
+    virtual ~IteratorBase() {
+        std::time_t now = std::time(0);   // get time now
+        std::cout << std::ctime(&now) << std::endl;
+    }
     virtual const void *next() = 0;
     virtual unsigned long size() const = 0;
 };

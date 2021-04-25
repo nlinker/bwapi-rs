@@ -1,6 +1,8 @@
 use library::prelude::*;
 use library::ffi;
 use cxx::UniquePtr;
+use std::thread::sleep;
+use std::time::Duration;
 
 #[no_mangle]
 #[allow(non_snake_case)]
@@ -32,14 +34,13 @@ impl AIModule for DemoAI {
                 // println!("fn on_frame()");
                 let fc = game.get_frame_count();
                 if fc % 10 == 0 {
+                    game.send_text(&format!("Unitset size_hint: {:?}", game.get_all_units().size_hint()));
                     for u in game.get_all_units() {
-                        game.send_text(&format!("unit = {:?} with id {}, type: {:?}", u, u.id(), u.type_()));
+                        println!("Debug: unit = {:?} with id {}, type: {:?}", u, u.id(), u.type_());
                     }
-                    game.send_text(&format!("---"));
-                    for u in game.get_all_units() {
-                        game.send_text(&format!("unit = {:?} with id {}, type: {:?}", u, u.id(), u.type_()));
-                    }
+                    // game.debug();
                     game.send_text(&format!("Hello, SSCAIT!, frame count = {}", fc));
+                    sleep(Duration::from_millis(100));
                 }
             }
             Event::OnSendText(text) => {
