@@ -38,11 +38,11 @@ impl AIModule for DemoAI {
                     // for u in game.get_all_units() {
                     //     println!("All list: unit = {:?} with id {}, type: {:?}", u, u.id(), u.type_());
                     // }
-                    let c = Position { x: 200, y: 3200 };
-                    let inr = game.get_units_in_radius(c, 880, |_| true);
+                    let c = Position { x: 250, y: 3160 };
+                    let inr = game.get_units_in_radius(c, 100, |_| true);
                     game.send_text(&format!("In radius size_hint: {:?}", &inr.size_hint()));
                     for u in inr {
-                        println!("In radius: unit = {:?} with id {}, type: {:?}", u, u.id(), u.type_());
+                        println!("In radius: unit with id {:0>3}, type: {:?}, pos: {:?}", u.id(), u.type_(), u.position());
                     }
                     // game.debug();
                     game.send_text(&format!("Hello, SSCAIT!, frame count = {}", fc));

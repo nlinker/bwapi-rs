@@ -46,3 +46,4 @@ std::unique_ptr<UnitIterator> getUnitsInRadius(BWAPI::Game *game, BWAPI::Positio
 
 int Unit_getId(const BWAPI::UnitInterface *unit);
 BWAPI::UnitType Unit_getType(const BWAPI::UnitInterface *unit);
+BWAPI::Position Unit_getPosition(const BWAPI::UnitInterface *unit);

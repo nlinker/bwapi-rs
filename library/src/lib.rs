@@ -123,6 +123,7 @@ pub mod ffi {
 
         pub unsafe fn Unit_getId(unit: *const UnitInterface) -> i32;
         pub unsafe fn Unit_getType(unit: *const UnitInterface) -> UnitType;
+        pub unsafe fn Unit_getPosition(unit: *const UnitInterface) -> Position;
     }
 
     // BWAPI::Game

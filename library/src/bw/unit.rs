@@ -2,6 +2,7 @@ use crate::ffi;
 use crate::from_raw::FromRaw;
 use crate::ffi::c_void;
 use crate::bw::unit_type::UnitType;
+use crate::bw::position::Position;
 
 #[derive(Debug, Clone)]
 pub struct Unit {
@@ -27,5 +28,8 @@ impl Unit {
     }
     pub fn type_(&self) -> UnitType {
         unsafe { ffi::Unit_getType(self.raw) }
+    }
+    pub fn position(&self) -> Position {
+        unsafe { ffi::Unit_getPosition(self.raw) }
     }
 }
