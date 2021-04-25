@@ -42,7 +42,7 @@ impl AIModule for DemoAI {
                     let inr = game.get_units_in_radius(c, 100, |_| true);
                     game.send_text(&format!("In radius size_hint: {:?}", &inr.size_hint()));
                     for u in inr {
-                        println!("In radius: unit with id {:0>3}, type: {:?}, pos: {:?}", u.id(), u.type_(), u.position());
+                        println!("In radius: unit with id {:0>3}, type: {:?}, pos: {:?}", u.get_id(), u.get_type(), u.get_position());
                     }
                     // game.debug();
                     game.send_text(&format!("Hello, SSCAIT!, frame count = {}", fc));
