@@ -11,7 +11,6 @@
 int cpp_test();
 
 // api-specific stuff below
-
 std::unique_ptr <AIModuleWrapper> createAIModuleWrapper(rust::Box<BoxedAIModule> box);
 
 class AIModuleWrapper : public BWAPI::AIModule {
@@ -42,7 +41,8 @@ public:
 
 void Game_debug(BWAPI::Game *game);
 void sendText(BWAPI::Game *game, rust::Str text);
-std::unique_ptr<IteratorBase> getAllUnits(BWAPI::Game *game);
+std::unique_ptr<UnitIterator> getAllUnits(BWAPI::Game *game);
+std::unique_ptr<UnitIterator> getUnitsInRadius(BWAPI::Game *game, BWAPI::Position position, int radius, rust::Fn<bool(BWAPI::Unit)> pred);
 
 int Unit_getId(const BWAPI::UnitInterface *unit);
 BWAPI::UnitType Unit_getType(const BWAPI::UnitInterface *unit);

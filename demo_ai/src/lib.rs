@@ -34,9 +34,15 @@ impl AIModule for DemoAI {
                 // println!("fn on_frame()");
                 let fc = game.get_frame_count();
                 if fc % 10 == 0 {
-                    game.send_text(&format!("Unitset size_hint: {:?}", game.get_all_units().size_hint()));
-                    for u in game.get_all_units() {
-                        println!("Debug: unit = {:?} with id {}, type: {:?}", u, u.id(), u.type_());
+                    // game.send_text(&format!("Unitset size_hint: {:?}", game.get_all_units().size_hint()));
+                    // for u in game.get_all_units() {
+                    //     println!("All list: unit = {:?} with id {}, type: {:?}", u, u.id(), u.type_());
+                    // }
+                    let c = Position { x: 200, y: 3200 };
+                    let inr = game.get_units_in_radius(c, 880, |_| true);
+                    game.send_text(&format!("In radius size_hint: {:?}", &inr.size_hint()));
+                    for u in inr {
+                        println!("In radius: unit = {:?} with id {}, type: {:?}", u, u.id(), u.type_());
                     }
                     // game.debug();
                     game.send_text(&format!("Hello, SSCAIT!, frame count = {}", fc));

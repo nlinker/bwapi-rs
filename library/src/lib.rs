@@ -11,7 +11,6 @@ use std::fmt;
 use std::fmt::{Debug, Formatter};
 use std::pin::Pin;
 use crate::from_raw::FromRaw;
-use std::ffi::c_void;
 
 #[cfg(windows)]
 #[no_mangle]
@@ -38,6 +37,7 @@ pub unsafe extern "C" fn gameInit(game: *const std::ffi::c_void) {
 #[allow(non_snake_case)]
 #[cxx::bridge]
 pub mod ffi {
+    //use cxx::UniquePtr;
 
     #[namespace = "BWAPI"]
     unsafe extern "C++" {
@@ -70,6 +70,7 @@ pub mod ffi {
         pub type WeaponType;
 
         type Event;
+        type UnitFilter;
 
         pub type Forceset;
         pub type Playerset;
@@ -108,10 +109,17 @@ pub mod ffi {
     // }
 
     unsafe extern "C++" {
-        type c_void;
-        pub type IteratorBase;
-        pub unsafe fn next(self: Pin<&mut IteratorBase>) -> *const c_void;
-        pub unsafe fn size(self: &IteratorBase) -> usize;
+        // unfortunately we have to create our type: https://github.com/dtolnay/cxx/issues/796
+        pub type c_void;
+
+        pub type UnitIterator;
+        pub unsafe fn next(self: Pin<&mut UnitIterator>) -> *const UnitInterface;
+        pub unsafe fn sizeHint(self: &UnitIterator) -> usize;
+
+        pub type PlayerIterator;
+        pub unsafe fn next(self: Pin<&mut PlayerIterator>) -> *const PlayerInterface;
+        pub unsafe fn sizeHint(self: &PlayerIterator) -> usize;
+
 
         pub unsafe fn Unit_getId(unit: *const UnitInterface) -> i32;
         pub unsafe fn Unit_getType(unit: *const UnitInterface) -> UnitType;
@@ -123,7 +131,8 @@ pub mod ffi {
 
         // methods that need manual shims to C++
         unsafe fn sendText(game: *mut Game, text: &str);
-        unsafe fn getAllUnits(game: *mut Game) -> UniquePtr<IteratorBase>;
+        unsafe fn getAllUnits(game: *mut Game) -> UniquePtr<UnitIterator>;
+        unsafe fn getUnitsInRadius(game: *mut Game, position: Position, radius: i32, pred: fn(Unit) -> bool) -> UniquePtr<UnitIterator>;
 
         unsafe fn getFrameCount(self: &Game) -> i32;
         unsafe fn getForces(self: &Game) -> &Forceset;
@@ -660,13 +669,13 @@ fn on_send_text(wrapper: Pin<&mut ffi::AIModuleWrapper>, text: &CxxString) {
     wrapper.get_box().on_event(Event::OnSendText(text.to_string()));
 }
 fn on_receive_text(wrapper: Pin<&mut ffi::AIModuleWrapper>, player: *const ffi::PlayerInterface, text: &CxxString) {
-    let player = unsafe { crate::bw::player::Player::from_raw(player as *const c_void) };
+    let player = unsafe { crate::bw::player::Player::from_raw(player as *const ffi::c_void) };
     wrapper
         .get_box()
         .on_event(Event::OnReceiveText(player, text.to_string()));
 }
 fn on_player_left(wrapper: Pin<&mut ffi::AIModuleWrapper>, player: *const ffi::PlayerInterface) {
-    let player = unsafe { crate::bw::player::Player::from_raw(player as *const c_void) };
+    let player = unsafe { crate::bw::player::Player::from_raw(player as *const ffi::c_void) };
     wrapper.get_box().on_event(Event::OnPlayerLeft(player));
 }
 fn on_nuke_detect(wrapper: Pin<&mut ffi::AIModuleWrapper>, target: ffi::Position) {
@@ -677,42 +686,42 @@ fn on_nuke_detect(wrapper: Pin<&mut ffi::AIModuleWrapper>, target: ffi::Position
     wrapper.get_box().on_event(Event::OnNukeDetect(target));
 }
 fn on_unit_discover(wrapper: Pin<&mut ffi::AIModuleWrapper>, unit: *const ffi::UnitInterface) {
-    let unit = unsafe { crate::bw::unit::Unit::from_raw(unit as *const c_void) };
+    let unit = unsafe { crate::bw::unit::Unit::from_raw(unit as *const ffi::c_void) };
     wrapper.get_box().on_event(Event::OnUnitDiscover(unit));
 }
 fn on_unit_evade(wrapper: Pin<&mut ffi::AIModuleWrapper>, unit: *const ffi::UnitInterface) {
-    let unit = unsafe { crate::bw::unit::Unit::from_raw(unit as *const c_void) };
+    let unit = unsafe { crate::bw::unit::Unit::from_raw(unit as *const ffi::c_void) };
     wrapper.get_box().on_event(Event::OnUnitEvade(unit));
 }
 fn on_unit_show(wrapper: Pin<&mut ffi::AIModuleWrapper>, unit: *const ffi::UnitInterface) {
-    let unit = unsafe { crate::bw::unit::Unit::from_raw(unit as *const c_void) };
+    let unit = unsafe { crate::bw::unit::Unit::from_raw(unit as *const ffi::c_void) };
     wrapper.get_box().on_event(Event::OnUnitShow(unit));
 }
 fn on_unit_hide(wrapper: Pin<&mut ffi::AIModuleWrapper>, unit: *const ffi::UnitInterface) {
-    let unit = unsafe { crate::bw::unit::Unit::from_raw(unit as *const c_void) };
+    let unit = unsafe { crate::bw::unit::Unit::from_raw(unit as *const ffi::c_void) };
     wrapper.get_box().on_event(Event::OnUnitHide(unit));
 }
 fn on_unit_create(wrapper: Pin<&mut ffi::AIModuleWrapper>, unit: *const ffi::UnitInterface) {
-    let unit = unsafe { crate::bw::unit::Unit::from_raw(unit as *const c_void) };
+    let unit = unsafe { crate::bw::unit::Unit::from_raw(unit as *const ffi::c_void) };
     wrapper.get_box().on_event(Event::OnUnitCreate(unit));
 }
 fn on_unit_destroy(wrapper: Pin<&mut ffi::AIModuleWrapper>, unit: *const ffi::UnitInterface) {
-    let unit = unsafe { crate::bw::unit::Unit::from_raw(unit as *const c_void) };
+    let unit = unsafe { crate::bw::unit::Unit::from_raw(unit as *const ffi::c_void) };
     wrapper.get_box().on_event(Event::OnUnitDestroy(unit));
 }
 fn on_unit_morph(wrapper: Pin<&mut ffi::AIModuleWrapper>, unit: *const ffi::UnitInterface) {
-    let unit = unsafe { crate::bw::unit::Unit::from_raw(unit as *const c_void) };
+    let unit = unsafe { crate::bw::unit::Unit::from_raw(unit as *const ffi::c_void) };
     wrapper.get_box().on_event(Event::OnUnitMorph(unit));
 }
 fn on_unit_renegade(wrapper: Pin<&mut ffi::AIModuleWrapper>, unit: *const ffi::UnitInterface) {
-    let unit = unsafe { crate::bw::unit::Unit::from_raw(unit as *const c_void) };
+    let unit = unsafe { crate::bw::unit::Unit::from_raw(unit as *const ffi::c_void) };
     wrapper.get_box().on_event(Event::OnUnitRenegade(unit));
 }
 fn on_save_game(wrapper: Pin<&mut ffi::AIModuleWrapper>, game_name: &CxxString) {
     wrapper.get_box().on_event(Event::OnSaveGame(game_name.to_string()));
 }
 fn on_unit_complete(wrapper: Pin<&mut ffi::AIModuleWrapper>, unit: *const ffi::UnitInterface) {
-    let unit = unsafe { crate::bw::unit::Unit::from_raw(unit as *const c_void) };
+    let unit = unsafe { crate::bw::unit::Unit::from_raw(unit as *const ffi::c_void) };
     wrapper.get_box().on_event(Event::OnUnitComplete(unit));
 }
 //------------------- endregion -------------------

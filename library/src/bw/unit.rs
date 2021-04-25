@@ -1,6 +1,6 @@
 use crate::ffi;
 use crate::from_raw::FromRaw;
-use std::ffi::c_void;
+use crate::ffi::c_void;
 use crate::bw::unit_type::UnitType;
 
 #[derive(Debug, Clone)]

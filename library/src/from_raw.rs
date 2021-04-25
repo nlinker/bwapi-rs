@@ -1,4 +1,4 @@
-use std::ffi::c_void;
+use crate::ffi::c_void;
 
 /// `FromRaw` is a trait for entities that
 /// are typically created outside of Rust code.

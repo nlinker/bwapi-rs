@@ -5,14 +5,17 @@ use crate::bw::game::Game;
 
 pub mod ai_module;
 pub mod force;
+pub mod forceset;
 pub mod game;
 pub mod iterator;
 pub mod player;
 pub mod position;
 pub mod tech_type;
 pub mod unit;
+pub mod unit_command;
 pub mod unit_filter;
 pub mod unit_type;
+#[allow(unused_variables)]
 pub mod unitset;
 
 /// Updated on gameInit call
