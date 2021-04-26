@@ -92,7 +92,16 @@ TODO
   - to `fn getBestUnit(best: const BestUnitFilter, pred: const UnitFilter, center: Position, radius: int) -> Unit`
   
 
-
 ### Useful links
 
 - Pretty complex `build.rs` to learn from: https://github.com/alexcrichton/curl-rust/blob/master/curl-sys/build.rs
+
+### Thanks
+
+This piece of software would be impossible without prior work of many people. It is based
+on the work by huge community behind Rust programming language, enthusiasts that develop BWAPI 
+and OpenBW and the last, but not least, game mages from Blizzard, who created the original Starcraft.
+So this is pretty hard to enumerate all the people, however I want to notice the latest effort from:
+
+- [@dtolnay](https://github.com/dtolnay) for his wonderful [cxx.rs library](https://github.com/dtolnay/cxx) for the new interop between C++ and Rust;
+- [@kpp](https://github.com/kpp) and [@0x7CFE](https://github.com/0x7CFE) for their earlier work on `bwapi-rs` that I learned a lot from.
