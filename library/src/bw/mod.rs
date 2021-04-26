@@ -9,6 +9,7 @@ pub mod forceset;
 pub mod game;
 pub mod iterator;
 pub mod player;
+pub mod playerset;
 pub mod position;
 pub mod tech_type;
 pub mod unit;

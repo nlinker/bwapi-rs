@@ -68,14 +68,13 @@ void sendText(BWAPI::Game *game, rust::Str text) {
 
 std::unique_ptr<UnitIterator> getAllUnits(BWAPI::Game *game) {
     const BWAPI::Unitset &xs = game->getAllUnits();
-    UnitIterator *ui = new RefIterator<BWAPI::Unitset, const BWAPI::UnitInterface *>(xs);
+    UnitIterator *ui = new UnitIteratorRef(xs);
     return std::unique_ptr<UnitIterator>(ui);
 }
 
 std::unique_ptr<UnitIterator> getUnitsInRadius(BWAPI::Game *game, BWAPI::Position position, int radius, rust::Fn<bool(BWAPI::Unit)> pred) {
-    // todo convert predicate
-    const BWAPI::Unitset xs = game->getUnitsInRadius(position, radius, nullptr);
-    UnitIterator *ui = new OwnIterator<BWAPI::Unitset, const BWAPI::UnitInterface *>(std::move(xs));
+    const BWAPI::Unitset xs = game->getUnitsInRadius(position, radius, nullptr /* todo convert predicate */);
+    UnitIterator *ui = new UnitIteratorOwn(std::move(xs));
     return std::unique_ptr<UnitIterator>(ui);
 }
 

@@ -23,6 +23,7 @@ impl Game {
         unsafe { (*self.raw).getFrameCount() }
     }
     pub fn get_all_units(&self) -> Unitset {
+
         let iter: UniquePtr<ffi::UnitIterator> = unsafe { ffi::getAllUnits(self.raw) };
         Unitset { iter }
     }

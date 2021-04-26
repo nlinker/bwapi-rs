@@ -38,142 +38,143 @@ impl Iterator for Unitset {
 
 
 impl Unitset {
-    pub fn get_closest_unit(pred: UnitFilter, radius: i32) -> Unit {
+    pub fn get_closest_unit(&self, pred: UnitFilter, radius: i32) -> Unit {
+        let x: &ffi::Unitset = unsafe { self.iter.underlying() };
         todo!()
     }
-    pub fn get_interceptors() -> Unitset {
+    pub fn get_interceptors(&self) -> Unitset {
         todo!()
     }
-    pub fn get_larva() -> Unitset {
+    pub fn get_larva(&self) -> Unitset {
         todo!()
     }
-    pub fn get_loaded_units() -> Unitset {
+    pub fn get_loaded_units(&self) -> Unitset {
         todo!()
     }
-    pub fn get_position() -> Position {
+    pub fn get_position(&self) -> Position {
         todo!()
     }
-    pub fn get_units_in_radius(radius: i32, pred: UnitFilter) -> Unitset {
+    pub fn get_units_in_radius(&self, radius: i32, pred: UnitFilter) -> Unitset {
         todo!()
     }
-    pub fn set_client_info(client_info: *const c_void, index: i32) {
+    pub fn set_client_info(&self, client_info: *const c_void, index: i32) {
         todo!()
     }
-    pub fn set_client_info_1(client_info: i32, index: i32) {
+    pub fn set_client_info_1(&self, client_info: i32, index: i32) {
         todo!()
     }
-    pub fn issue_command(command: UnitCommand) -> bool {
+    pub fn issue_command(&self, command: UnitCommand) -> bool {
         todo!()
     }
-    pub fn attack(target: Unit, shift_queue_command: bool) -> bool {
+    pub fn attack(&self, target: Unit, shift_queue_command: bool) -> bool {
         todo!()
     }
-    pub fn attack_1(target: Position, shift_queue_command: bool) -> bool {
+    pub fn attack_1(&self, target: Position, shift_queue_command: bool) -> bool {
         todo!()
     }
-    pub fn build(utype: UnitType, target: TilePosition) -> bool {
+    pub fn build(&self, utype: UnitType, target: TilePosition) -> bool {
         todo!()
     }
-    pub fn build_addon(utype: UnitType) -> bool {
+    pub fn build_addon(&self, utype: UnitType) -> bool {
         todo!()
     }
-    pub fn train(utype: UnitType) -> bool {
+    pub fn train(&self, utype: UnitType) -> bool {
         todo!()
     }
-    pub fn morph(utype: UnitType) -> bool {
+    pub fn morph(&self, utype: UnitType) -> bool {
         todo!()
     }
-    pub fn set_rally_point(target: Unit) -> bool {
+    pub fn set_rally_point(&self, target: Unit) -> bool {
         todo!()
     }
-    pub fn set_rally_point_1(target: Position) -> bool {
+    pub fn set_rally_point_1(&self, target: Position) -> bool {
         todo!()
     }
-    pub fn move_(target: Position, shift_queue_command: bool) -> bool {
+    pub fn move_(&self, target: Position, shift_queue_command: bool) -> bool {
         todo!()
     }
-    pub fn patrol(target: Position, shift_queue_command: bool) -> bool {
+    pub fn patrol(&self, target: Position, shift_queue_command: bool) -> bool {
         todo!()
     }
-    pub fn hold_position(shift_queue_command: bool) -> bool {
+    pub fn hold_position(&self, shift_queue_command: bool) -> bool {
         todo!()
     }
-    pub fn stop(shift_queue_command: bool) -> bool {
+    pub fn stop(&self, shift_queue_command: bool) -> bool {
         todo!()
     }
-    pub fn follow(target: Unit, shift_queue_command: bool) -> bool {
+    pub fn follow(&self, target: Unit, shift_queue_command: bool) -> bool {
         todo!()
     }
-    pub fn gather(target: Unit, shift_queue_command: bool) -> bool {
+    pub fn gather(&self, target: Unit, shift_queue_command: bool) -> bool {
         todo!()
     }
-    pub fn return_cargo(shift_queue_command: bool) -> bool {
+    pub fn return_cargo(&self, shift_queue_command: bool) -> bool {
         todo!()
     }
-    pub fn repair(target: Unit, shift_queue_command: bool) -> bool {
+    pub fn repair(&self, target: Unit, shift_queue_command: bool) -> bool {
         todo!()
     }
-    pub fn burrow() -> bool {
+    pub fn burrow(&self) -> bool {
         todo!()
     }
-    pub fn unburrow() -> bool {
+    pub fn unburrow(&self) -> bool {
         todo!()
     }
-    pub fn cloak() -> bool {
+    pub fn cloak(&self) -> bool {
         todo!()
     }
-    pub fn decloak() -> bool {
+    pub fn decloak(&self) -> bool {
         todo!()
     }
-    pub fn siege() -> bool {
+    pub fn siege(&self) -> bool {
         todo!()
     }
-    pub fn unsiege() -> bool {
+    pub fn unsiege(&self) -> bool {
         todo!()
     }
-    pub fn lift() -> bool {
+    pub fn lift(&self) -> bool {
         todo!()
     }
-    pub fn load(target: Unit, shift_queue_command: bool) -> bool {
+    pub fn load(&self, target: Unit, shift_queue_command: bool) -> bool {
         todo!()
     }
-    pub fn unload_all(shift_queue_command: bool) -> bool {
+    pub fn unload_all(&self, shift_queue_command: bool) -> bool {
         todo!()
     }
-    pub fn unload_all_position(target: Position, shift_queue_command: bool) -> bool {
+    pub fn unload_all_position(&self, target: Position, shift_queue_command: bool) -> bool {
         todo!()
     }
-    pub fn right_click(target: Unit, shift_queue_command: bool) -> bool {
+    pub fn right_click(&self, target: Unit, shift_queue_command: bool) -> bool {
         todo!()
     }
-    pub fn right_click_1(target: Position, shift_queue_command: bool) -> bool {
+    pub fn right_click_1(&self, target: Position, shift_queue_command: bool) -> bool {
         todo!()
     }
-    pub fn halt_construction() -> bool {
+    pub fn halt_construction(&self) -> bool {
         todo!()
     }
-    pub fn cancel_construction() -> bool {
+    pub fn cancel_construction(&self) -> bool {
         todo!()
     }
-    pub fn cancel_addon() -> bool {
+    pub fn cancel_addon(&self) -> bool {
         todo!()
     }
-    pub fn cancel_train(slot: i32) -> bool {
+    pub fn cancel_train(&self, slot: i32) -> bool {
         todo!()
     }
-    pub fn cancel_morph() -> bool {
+    pub fn cancel_morph(&self) -> bool {
         todo!()
     }
-    pub fn cancel_research() -> bool {
+    pub fn cancel_research(&self) -> bool {
         todo!()
     }
-    pub fn cancel_upgrade() -> bool {
+    pub fn cancel_upgrade(&self) -> bool {
         todo!()
     }
-    pub fn use_tech(tech: TechType, target: Unit) -> bool {
+    pub fn use_tech(&self, tech: TechType, target: Unit) -> bool {
         todo!()
     }
-    pub fn use_tech_1(tech: TechType, target: Position) -> bool {
+    pub fn use_tech_1(&self, tech: TechType, target: Position) -> bool {
         todo!()
     }
 }

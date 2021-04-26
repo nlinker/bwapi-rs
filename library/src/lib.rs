@@ -114,15 +114,22 @@ pub mod ffi {
         pub type UnitIterator;
         pub unsafe fn next(self: Pin<&mut UnitIterator>) -> *const UnitInterface;
         pub unsafe fn sizeHint(self: &UnitIterator) -> usize;
+        pub unsafe fn underlying(self: &UnitIterator) -> &Unitset;
 
         pub type PlayerIterator;
         pub unsafe fn next(self: Pin<&mut PlayerIterator>) -> *const PlayerInterface;
         pub unsafe fn sizeHint(self: &PlayerIterator) -> usize;
+        pub unsafe fn underlying(self: &PlayerIterator) -> &Playerset;
 
 
         pub unsafe fn Unit_getId(unit: *const UnitInterface) -> i32;
         pub unsafe fn Unit_getType(unit: *const UnitInterface) -> UnitType;
         pub unsafe fn Unit_getPosition(unit: *const UnitInterface) -> Position;
+    }
+
+    // BWAPI::Unitset
+    extern "C++" {
+
     }
 
     // BWAPI::Game
