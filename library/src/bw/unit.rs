@@ -4,7 +4,7 @@ use crate::bw::position::Position;
 
 #[derive(Debug, Clone)]
 pub struct Unit {
-    raw: *const ffi::UnitInterface,
+    pub(crate) raw: *const ffi::UnitInterface,
 }
 
 impl Unit {

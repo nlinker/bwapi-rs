@@ -62,7 +62,6 @@ pub mod ffi {
         pub type Order;
         pub type PlayerType;
         pub type Race;
-        pub type TechType;
         pub type UnitCommandType;
         pub type UnitSizeType;
         pub type UpgradeType;
@@ -81,6 +80,8 @@ pub mod ffi {
         type TilePosition = crate::bw::position::TilePosition;
         type WalkPosition = crate::bw::position::WalkPosition;
         type UnitType = crate::bw::unit_type::UnitType;
+        type UnitCommand = crate::bw::unit_command::UnitCommand;
+        type TechType = crate::bw::tech_type::TechType;
     }
     // bool (BWAPI::Game::*)(::BWAPI::TilePosition, ::BWAPI::UnitType, const ::BWAPI::UnitInterface *, bool) const
     // bool (BWAPI::Game::*)(BWAPI::TilePosition, BWAPI::UnitType, BWAPI::Unit, bool)
@@ -109,19 +110,19 @@ pub mod ffi {
     //     unsafe fn getPlayers () -> Playerset;
     // }
 
-    extern "C++" {
+    unsafe extern "C++" {
         // unfortunately we have to create our type: https://github.com/dtolnay/cxx/issues/796
         pub type c_void;
 
         pub type UnitIterator;
-        pub unsafe fn next(self: Pin<&mut UnitIterator>) -> *const UnitInterface;
-        pub unsafe fn sizeHint(self: &UnitIterator) -> usize;
-        pub unsafe fn underlying(self: &UnitIterator) -> &Unitset;
+        pub fn next(self: Pin<&mut UnitIterator>) -> *const UnitInterface;
+        pub fn sizeHint(self: &UnitIterator) -> usize;
+        pub fn underlying(self: &UnitIterator) -> &Unitset;
 
         pub type PlayerIterator;
-        pub unsafe fn next(self: Pin<&mut PlayerIterator>) -> *const PlayerInterface;
-        pub unsafe fn sizeHint(self: &PlayerIterator) -> usize;
-        pub unsafe fn underlying(self: &PlayerIterator) -> &Playerset;
+        pub fn next(self: Pin<&mut PlayerIterator>) -> *const PlayerInterface;
+        pub fn sizeHint(self: &PlayerIterator) -> usize;
+        pub fn underlying(self: &PlayerIterator) -> &Playerset;
 
 
         pub unsafe fn Unit_getId(unit: *const UnitInterface) -> i32;
@@ -130,9 +131,59 @@ pub mod ffi {
     }
 
     // BWAPI::Unitset
-    extern "C++" {
-        pub unsafe fn getClosestUnit(uset: &Unitset, pred: fn(Unit) -> bool, radius: i32) -> *const UnitInterface;
-        pub unsafe fn getInterceptors(uset: &Unitset) -> UniquePtr<UnitIterator>;
+    unsafe extern "C++" {
+        pub fn getClosestUnit(set: &Unitset, pred: fn(Unit) -> bool, radius: i32) -> *const UnitInterface;
+        pub fn getInterceptors(set: &Unitset) -> UniquePtr<UnitIterator>;
+        pub fn getLarva(set: &Unitset) -> UniquePtr<UnitIterator>;
+        pub fn getLoadedUnits(set: &Unitset) -> UniquePtr<UnitIterator>;
+        pub fn getPosition(self: &Unitset) -> Position;
+        pub fn getUnitsInRadius_Unitset(set: &Unitset, radius: i32, pred: fn(Unit) -> bool) -> UniquePtr<UnitIterator>;
+        pub unsafe fn setClientInfo(self: &Unitset, client_info: *mut c_void, index: i32);
+        #[cxx_name = "setClientInfo"]
+        pub fn setClientInfo1(self: &Unitset, client_info: i32, index: i32);
+        pub fn issueCommand(self: &Unitset, command: UnitCommand) -> bool;
+        pub unsafe fn attack(self: &Unitset, target: *mut UnitInterface, shift_queue_command: bool) -> bool;
+        #[cxx_name = "attack"]
+        pub fn attack1(self: &Unitset, target: Position, shift_queue_command: bool) -> bool;
+        pub fn build(self: &Unitset, utype: UnitType, target: TilePosition) -> bool;
+        pub fn buildAddon(self: &Unitset, utype: UnitType) -> bool;
+        pub fn train(self: &Unitset, utype: UnitType) -> bool;
+        pub fn morph(self: &Unitset, utype: UnitType) -> bool;
+        pub unsafe fn setRallyPoint(self: &Unitset, target: *mut UnitInterface) -> bool;
+        #[cxx_name = "setRallyPoint"]
+        pub fn setRallyPoint1(self: &Unitset, target: Position) -> bool;
+        pub fn move_(set: &Unitset, target: Position, shift_queue_command: bool) -> bool;
+        pub fn patrol(self: &Unitset, target: Position, shift_queue_command: bool) -> bool;
+        pub fn holdPosition(self: &Unitset, shift_queue_command: bool) -> bool;
+        pub fn stop(self: &Unitset, shift_queue_command: bool) -> bool;
+        pub unsafe fn follow(self: &Unitset, target: *mut UnitInterface, shift_queue_command: bool) -> bool;
+        pub unsafe fn gather(self: &Unitset, target: *mut UnitInterface, shift_queue_command: bool) -> bool;
+        pub fn returnCargo(self: &Unitset, shift_queue_command: bool) -> bool;
+        pub unsafe fn repair(self: &Unitset, target: *mut UnitInterface, shift_queue_command: bool) -> bool;
+        pub fn burrow(self: &Unitset) -> bool;
+        pub fn unburrow(self: &Unitset) -> bool;
+        pub fn cloak(self: &Unitset) -> bool;
+        pub fn decloak(self: &Unitset) -> bool;
+        pub fn siege(self: &Unitset) -> bool;
+        pub fn unsiege(self: &Unitset) -> bool;
+        pub fn lift(self: &Unitset) -> bool;
+        pub unsafe fn load(self: &Unitset, target: *mut UnitInterface, shift_queue_command: bool) -> bool;
+        pub fn unloadAll(self: &Unitset, shift_queue_command: bool) -> bool;
+        #[cxx_name = "unloadAll"]
+        pub fn unloadAll1(self: &Unitset, target: Position, shift_queue_command: bool) -> bool;
+        pub unsafe fn rightClick(self: &Unitset, target: *mut UnitInterface, shift_queue_command: bool) -> bool;
+        #[cxx_name = "rightClick"]
+        pub fn rightClick1(self: &Unitset, target: Position, shift_queue_command: bool) -> bool;
+        pub fn haltConstruction(self: &Unitset) -> bool;
+        pub fn cancelConstruction(self: &Unitset) -> bool;
+        pub fn cancelAddon(self: &Unitset) -> bool;
+        pub fn cancelTrain(self: &Unitset, slot: i32) -> bool;
+        pub fn cancelMorph(self: &Unitset) -> bool;
+        pub fn cancelResearch(self: &Unitset) -> bool;
+        pub fn cancelUpgrade(self: &Unitset) -> bool;
+        pub unsafe fn useTech(self: &Unitset, tech: TechType, target: *mut UnitInterface) -> bool;
+        #[cxx_name = "useTech"]
+        pub fn useTech1(self: &Unitset, tech: TechType, target: Position) -> bool;
     }
 
     // BWAPI::Game
@@ -142,7 +193,7 @@ pub mod ffi {
         // methods that need manual shims to C++
         unsafe fn sendText(game: *mut Game, text: &str);
         unsafe fn getAllUnits(game: *mut Game) -> UniquePtr<UnitIterator>;
-        unsafe fn getUnitsInRadius(game: *mut Game, position: Position, radius: i32, pred: fn(Unit) -> bool) -> UniquePtr<UnitIterator>;
+        unsafe fn getUnitsInRadius_Game(game: *mut Game, position: Position, radius: i32, pred: fn(Unit) -> bool) -> UniquePtr<UnitIterator>;
 
         unsafe fn getFrameCount(self: &Game) -> i32;
         unsafe fn getForces(self: &Game) -> &Forceset;
@@ -152,9 +203,9 @@ pub mod ffi {
         unsafe fn enemy(self: &Game) -> *mut PlayerInterface;
 
         // not implemented yet
-        // unsafe fn canMake(game: *mut Game, type_: UnitType, builder: *const UnitInterface) -> bool;
-        // unsafe fn canResearch(game: *mut Game, type_: TechType, unit: *const UnitInterface, checkCanIssueCommandType: bool) -> bool;
-        // unsafe fn canUpgrade(game: *mut Game, type_: UpgradeType, unit: *const UnitInterface, checkCanIssueCommandType: bool) -> bool;
+        // unsafe fn canMake(game: *mut Game, utype: UnitType, builder: *const UnitInterface) -> bool;
+        // unsafe fn canResearch(game: *mut Game, ttype: TechType, unit: *const UnitInterface, checkCanIssueCommandType: bool) -> bool;
+        // unsafe fn canUpgrade(game: *mut Game, utype: UpgradeType, unit: *const UnitInterface, checkCanIssueCommandType: bool) -> bool;
         // unsafe fn countdownTimer(game: *mut Game) -> i32;
         // unsafe fn elapsedTime(game: *mut Game) -> i32;
         // unsafe fn enableFlag(game: *mut Game, flag: i32);

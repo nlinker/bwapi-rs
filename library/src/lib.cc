@@ -50,15 +50,33 @@ std::unique_ptr <AIModuleWrapper> createAIModuleWrapper(rust::Box <BoxedAIModule
 
 // ==================== Unitset ====================
 
-const BWAPI::UnitInterface *getClosestUnit(const BWAPI::Unitset &uset, UnitFilter pred, int radius) {
-    return uset.getClosestUnit(nullptr /* todo convert predicate */, radius);
+const BWAPI::UnitInterface *getClosestUnit(const BWAPI::Unitset &set, UnitFilter pred, int radius) {
+    return set.getClosestUnit(nullptr /* todo convert predicate */, radius);
 }
 
-std::unique_ptr <UnitIterator> getInterceptors(const BWAPI::Unitset &uset) {
-    const BWAPI::Unitset xs = uset.getInterceptors();
+std::unique_ptr<UnitIterator> getInterceptors(const BWAPI::Unitset &set) {
+    const BWAPI::Unitset xs = set.getInterceptors();
     return std::unique_ptr<UnitIterator>(new UnitIteratorOwn(std::move(xs)));
 }
 
+std::unique_ptr<UnitIterator> getLarva(const BWAPI::Unitset &set) {
+    const BWAPI::Unitset xs = set.getLarva();
+    return std::unique_ptr<UnitIterator>(new UnitIteratorOwn(std::move(xs)));
+}
+
+std::unique_ptr<UnitIterator> getLoadedUnits(const BWAPI::Unitset &set) {
+    const BWAPI::Unitset xs = set.getLoadedUnits();
+    return std::unique_ptr<UnitIterator>(new UnitIteratorOwn(std::move(xs)));
+}
+
+std::unique_ptr<UnitIterator> getUnitsInRadius_Unitset(const BWAPI::Unitset &set, int radius, UnitFilter pred) {
+    const BWAPI::Unitset xs = set.getUnitsInRadius(radius, nullptr /* todo convert predicate */);
+    return std::unique_ptr<UnitIterator>(new UnitIteratorOwn(std::move(xs)));
+}
+
+bool move_(const BWAPI::Unitset &set, BWAPI::Position target, bool shift_queue_command) {
+    return set.move(target, shift_queue_command);
+}
 // ==================== Game ====================
 
 void Game_debug(BWAPI::Game *game) {
@@ -82,7 +100,7 @@ std::unique_ptr<UnitIterator> getAllUnits(BWAPI::Game *game) {
     return std::unique_ptr<UnitIterator>(new UnitIteratorRef(xs));
 }
 
-std::unique_ptr<UnitIterator> getUnitsInRadius(BWAPI::Game *game, BWAPI::Position position, int radius, UnitFilter pred) {
+std::unique_ptr<UnitIterator> getUnitsInRadius_Game(BWAPI::Game *game, BWAPI::Position position, int radius, UnitFilter pred) {
     const BWAPI::Unitset xs = game->getUnitsInRadius(position, radius, nullptr /* todo convert predicate */);
     return std::unique_ptr<UnitIterator>(new UnitIteratorOwn(std::move(xs)));
 }

@@ -41,13 +41,17 @@ public:
 
 using UnitFilter = rust::Fn<bool(BWAPI::Unit)>;
 
-const BWAPI::UnitInterface* getClosestUnit(const BWAPI::Unitset &uset, UnitFilter pred, int radius);
-std::unique_ptr<UnitIterator> getInterceptors(const BWAPI::Unitset &uset);
+const BWAPI::UnitInterface *getClosestUnit(const BWAPI::Unitset &set, UnitFilter pred, int radius);
+std::unique_ptr<UnitIterator> getInterceptors(const BWAPI::Unitset &set);
+std::unique_ptr<UnitIterator> getLarva(const BWAPI::Unitset &set);
+std::unique_ptr<UnitIterator> getLoadedUnits(const BWAPI::Unitset &set);
+std::unique_ptr<UnitIterator> getUnitsInRadius_Unitset(const BWAPI::Unitset &set, int radius, UnitFilter pred);
+bool move_(const BWAPI::Unitset &set, BWAPI::Position target, bool shift_queue_command);
 
 void Game_debug(BWAPI::Game *game);
 void sendText(BWAPI::Game *game, rust::Str text);
 std::unique_ptr<UnitIterator> getAllUnits(BWAPI::Game *game);
-std::unique_ptr<UnitIterator> getUnitsInRadius(BWAPI::Game *game, BWAPI::Position position, int radius, UnitFilter pred);
+std::unique_ptr<UnitIterator> getUnitsInRadius_Game(BWAPI::Game *game, BWAPI::Position position, int radius, UnitFilter pred);
 
 int Unit_getId(const BWAPI::UnitInterface *unit);
 BWAPI::UnitType Unit_getType(const BWAPI::UnitInterface *unit);

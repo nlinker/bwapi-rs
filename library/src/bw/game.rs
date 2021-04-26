@@ -28,7 +28,7 @@ impl Game {
         Unitset { iter }
     }
     pub fn get_units_in_radius(&self, position: Position, radius: i32, pred: UnitFilter) -> Unitset {
-        let iter: UniquePtr<ffi::UnitIterator> = unsafe { ffi::getUnitsInRadius(self.raw, position, radius, pred) };
+        let iter: UniquePtr<ffi::UnitIterator> = unsafe { ffi::getUnitsInRadius_Game(self.raw, position, radius, pred) };
         Unitset { iter }
     }
 }

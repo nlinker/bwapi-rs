@@ -39,145 +39,187 @@ impl Iterator for Unitset {
 
 impl Unitset {
     pub fn get_closest_unit(&self, pred: UnitFilter, radius: i32) -> Unit {
-        let xs: &ffi::Unitset = unsafe { self.iter.underlying() };
-        let u: *const ffi::UnitInterface = unsafe { ffi::getClosestUnit(xs, pred, radius) };
-        unsafe { Unit::from_raw(u) }
+        let xs: &ffi::Unitset = self.iter.underlying();
+        unsafe { Unit::from_raw(ffi::getClosestUnit(xs, pred, radius)) }
     }
     pub fn get_interceptors(&self) -> Unitset {
-        let xs: &ffi::Unitset = unsafe { self.iter.underlying() };
-        let iter: UniquePtr<ffi::UnitIterator> = unsafe { ffi::getInterceptors(xs) };
-        Unitset { iter }
+        let xs: &ffi::Unitset = self.iter.underlying();
+        Unitset { iter: unsafe { ffi::getInterceptors(xs) } }
     }
     pub fn get_larva(&self) -> Unitset {
-        todo!()
+        let xs: &ffi::Unitset = self.iter.underlying();
+        Unitset { iter: unsafe { ffi::getLarva(xs) } }
     }
     pub fn get_loaded_units(&self) -> Unitset {
-        todo!()
+        let xs: &ffi::Unitset = self.iter.underlying();
+        Unitset { iter: unsafe { ffi::getLoadedUnits(xs) } }
     }
     pub fn get_position(&self) -> Position {
-        todo!()
+        let xs: &ffi::Unitset = self.iter.underlying();
+        unsafe { xs.getPosition() }
     }
     pub fn get_units_in_radius(&self, radius: i32, pred: UnitFilter) -> Unitset {
-        todo!()
+        let xs: &ffi::Unitset = self.iter.underlying();
+        Unitset { iter: unsafe { ffi::getUnitsInRadius(xs, radius, pred) } }
     }
-    pub fn set_client_info(&self, client_info: *const c_void, index: i32) {
-        todo!()
+    pub fn set_client_info(&self, client_info: *mut c_void, index: i32) {
+        let xs: &ffi::Unitset = self.iter.underlying();
+        unsafe { xs.setClientInfo(client_info, index) }
     }
     pub fn set_client_info_1(&self, client_info: i32, index: i32) {
-        todo!()
+        let xs: &ffi::Unitset = self.iter.underlying();
+        unsafe { xs.setClientInfo(client_info, index) }
     }
     pub fn issue_command(&self, command: UnitCommand) -> bool {
-        todo!()
+        let xs: &ffi::Unitset = self.iter.underlying();
+        unsafe { xs.issueCommand(command) }
     }
     pub fn attack(&self, target: Unit, shift_queue_command: bool) -> bool {
-        todo!()
+        let xs: &ffi::Unitset = self.iter.underlying();
+        unsafe { xs.attack(target.raw, shift_queue_command) }
     }
     pub fn attack_1(&self, target: Position, shift_queue_command: bool) -> bool {
-        todo!()
+        let xs: &ffi::Unitset = self.iter.underlying();
+        unsafe { xs.attack(target, shift_queue_command) }
     }
     pub fn build(&self, utype: UnitType, target: TilePosition) -> bool {
-        todo!()
+        let xs: &ffi::Unitset = self.iter.underlying();
+        unsafe { xs.build(utype, target) }
     }
     pub fn build_addon(&self, utype: UnitType) -> bool {
-        todo!()
+        let xs: &ffi::Unitset = self.iter.underlying();
+        unsafe { xs.buildAddon(utype) }
     }
     pub fn train(&self, utype: UnitType) -> bool {
-        todo!()
+        let xs: &ffi::Unitset = self.iter.underlying();
+        unsafe { xs.train(utype) }
     }
     pub fn morph(&self, utype: UnitType) -> bool {
-        todo!()
+        let xs: &ffi::Unitset = self.iter.underlying();
+        unsafe { xs.morph(utype) }
     }
     pub fn set_rally_point(&self, target: Unit) -> bool {
-        todo!()
+        let xs: &ffi::Unitset = self.iter.underlying();
+        unsafe { xs.setRallyPoint(target.raw) }
     }
     pub fn set_rally_point_1(&self, target: Position) -> bool {
-        todo!()
+        let xs: &ffi::Unitset = self.iter.underlying();
+        unsafe { xs.setRallyPoint1(target) }
     }
     pub fn move_(&self, target: Position, shift_queue_command: bool) -> bool {
-        todo!()
+        let xs: &ffi::Unitset = self.iter.underlying();
+        unsafe { ffi::move_(xs, target, shift_queue_command) }
     }
     pub fn patrol(&self, target: Position, shift_queue_command: bool) -> bool {
-        todo!()
+        let xs: &ffi::Unitset = self.iter.underlying();
+        unsafe { xs.patrol(target, shift_queue_command) }
     }
     pub fn hold_position(&self, shift_queue_command: bool) -> bool {
-        todo!()
+        let xs: &ffi::Unitset = self.iter.underlying();
+        unsafe { xs.holdPosition(shift_queue_command) }
     }
     pub fn stop(&self, shift_queue_command: bool) -> bool {
-        todo!()
+        let xs: &ffi::Unitset = self.iter.underlying();
+        unsafe { xs.stop(shift_queue_command) }
     }
     pub fn follow(&self, target: Unit, shift_queue_command: bool) -> bool {
-        todo!()
+        let xs: &ffi::Unitset = self.iter.underlying();
+        unsafe { xs.follow(target, shift_queue_command) }
     }
     pub fn gather(&self, target: Unit, shift_queue_command: bool) -> bool {
-        todo!()
+        let xs: &ffi::Unitset = self.iter.underlying();
+        unsafe { xs.gather(target, shift_queue_command) }
     }
     pub fn return_cargo(&self, shift_queue_command: bool) -> bool {
-        todo!()
+        let xs: &ffi::Unitset = self.iter.underlying();
+        unsafe { xs.returnCargo(shift_queue_command) }
     }
     pub fn repair(&self, target: Unit, shift_queue_command: bool) -> bool {
-        todo!()
+        let xs: &ffi::Unitset = self.iter.underlying();
+        unsafe { xs.repair(target.raw, shift_queue_command) }
     }
     pub fn burrow(&self) -> bool {
-        todo!()
+        let xs: &ffi::Unitset = self.iter.underlying();
+        unsafe { xs.burrow() }
     }
     pub fn unburrow(&self) -> bool {
-        todo!()
+        let xs: &ffi::Unitset = self.iter.underlying();
+        unsafe { xs.unburrow() }
     }
     pub fn cloak(&self) -> bool {
-        todo!()
+        let xs: &ffi::Unitset = self.iter.underlying();
+        unsafe { xs.cloak() }
     }
     pub fn decloak(&self) -> bool {
-        todo!()
+        let xs: &ffi::Unitset = self.iter.underlying();
+        unsafe { xs.decloak() }
     }
     pub fn siege(&self) -> bool {
-        todo!()
+        let xs: &ffi::Unitset = self.iter.underlying();
+        unsafe { xs.siege() }
     }
     pub fn unsiege(&self) -> bool {
-        todo!()
+        let xs: &ffi::Unitset = self.iter.underlying();
+        unsafe { xs.unsiege() }
     }
     pub fn lift(&self) -> bool {
-        todo!()
+        let xs: &ffi::Unitset = self.iter.underlying();
+        unsafe { xs.lift() }
     }
     pub fn load(&self, target: Unit, shift_queue_command: bool) -> bool {
-        todo!()
+        let xs: &ffi::Unitset = self.iter.underlying();
+        unsafe { xs.load(target.raw, shift_queue_command) }
     }
     pub fn unload_all(&self, shift_queue_command: bool) -> bool {
-        todo!()
+        let xs: &ffi::Unitset = self.iter.underlying();
+        unsafe { xs.unloadAll(shift_queue_command) }
     }
     pub fn unload_all_position(&self, target: Position, shift_queue_command: bool) -> bool {
-        todo!()
+        let xs: &ffi::Unitset = self.iter.underlying();
+        unsafe { xs.unloadAllPosition(target, shift_queue_command) }
     }
     pub fn right_click(&self, target: Unit, shift_queue_command: bool) -> bool {
-        todo!()
+        let xs: &ffi::Unitset = self.iter.underlying();
+        unsafe { xs.rightClick(target.raw, shift_queue_command) }
     }
     pub fn right_click_1(&self, target: Position, shift_queue_command: bool) -> bool {
-        todo!()
+        let xs: &ffi::Unitset = self.iter.underlying();
+        unsafe { xs.rightClick(target, shift_queue_command) }
     }
     pub fn halt_construction(&self) -> bool {
-        todo!()
+        let xs: &ffi::Unitset = self.iter.underlying();
+        unsafe { xs.haltConstruction() }
     }
     pub fn cancel_construction(&self) -> bool {
-        todo!()
+        let xs: &ffi::Unitset = self.iter.underlying();
+        unsafe { xs.cancelConstruction() }
     }
     pub fn cancel_addon(&self) -> bool {
-        todo!()
+        let xs: &ffi::Unitset = self.iter.underlying();
+        unsafe { xs.cancelAddon() }
     }
     pub fn cancel_train(&self, slot: i32) -> bool {
-        todo!()
+        let xs: &ffi::Unitset = self.iter.underlying();
+        unsafe { xs.cancelTrain(slot) }
     }
     pub fn cancel_morph(&self) -> bool {
-        todo!()
+        let xs: &ffi::Unitset = self.iter.underlying();
+        unsafe { xs.cancelMorph() }
     }
     pub fn cancel_research(&self) -> bool {
-        todo!()
+        let xs: &ffi::Unitset = self.iter.underlying();
+        unsafe { xs.cancelResearch() }
     }
     pub fn cancel_upgrade(&self) -> bool {
-        todo!()
+        let xs: &ffi::Unitset = self.iter.underlying();
+        unsafe { xs.cancelUpgrade() }
     }
     pub fn use_tech(&self, tech: TechType, target: Unit) -> bool {
-        todo!()
+        let xs: &ffi::Unitset = self.iter.underlying();
+        unsafe { xs.useTech(tech, target.raw) }
     }
     pub fn use_tech_1(&self, tech: TechType, target: Position) -> bool {
-        todo!()
+        let xs: &ffi::Unitset = self.iter.underlying();
+        unsafe { xs.useTech(tech, target) }
     }
 }
