@@ -71,8 +71,10 @@ pub mod ffi {
         type Event;
         type UnitFilter;
 
+        pub type Bulletset;
         pub type Forceset;
         pub type Playerset;
+        pub type Regionset;
         pub type Unitset;
 
         type Position = crate::bw::position::Position;
@@ -107,7 +109,7 @@ pub mod ffi {
     //     unsafe fn getPlayers () -> Playerset;
     // }
 
-    unsafe extern "C++" {
+    extern "C++" {
         // unfortunately we have to create our type: https://github.com/dtolnay/cxx/issues/796
         pub type c_void;
 
@@ -129,7 +131,8 @@ pub mod ffi {
 
     // BWAPI::Unitset
     extern "C++" {
-
+        pub unsafe fn getClosestUnit(uset: &Unitset, pred: fn(Unit) -> bool, radius: i32) -> *const UnitInterface;
+        pub unsafe fn getInterceptors(uset: &Unitset) -> UniquePtr<UnitIterator>;
     }
 
     // BWAPI::Game

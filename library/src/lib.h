@@ -39,10 +39,15 @@ public:
     void onUnitComplete(BWAPI::Unit unit) noexcept override { on_unit_complete(*this, unit); }
 };
 
+using UnitFilter = rust::Fn<bool(BWAPI::Unit)>;
+
+const BWAPI::UnitInterface* getClosestUnit(const BWAPI::Unitset &uset, UnitFilter pred, int radius);
+std::unique_ptr<UnitIterator> getInterceptors(const BWAPI::Unitset &uset);
+
 void Game_debug(BWAPI::Game *game);
 void sendText(BWAPI::Game *game, rust::Str text);
 std::unique_ptr<UnitIterator> getAllUnits(BWAPI::Game *game);
-std::unique_ptr<UnitIterator> getUnitsInRadius(BWAPI::Game *game, BWAPI::Position position, int radius, rust::Fn<bool(BWAPI::Unit)> pred);
+std::unique_ptr<UnitIterator> getUnitsInRadius(BWAPI::Game *game, BWAPI::Position position, int radius, UnitFilter pred);
 
 int Unit_getId(const BWAPI::UnitInterface *unit);
 BWAPI::UnitType Unit_getType(const BWAPI::UnitInterface *unit);

@@ -39,11 +39,14 @@ impl Iterator for Unitset {
 
 impl Unitset {
     pub fn get_closest_unit(&self, pred: UnitFilter, radius: i32) -> Unit {
-        let x: &ffi::Unitset = unsafe { self.iter.underlying() };
-        todo!()
+        let xs: &ffi::Unitset = unsafe { self.iter.underlying() };
+        let u: *const ffi::UnitInterface = unsafe { ffi::getClosestUnit(xs, pred, radius) };
+        unsafe { Unit::from_raw(u) }
     }
     pub fn get_interceptors(&self) -> Unitset {
-        todo!()
+        let xs: &ffi::Unitset = unsafe { self.iter.underlying() };
+        let iter: UniquePtr<ffi::UnitIterator> = unsafe { ffi::getInterceptors(xs) };
+        Unitset { iter }
     }
     pub fn get_larva(&self) -> Unitset {
         todo!()
