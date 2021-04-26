@@ -9,7 +9,6 @@ use crate::{
 };
 use crate::ffi;
 use crate::ffi::c_void;
-use crate::from_raw::FromRaw;
 use std::ptr::null;
 use cxx::UniquePtr;
 
@@ -22,10 +21,10 @@ impl Iterator for Unitset {
     type Item = Unit;
 
     fn next(&mut self) -> Option<Self::Item> {
-        let raw = unsafe { self.iter.pin_mut().next() };
+        let raw: *const ffi::UnitInterface = unsafe { self.iter.pin_mut().next() };
         if raw != null() {
             // println!("{:p}", raw);
-            Some(unsafe { Unit::from_raw(raw as *const c_void) })
+            Some(unsafe { Unit::from_raw(raw) })
         } else {
             None
         }

@@ -2,7 +2,7 @@
 #[allow(non_snake_case)]
 pub mod bw;
 pub mod prelude;
-pub mod from_raw;
+mod sys;
 
 use crate::prelude::{AIModule, BoxedAIModule, Event, Game, GAME};
 use cxx::CxxString;
@@ -10,7 +10,6 @@ use once_cell::sync::OnceCell;
 use std::fmt;
 use std::fmt::{Debug, Formatter};
 use std::pin::Pin;
-use crate::from_raw::FromRaw;
 
 #[cfg(windows)]
 #[no_mangle]
@@ -670,13 +669,13 @@ fn on_send_text(wrapper: Pin<&mut ffi::AIModuleWrapper>, text: &CxxString) {
     wrapper.get_box().on_event(Event::OnSendText(text.to_string()));
 }
 fn on_receive_text(wrapper: Pin<&mut ffi::AIModuleWrapper>, player: *const ffi::PlayerInterface, text: &CxxString) {
-    let player = unsafe { crate::bw::player::Player::from_raw(player as *const ffi::c_void) };
+    let player = unsafe { crate::bw::player::Player::from_raw(player) };
     wrapper
         .get_box()
         .on_event(Event::OnReceiveText(player, text.to_string()));
 }
 fn on_player_left(wrapper: Pin<&mut ffi::AIModuleWrapper>, player: *const ffi::PlayerInterface) {
-    let player = unsafe { crate::bw::player::Player::from_raw(player as *const ffi::c_void) };
+    let player = unsafe { crate::bw::player::Player::from_raw(player) };
     wrapper.get_box().on_event(Event::OnPlayerLeft(player));
 }
 fn on_nuke_detect(wrapper: Pin<&mut ffi::AIModuleWrapper>, target: ffi::Position) {
@@ -687,42 +686,42 @@ fn on_nuke_detect(wrapper: Pin<&mut ffi::AIModuleWrapper>, target: ffi::Position
     wrapper.get_box().on_event(Event::OnNukeDetect(target));
 }
 fn on_unit_discover(wrapper: Pin<&mut ffi::AIModuleWrapper>, unit: *const ffi::UnitInterface) {
-    let unit = unsafe { crate::bw::unit::Unit::from_raw(unit as *const ffi::c_void) };
+    let unit = unsafe { crate::bw::unit::Unit::from_raw(unit) };
     wrapper.get_box().on_event(Event::OnUnitDiscover(unit));
 }
 fn on_unit_evade(wrapper: Pin<&mut ffi::AIModuleWrapper>, unit: *const ffi::UnitInterface) {
-    let unit = unsafe { crate::bw::unit::Unit::from_raw(unit as *const ffi::c_void) };
+    let unit = unsafe { crate::bw::unit::Unit::from_raw(unit) };
     wrapper.get_box().on_event(Event::OnUnitEvade(unit));
 }
 fn on_unit_show(wrapper: Pin<&mut ffi::AIModuleWrapper>, unit: *const ffi::UnitInterface) {
-    let unit = unsafe { crate::bw::unit::Unit::from_raw(unit as *const ffi::c_void) };
+    let unit = unsafe { crate::bw::unit::Unit::from_raw(unit) };
     wrapper.get_box().on_event(Event::OnUnitShow(unit));
 }
 fn on_unit_hide(wrapper: Pin<&mut ffi::AIModuleWrapper>, unit: *const ffi::UnitInterface) {
-    let unit = unsafe { crate::bw::unit::Unit::from_raw(unit as *const ffi::c_void) };
+    let unit = unsafe { crate::bw::unit::Unit::from_raw(unit) };
     wrapper.get_box().on_event(Event::OnUnitHide(unit));
 }
 fn on_unit_create(wrapper: Pin<&mut ffi::AIModuleWrapper>, unit: *const ffi::UnitInterface) {
-    let unit = unsafe { crate::bw::unit::Unit::from_raw(unit as *const ffi::c_void) };
+    let unit = unsafe { crate::bw::unit::Unit::from_raw(unit) };
     wrapper.get_box().on_event(Event::OnUnitCreate(unit));
 }
 fn on_unit_destroy(wrapper: Pin<&mut ffi::AIModuleWrapper>, unit: *const ffi::UnitInterface) {
-    let unit = unsafe { crate::bw::unit::Unit::from_raw(unit as *const ffi::c_void) };
+    let unit = unsafe { crate::bw::unit::Unit::from_raw(unit) };
     wrapper.get_box().on_event(Event::OnUnitDestroy(unit));
 }
 fn on_unit_morph(wrapper: Pin<&mut ffi::AIModuleWrapper>, unit: *const ffi::UnitInterface) {
-    let unit = unsafe { crate::bw::unit::Unit::from_raw(unit as *const ffi::c_void) };
+    let unit = unsafe { crate::bw::unit::Unit::from_raw(unit) };
     wrapper.get_box().on_event(Event::OnUnitMorph(unit));
 }
 fn on_unit_renegade(wrapper: Pin<&mut ffi::AIModuleWrapper>, unit: *const ffi::UnitInterface) {
-    let unit = unsafe { crate::bw::unit::Unit::from_raw(unit as *const ffi::c_void) };
+    let unit = unsafe { crate::bw::unit::Unit::from_raw(unit) };
     wrapper.get_box().on_event(Event::OnUnitRenegade(unit));
 }
 fn on_save_game(wrapper: Pin<&mut ffi::AIModuleWrapper>, game_name: &CxxString) {
     wrapper.get_box().on_event(Event::OnSaveGame(game_name.to_string()));
 }
 fn on_unit_complete(wrapper: Pin<&mut ffi::AIModuleWrapper>, unit: *const ffi::UnitInterface) {
-    let unit = unsafe { crate::bw::unit::Unit::from_raw(unit as *const ffi::c_void) };
+    let unit = unsafe { crate::bw::unit::Unit::from_raw(unit) };
     wrapper.get_box().on_event(Event::OnUnitComplete(unit));
 }
 //------------------- endregion -------------------
