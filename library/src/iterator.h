@@ -12,16 +12,16 @@
 #include "BWAPI/Unitset.h"
 
 template<typename Container, typename Out>
-class IteratorBase {
+class BaseIterator {
 public:
-    virtual ~IteratorBase() { }
+    virtual ~BaseIterator() { }
     virtual Out next() = 0;
     virtual unsigned long sizeHint() const = 0;
     virtual Container& underlying() const = 0;
 };
 
 template<typename Container, typename Out>
-class OwnIterator : public IteratorBase<Container, Out> {
+class OwnIterator : public BaseIterator<Container, Out> {
 public:
     using IterType = typename std::remove_const<typename Container::const_iterator>::type;
 //    using Out = typename std::iterator_traits<typename Container::const_iterator>::value_type;
@@ -51,7 +51,7 @@ public:
 };
 
 template<typename Container, typename Out>
-class RefIterator : public IteratorBase<Container, Out> {
+class RefIterator : public BaseIterator<Container, Out> {
 public:
     using IterType = typename std::remove_const<typename Container::const_iterator>::type;
 //    using Out = typename std::iterator_traits<typename Container::const_iterator>::value_type;
@@ -80,22 +80,22 @@ public:
     }
 };
 
-using BulletIterator = IteratorBase<const BWAPI::Bulletset, const BWAPI::BulletInterface *>;
+using BulletIterator = BaseIterator<const BWAPI::Bulletset, const BWAPI::BulletInterface *>;
 using BulletIteratorOwn = OwnIterator<const BWAPI::Bulletset, const BWAPI::BulletInterface *>;
 using BulletIteratorRef = RefIterator<const BWAPI::Bulletset, const BWAPI::BulletInterface *>;
 
-using ForceIterator = IteratorBase<const BWAPI::Forceset, const BWAPI::ForceInterface *>;
-using ForceIteratorOwn = OwnIterator<const BWAPI::Forceset, const BWAPI::ForceInterface *>;
-using ForceIteratorRef = RefIterator<const BWAPI::Forceset, const BWAPI::ForceInterface *>;
+using ForcesetIterator = BaseIterator<const BWAPI::Forceset, const BWAPI::ForceInterface *>;
+using ForcesetIteratorOwn = OwnIterator<const BWAPI::Forceset, const BWAPI::ForceInterface *>;
+using ForcesetIteratorRef = RefIterator<const BWAPI::Forceset, const BWAPI::ForceInterface *>;
 
-using PlayerIterator = IteratorBase<const BWAPI::Playerset, const BWAPI::PlayerInterface *>;
-using PlayerIteratorOwn = OwnIterator<const BWAPI::Playerset, const BWAPI::PlayerInterface *>;
-using PlayerIteratorRef = RefIterator<const BWAPI::Playerset, const BWAPI::PlayerInterface *>;
+using PlayersetIterator = BaseIterator<const BWAPI::Playerset, const BWAPI::PlayerInterface *>;
+using PlayersetIteratorOwn = OwnIterator<const BWAPI::Playerset, const BWAPI::PlayerInterface *>;
+using PlayersetIteratorRef = RefIterator<const BWAPI::Playerset, const BWAPI::PlayerInterface *>;
 
-using RegionIterator = IteratorBase<const BWAPI::Regionset, const BWAPI::RegionInterface *>;
-using RegionIteratorOwn = OwnIterator<const BWAPI::Regionset, const BWAPI::RegionInterface *>;
-using RegionIteratorRef = RefIterator<const BWAPI::Regionset, const BWAPI::RegionInterface *>;
+using RegionsetIterator = BaseIterator<const BWAPI::Regionset, const BWAPI::RegionInterface *>;
+using RegionsetIteratorOwn = OwnIterator<const BWAPI::Regionset, const BWAPI::RegionInterface *>;
+using RegionsetIteratorRef = RefIterator<const BWAPI::Regionset, const BWAPI::RegionInterface *>;
 
-using UnitIterator = IteratorBase<const BWAPI::Unitset, const BWAPI::UnitInterface *>;
-using UnitIteratorOwn = OwnIterator<const BWAPI::Unitset, const BWAPI::UnitInterface *>;
-using UnitIteratorRef = RefIterator<const BWAPI::Unitset, const BWAPI::UnitInterface *>;
+using UnitsetIterator = BaseIterator<const BWAPI::Unitset, const BWAPI::UnitInterface *>;
+using UnitsetIteratorOwn = OwnIterator<const BWAPI::Unitset, const BWAPI::UnitInterface *>;
+using UnitsetIteratorRef = RefIterator<const BWAPI::Unitset, const BWAPI::UnitInterface *>;

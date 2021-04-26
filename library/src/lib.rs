@@ -114,17 +114,17 @@ pub mod ffi {
         // unfortunately we have to create our type: https://github.com/dtolnay/cxx/issues/796
         pub type c_void;
 
-        pub type UnitIterator;
-        pub fn next(self: Pin<&mut UnitIterator>) -> *const UnitInterface;
-        pub fn sizeHint(self: &UnitIterator) -> usize;
-        pub fn underlying(self: &UnitIterator) -> &Unitset;
+        pub type UnitsetIterator;
+        pub fn next(self: Pin<&mut UnitsetIterator>) -> *const UnitInterface;
+        pub fn sizeHint(self: &UnitsetIterator) -> usize;
+        pub fn underlying(self: &UnitsetIterator) -> &Unitset;
 
-        pub type PlayerIterator;
-        pub fn next(self: Pin<&mut PlayerIterator>) -> *const PlayerInterface;
-        pub fn sizeHint(self: &PlayerIterator) -> usize;
-        pub fn underlying(self: &PlayerIterator) -> &Playerset;
+        pub type PlayersetIterator;
+        pub fn next(self: Pin<&mut PlayersetIterator>) -> *const PlayerInterface;
+        pub fn sizeHint(self: &PlayersetIterator) -> usize;
+        pub fn underlying(self: &PlayersetIterator) -> &Playerset;
 
-
+        // helpers so far, unit api is coming
         pub unsafe fn Unit_getId(unit: *const UnitInterface) -> i32;
         pub unsafe fn Unit_getType(unit: *const UnitInterface) -> UnitType;
         pub unsafe fn Unit_getPosition(unit: *const UnitInterface) -> Position;
@@ -133,11 +133,11 @@ pub mod ffi {
     // BWAPI::Unitset
     unsafe extern "C++" {
         pub fn getClosestUnit(set: &Unitset, pred: fn(Unit) -> bool, radius: i32) -> *const UnitInterface;
-        pub fn getInterceptors(set: &Unitset) -> UniquePtr<UnitIterator>;
-        pub fn getLarva(set: &Unitset) -> UniquePtr<UnitIterator>;
-        pub fn getLoadedUnits(set: &Unitset) -> UniquePtr<UnitIterator>;
+        pub fn getInterceptors(set: &Unitset) -> UniquePtr<UnitsetIterator>;
+        pub fn getLarva(set: &Unitset) -> UniquePtr<UnitsetIterator>;
+        pub fn getLoadedUnits(set: &Unitset) -> UniquePtr<UnitsetIterator>;
         pub fn getPosition(self: &Unitset) -> Position;
-        pub fn getUnitsInRadius_Unitset(set: &Unitset, radius: i32, pred: fn(Unit) -> bool) -> UniquePtr<UnitIterator>;
+        pub fn getUnitsInRadius_Unitset(set: &Unitset, radius: i32, pred: fn(Unit) -> bool) -> UniquePtr<UnitsetIterator>;
         pub unsafe fn setClientInfo(self: &Unitset, client_info: *mut c_void, index: i32);
         #[cxx_name = "setClientInfo"]
         pub fn setClientInfo1(self: &Unitset, client_info: i32, index: i32);
@@ -192,8 +192,8 @@ pub mod ffi {
 
         // methods that need manual shims to C++
         unsafe fn sendText(game: *mut Game, text: &str);
-        unsafe fn getAllUnits(game: *mut Game) -> UniquePtr<UnitIterator>;
-        unsafe fn getUnitsInRadius_Game(game: *mut Game, position: Position, radius: i32, pred: fn(Unit) -> bool) -> UniquePtr<UnitIterator>;
+        unsafe fn getAllUnits(game: *mut Game) -> UniquePtr<UnitsetIterator>;
+        unsafe fn getUnitsInRadius_Game(game: *mut Game, position: Position, radius: i32, pred: fn(Unit) -> bool) -> UniquePtr<UnitsetIterator>;
 
         unsafe fn getFrameCount(self: &Game) -> i32;
         unsafe fn getForces(self: &Game) -> &Forceset;
