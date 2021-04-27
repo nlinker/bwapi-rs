@@ -4,20 +4,26 @@ use once_cell::sync::Lazy;
 use crate::bw::game::Game;
 
 pub mod ai_module;
+pub mod color;
+pub mod coordinate_type;
 pub mod force;
 pub mod forceset;
 pub mod game;
+pub mod game_type;
+#[allow(non_upper_case_globals)]
+pub mod input;
 pub mod iterator;
 pub mod player;
 pub mod playerset;
 pub mod position;
+pub mod race;
 pub mod tech_type;
 pub mod unit;
 pub mod unit_command;
 pub mod unit_filter;
 pub mod unit_type;
-#[allow(unused_variables)]
 pub mod unitset;
+pub mod upgrade_type;
 
 /// Updated on gameInit call
 pub static GAME: Lazy<Arc<Mutex<Game>>> = Lazy::new(|| Arc::new(Mutex::new(Game { raw: null_mut() })));

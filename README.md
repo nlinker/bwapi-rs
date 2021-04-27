@@ -58,7 +58,8 @@ TODO
 
 ## Differences from the original API
 
-1. Method `Game::self() -> Player` renamed to `self_player()` since `self` is a keyword in Rust.
+1. Method `Game::self() -> Player` renamed to `self_()` since `self` is a keyword in Rust. 
+   The same is for `move_`.
 2. Many overloaded methods "compressed" to one the most general method, since Rust 
    has the only overloading on traits. Others has suffixes.
 

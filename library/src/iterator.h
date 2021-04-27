@@ -80,9 +80,9 @@ public:
     }
 };
 
-using BulletIterator = BaseIterator<const BWAPI::Bulletset, const BWAPI::BulletInterface *>;
-using BulletIteratorOwn = OwnIterator<const BWAPI::Bulletset, const BWAPI::BulletInterface *>;
-using BulletIteratorRef = RefIterator<const BWAPI::Bulletset, const BWAPI::BulletInterface *>;
+using BulletsetIterator = BaseIterator<const BWAPI::Bulletset, const BWAPI::BulletInterface *>;
+using BulletsetIteratorOwn = OwnIterator<const BWAPI::Bulletset, const BWAPI::BulletInterface *>;
+using BulletsetIteratorRef = RefIterator<const BWAPI::Bulletset, const BWAPI::BulletInterface *>;
 
 using ForcesetIterator = BaseIterator<const BWAPI::Forceset, const BWAPI::ForceInterface *>;
 using ForcesetIteratorOwn = OwnIterator<const BWAPI::Forceset, const BWAPI::ForceInterface *>;

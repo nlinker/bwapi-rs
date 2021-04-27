@@ -106,7 +106,7 @@ impl Unitset {
     }
     pub fn move_(&self, target: Position, shift_queue_command: bool) -> bool {
         let xs: &ffi::Unitset = self.iter.underlying();
-        ffi::move_(xs, target, shift_queue_command)
+        ffi::_unitset_move(xs, target, shift_queue_command)
     }
     pub fn patrol(&self, target: Position, shift_queue_command: bool) -> bool {
         let xs: &ffi::Unitset = self.iter.underlying();

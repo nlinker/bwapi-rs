@@ -7,6 +7,7 @@
 #include "BWAPI/Game.h"
 #include "BWAPI/Unit.h"
 #include "library/src/lib.rs.h"
+#include "../openbw/bwapilib/include/BWAPI/Game.h"
 
 int cpp_test();
 
@@ -40,18 +41,47 @@ public:
 };
 
 using UnitFilter = rust::Fn<bool(BWAPI::Unit)>;
+using BestUnitFilter = rust::Fn<BWAPI::Unit(BWAPI::Unit, BWAPI::Unit)>;
 
-const BWAPI::UnitInterface *getClosestUnit(const BWAPI::Unitset &set, UnitFilter pred, int radius);
-std::unique_ptr<UnitsetIterator> getInterceptors(const BWAPI::Unitset &set);
-std::unique_ptr<UnitsetIterator> getLarva(const BWAPI::Unitset &set);
-std::unique_ptr<UnitsetIterator> getLoadedUnits(const BWAPI::Unitset &set);
-std::unique_ptr<UnitsetIterator> getUnitsInRadius_Unitset(const BWAPI::Unitset &set, int radius, UnitFilter pred);
-bool move_(const BWAPI::Unitset &set, BWAPI::Position target, bool shift_queue_command);
+const BWAPI::UnitInterface *_unitset_getClosestUnit(const BWAPI::Unitset &set, UnitFilter pred, int radius);
+std::unique_ptr<UnitsetIterator> _unitset_getInterceptors(const BWAPI::Unitset &set);
+std::unique_ptr<UnitsetIterator> _unitset_getLarva(const BWAPI::Unitset &set);
+std::unique_ptr<UnitsetIterator> _unitset_getLoadedUnits(const BWAPI::Unitset &set);
+std::unique_ptr<UnitsetIterator> _unitset_getUnitsInRadius(const BWAPI::Unitset &set, int radius, UnitFilter pred);
+bool _unitset_move(const BWAPI::Unitset &set, BWAPI::Position target, bool shift_queue_command);
 
-void Game_debug(BWAPI::Game *game);
-void sendText(BWAPI::Game *game, rust::Str text);
-std::unique_ptr<UnitsetIterator> getAllUnits(BWAPI::Game *game);
-std::unique_ptr<UnitsetIterator> getUnitsInRadius_Game(BWAPI::Game *game, BWAPI::Position position, int radius, UnitFilter pred);
+void _game_debug(const BWAPI::Game &game);
+std::unique_ptr<PlayersetIterator> _game_allies(BWAPI::Game& game);
+std::unique_ptr<PlayersetIterator> _game_enemies(BWAPI::Game &game);
+std::unique_ptr<RegionsetIterator> _game_getAllRegions(const BWAPI::Game &game);
+std::unique_ptr<UnitsetIterator> _game_getAllUnits(const BWAPI::Game &game);
+BWAPI::UnitInterface* _game_getBestUnit(const BWAPI::Game &game, BestUnitFilter best, UnitFilter pred, BWAPI::Position center, int radius);
+std::unique_ptr<BulletsetIterator> _game_getBullets(const BWAPI::Game &game);
+BWAPI::UnitInterface *_game_getClosestUnit(const BWAPI::Game &game, BWAPI::Position center, UnitFilter pred, int radius);
+BWAPI::UnitInterface *_game_getClosestUnitInRectangle(const BWAPI::Game &game, BWAPI::Position center, UnitFilter pred, int left, int top, int right, int bottom);
+std::unique_ptr<ForcesetIterator> _game_getForces(const BWAPI::Game &game);
+std::unique_ptr<UnitsetIterator> _game_getGeysers(const BWAPI::Game &game);
+std::unique_ptr<UnitsetIterator> _game_getMinerals(const BWAPI::Game &game);
+std::unique_ptr<UnitsetIterator> _game_getNeutralUnits(const BWAPI::Game &game);
+std::unique_ptr<PlayersetIterator> _game_getPlayers(const BWAPI::Game &game);
+std::unique_ptr<UnitsetIterator> _game_getUnitsInRadius(const BWAPI::Game &game, BWAPI::Position position, int radius, UnitFilter pred);
+std::unique_ptr<UnitsetIterator> _game_getUnitsInRectangle(const BWAPI::Game &game, BWAPI::Position topLeft, BWAPI::Position bottomRight, UnitFilter pred);
+std::unique_ptr<UnitsetIterator> _game_getUnitsOnTile(const BWAPI::Game &game, BWAPI::TilePosition tile, UnitFilter pred);
+std::unique_ptr<std::string> _game_mapFileName(const BWAPI::Game& game);
+std::unique_ptr<std::string> _game_mapHash(const BWAPI::Game& game);
+std::unique_ptr<std::string> _game_mapName(const BWAPI::Game& game);
+std::unique_ptr<std::string> _game_mapPathName(const BWAPI::Game& game);
+std::unique_ptr<PlayersetIterator> _game_observers(BWAPI::Game &game);
+void _game_printf(BWAPI::Game &game, rust::Str text);
+BWAPI::PlayerInterface *_game_self(const BWAPI::Game &game);
+void _game_sendText(BWAPI::Game &game, rust::Str text);
+void _game_sendTextEx(BWAPI::Game &game, bool toAllies, rust::Str text);
+std::unique_ptr<UnitsetIterator> _game_getSelectedUnits(const BWAPI::Game &game);
+std::unique_ptr<UnitsetIterator> _game_getStaticGeysers(const BWAPI::Game &game);
+std::unique_ptr<UnitsetIterator> _game_getStaticMinerals(const BWAPI::Game &game);
+std::unique_ptr<UnitsetIterator> _game_getStaticNeutralUnits(const BWAPI::Game &game);
+bool _game_setMap(BWAPI::Game &game, rust::Str text);
+
 
 int Unit_getId(const BWAPI::UnitInterface *unit);
 BWAPI::UnitType Unit_getType(const BWAPI::UnitInterface *unit);

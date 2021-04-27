@@ -58,13 +58,11 @@ pub mod ffi {
         pub type DamageType;
         pub type Error;
         pub type ExplosionType;
-        pub type GameType;
         pub type Order;
         pub type PlayerType;
         pub type Race;
         pub type UnitCommandType;
         pub type UnitSizeType;
-        pub type UpgradeType;
         pub type WeaponType;
 
         type Event;
@@ -76,15 +74,31 @@ pub mod ffi {
         pub type Regionset;
         pub type Unitset;
 
+        type UpgradeType = crate::bw::upgrade_type::UpgradeType;
+        type GameType = crate::bw::game_type::GameType;
+        type CoordinateType = crate::bw::coordinate_type::CoordinateType;
         type Position = crate::bw::position::Position;
         type TilePosition = crate::bw::position::TilePosition;
         type WalkPosition = crate::bw::position::WalkPosition;
         type UnitType = crate::bw::unit_type::UnitType;
         type UnitCommand = crate::bw::unit_command::UnitCommand;
         type TechType = crate::bw::tech_type::TechType;
-    }
-    // bool (BWAPI::Game::*)(::BWAPI::TilePosition, ::BWAPI::UnitType, const ::BWAPI::UnitInterface *, bool) const
-    // bool (BWAPI::Game::*)(BWAPI::TilePosition, BWAPI::UnitType, BWAPI::Unit, bool)
+        type TextSize = crate::bw::color::TextSize;
+        type MouseButton = crate::bw::input::MouseButton;
+        type Key = crate::bw::input::KeyButton;
+
+        // type UnitCommandType = BWAPI_UnitCommandTypes_Enum_Enum;
+        // type Error = BWAPI_Errors_Enum_Enum;
+        // type Flag = BWAPI_Flag_Enum;
+        // type Order = BWAPI_Orders_Enum_Enum;
+        // type DamageType = BWAPI_DamageTypes_Enum_Enum;
+        // type Race = crate::BWAPI_Races_Enum_Enum;
+        // type UnitSizeType = BWAPI_UnitSizeTypes_Enum_Enum;
+        // type UpgradeType = crate::BWAPI_UpgradeTypes_Enum_Enum;
+        // type WeaponType = crate::BWAPI_WeaponTypes_Enum_Enum;
+        // type ExplosionType = BWAPI_ExplosionTypes_Enum_Enum;
+
+}
 
     // BWAPI::BulletInterface
     // extern "C++" {
@@ -114,15 +128,35 @@ pub mod ffi {
         // unfortunately we have to create our type: https://github.com/dtolnay/cxx/issues/796
         pub type c_void;
 
-        pub type UnitsetIterator;
-        pub fn next(self: Pin<&mut UnitsetIterator>) -> *const UnitInterface;
-        pub fn sizeHint(self: &UnitsetIterator) -> usize;
-        pub fn underlying(self: &UnitsetIterator) -> &Unitset;
+        pub type BulletsetIterator;
+        pub fn next(self: Pin<&mut BulletsetIterator>) -> *const BulletInterface;
+        pub fn sizeHint(self: &BulletsetIterator) -> usize;
+        pub fn underlying(self: &BulletsetIterator) -> &Bulletset;
+
+        // pub type EventsetIterator;
+        // pub fn next(self: Pin<&mut EventsetIterator>) -> *const EventInterface;
+        // pub fn sizeHint(self: &EventsetIterator) -> usize;
+        // pub fn underlying(self: &EventsetIterator) -> &Eventset;
+
+        pub type ForcesetIterator;
+        pub fn next(self: Pin<&mut ForcesetIterator>) -> *const ForceInterface;
+        pub fn sizeHint(self: &ForcesetIterator) -> usize;
+        pub fn underlying(self: &ForcesetIterator) -> &Forceset;
 
         pub type PlayersetIterator;
         pub fn next(self: Pin<&mut PlayersetIterator>) -> *const PlayerInterface;
         pub fn sizeHint(self: &PlayersetIterator) -> usize;
         pub fn underlying(self: &PlayersetIterator) -> &Playerset;
+
+        pub type UnitsetIterator;
+        pub fn next(self: Pin<&mut UnitsetIterator>) -> *const UnitInterface;
+        pub fn sizeHint(self: &UnitsetIterator) -> usize;
+        pub fn underlying(self: &UnitsetIterator) -> &Unitset;
+
+        pub type RegionsetIterator;
+        pub fn next(self: Pin<&mut RegionsetIterator>) -> *const RegionInterface;
+        pub fn sizeHint(self: &RegionsetIterator) -> usize;
+        pub fn underlying(self: &RegionsetIterator) -> &Regionset;
 
         // helpers so far, unit api is coming
         pub unsafe fn Unit_getId(unit: *const UnitInterface) -> i32;
@@ -130,194 +164,188 @@ pub mod ffi {
         pub unsafe fn Unit_getPosition(unit: *const UnitInterface) -> Position;
     }
 
-    // BWAPI::Unitset
+    // region BWAPI::Unitset
     unsafe extern "C++" {
-        pub fn getClosestUnit(set: &Unitset, pred: fn(Unit) -> bool, radius: i32) -> *const UnitInterface;
-        pub fn getInterceptors(set: &Unitset) -> UniquePtr<UnitsetIterator>;
-        pub fn getLarva(set: &Unitset) -> UniquePtr<UnitsetIterator>;
-        pub fn getLoadedUnits(set: &Unitset) -> UniquePtr<UnitsetIterator>;
-        pub fn getPosition(self: &Unitset) -> Position;
-        pub fn getUnitsInRadius_Unitset(set: &Unitset, radius: i32, pred: fn(Unit) -> bool) -> UniquePtr<UnitsetIterator>;
-        pub unsafe fn setClientInfo(self: &Unitset, client_info: *mut c_void, index: i32);
+        fn _unitset_getClosestUnit(set: &Unitset, pred: fn(Unit) -> bool, radius: i32) -> *const UnitInterface;
+        fn _unitset_getInterceptors(set: &Unitset) -> UniquePtr<UnitsetIterator>;
+        fn _unitset_getLarva(set: &Unitset) -> UniquePtr<UnitsetIterator>;
+        fn _unitset_getLoadedUnits(set: &Unitset) -> UniquePtr<UnitsetIterator>;
+        fn getPosition(self: &Unitset) -> Position;
+        fn _unitset_getUnitsInRadius(set: &Unitset, radius: i32, pred: fn(Unit) -> bool) -> UniquePtr<UnitsetIterator>;
+        unsafe fn setClientInfo(self: &Unitset, clientInfo: *mut c_void, index: i32);
         #[cxx_name = "setClientInfo"]
-        pub fn setClientInfo1(self: &Unitset, client_info: i32, index: i32);
-        pub fn issueCommand(self: &Unitset, command: UnitCommand) -> bool;
-        pub unsafe fn attack(self: &Unitset, target: *mut UnitInterface, shift_queue_command: bool) -> bool;
+        fn setClientInfo1(self: &Unitset, client_info: i32, index: i32);
+        fn issueCommand(self: &Unitset, command: UnitCommand) -> bool;
+        unsafe fn attack(self: &Unitset, target: *mut UnitInterface, shiftQueueCommand: bool) -> bool;
         #[cxx_name = "attack"]
-        pub fn attack1(self: &Unitset, target: Position, shift_queue_command: bool) -> bool;
-        pub fn build(self: &Unitset, utype: UnitType, target: TilePosition) -> bool;
-        pub fn buildAddon(self: &Unitset, utype: UnitType) -> bool;
-        pub fn train(self: &Unitset, utype: UnitType) -> bool;
-        pub fn morph(self: &Unitset, utype: UnitType) -> bool;
-        pub unsafe fn setRallyPoint(self: &Unitset, target: *mut UnitInterface) -> bool;
+        fn attack1(self: &Unitset, target: Position, shiftQueueCommand: bool) -> bool;
+        fn build(self: &Unitset, utype: UnitType, target: TilePosition) -> bool;
+        fn buildAddon(self: &Unitset, utype: UnitType) -> bool;
+        fn train(self: &Unitset, utype: UnitType) -> bool;
+        fn morph(self: &Unitset, utype: UnitType) -> bool;
+        unsafe fn setRallyPoint(self: &Unitset, target: *mut UnitInterface) -> bool;
         #[cxx_name = "setRallyPoint"]
-        pub fn setRallyPoint1(self: &Unitset, target: Position) -> bool;
-        pub fn move_(set: &Unitset, target: Position, shift_queue_command: bool) -> bool;
-        pub fn patrol(self: &Unitset, target: Position, shift_queue_command: bool) -> bool;
-        pub fn holdPosition(self: &Unitset, shift_queue_command: bool) -> bool;
-        pub fn stop(self: &Unitset, shift_queue_command: bool) -> bool;
-        pub unsafe fn follow(self: &Unitset, target: *mut UnitInterface, shift_queue_command: bool) -> bool;
-        pub unsafe fn gather(self: &Unitset, target: *mut UnitInterface, shift_queue_command: bool) -> bool;
-        pub fn returnCargo(self: &Unitset, shift_queue_command: bool) -> bool;
-        pub unsafe fn repair(self: &Unitset, target: *mut UnitInterface, shift_queue_command: bool) -> bool;
-        pub fn burrow(self: &Unitset) -> bool;
-        pub fn unburrow(self: &Unitset) -> bool;
-        pub fn cloak(self: &Unitset) -> bool;
-        pub fn decloak(self: &Unitset) -> bool;
-        pub fn siege(self: &Unitset) -> bool;
-        pub fn unsiege(self: &Unitset) -> bool;
-        pub fn lift(self: &Unitset) -> bool;
-        pub unsafe fn load(self: &Unitset, target: *mut UnitInterface, shift_queue_command: bool) -> bool;
-        pub fn unloadAll(self: &Unitset, shift_queue_command: bool) -> bool;
+        fn setRallyPoint1(self: &Unitset, target: Position) -> bool;
+        fn _unitset_move(set: &Unitset, target: Position, shiftQueueCommand: bool) -> bool;
+        fn patrol(self: &Unitset, target: Position, shiftQueueCommand: bool) -> bool;
+        fn holdPosition(self: &Unitset, shiftQueueCommand: bool) -> bool;
+        fn stop(self: &Unitset, shiftQueueCommand: bool) -> bool;
+        unsafe fn follow(self: &Unitset, target: *mut UnitInterface, shiftQueueCommand: bool) -> bool;
+        unsafe fn gather(self: &Unitset, target: *mut UnitInterface, shiftQueueCommand: bool) -> bool;
+        fn returnCargo(self: &Unitset, shiftQueueCommand: bool) -> bool;
+        unsafe fn repair(self: &Unitset, target: *mut UnitInterface, shiftQueueCommand: bool) -> bool;
+        fn burrow(self: &Unitset) -> bool;
+        fn unburrow(self: &Unitset) -> bool;
+        fn cloak(self: &Unitset) -> bool;
+        fn decloak(self: &Unitset) -> bool;
+        fn siege(self: &Unitset) -> bool;
+        fn unsiege(self: &Unitset) -> bool;
+        fn lift(self: &Unitset) -> bool;
+        unsafe fn load(self: &Unitset, target: *mut UnitInterface, shiftQueueCommand: bool) -> bool;
+        fn unloadAll(self: &Unitset, shiftQueueCommand: bool) -> bool;
         #[cxx_name = "unloadAll"]
-        pub fn unloadAll1(self: &Unitset, target: Position, shift_queue_command: bool) -> bool;
-        pub unsafe fn rightClick(self: &Unitset, target: *mut UnitInterface, shift_queue_command: bool) -> bool;
+        fn unloadAll1(self: &Unitset, target: Position, shiftQueueCommand: bool) -> bool;
+        unsafe fn rightClick(self: &Unitset, target: *mut UnitInterface, shiftQueueCommand: bool) -> bool;
         #[cxx_name = "rightClick"]
-        pub fn rightClick1(self: &Unitset, target: Position, shift_queue_command: bool) -> bool;
-        pub fn haltConstruction(self: &Unitset) -> bool;
-        pub fn cancelConstruction(self: &Unitset) -> bool;
-        pub fn cancelAddon(self: &Unitset) -> bool;
-        pub fn cancelTrain(self: &Unitset, slot: i32) -> bool;
-        pub fn cancelMorph(self: &Unitset) -> bool;
-        pub fn cancelResearch(self: &Unitset) -> bool;
-        pub fn cancelUpgrade(self: &Unitset) -> bool;
-        pub unsafe fn useTech(self: &Unitset, tech: TechType, target: *mut UnitInterface) -> bool;
+        fn rightClick1(self: &Unitset, target: Position, shiftQueueCommand: bool) -> bool;
+        fn haltConstruction(self: &Unitset) -> bool;
+        fn cancelConstruction(self: &Unitset) -> bool;
+        fn cancelAddon(self: &Unitset) -> bool;
+        fn cancelTrain(self: &Unitset, slot: i32) -> bool;
+        fn cancelMorph(self: &Unitset) -> bool;
+        fn cancelResearch(self: &Unitset) -> bool;
+        fn cancelUpgrade(self: &Unitset) -> bool;
+        unsafe fn useTech(self: &Unitset, tech: TechType, target: *mut UnitInterface) -> bool;
         #[cxx_name = "useTech"]
-        pub fn useTech1(self: &Unitset, tech: TechType, target: Position) -> bool;
+        fn useTech1(self: &Unitset, tech: TechType, target: Position) -> bool;
     }
+    // endregion
 
-    // BWAPI::Game
-    extern "C++" {
-        unsafe fn Game_debug(game: *mut Game);
+    // region BWAPI::Game
+    unsafe extern "C++" {
+        pub fn _game_debug(game: &Game);
 
         // methods that need manual shims to C++
-        unsafe fn sendText(game: *mut Game, text: &str);
-        unsafe fn getAllUnits(game: *mut Game) -> UniquePtr<UnitsetIterator>;
-        unsafe fn getUnitsInRadius_Game(game: *mut Game, position: Position, radius: i32, pred: fn(Unit) -> bool) -> UniquePtr<UnitsetIterator>;
+        pub fn _game_allies(game: Pin<&mut Game>) -> UniquePtr<PlayersetIterator>;
+        pub unsafe fn canBuildHere(self: Pin<&mut Game>, position: TilePosition, uType: UnitType, builder: *mut UnitInterface, checkExplored: bool) -> bool;
+        pub unsafe fn canMake(self: &Game, utype: UnitType, builder: *mut UnitInterface) -> bool;
+        pub unsafe fn canResearch(self: Pin<&mut Game>, ttype: TechType, unit: *mut UnitInterface, checkCanIssueCommandType: bool) -> bool;
+        pub unsafe fn canUpgrade(self: Pin<&mut Game>, utype: UpgradeType, unit: *mut UnitInterface, checkCanIssueCommandType: bool) -> bool;
+        pub fn countdownTimer(self: &Game) -> i32;
+        pub fn elapsedTime(self: &Game) -> i32;
+        pub fn enableFlag(self: Pin<&mut Game>, flag: i32);
+        pub fn _game_enemies(game: Pin<&mut Game>) -> UniquePtr<PlayersetIterator>;
+        pub unsafe fn enemy(self: &Game) -> *mut PlayerInterface;
+        pub fn _game_getAllRegions(game: &Game) -> UniquePtr<RegionsetIterator>;
+        pub fn _game_getAllUnits(game: &Game) -> UniquePtr<UnitsetIterator>;
+        pub fn getAPM(self: &Game, includeSelects: bool) -> i32;
+        pub fn getAverageFPS(self: &Game) -> f64;
+        pub fn _game_getBestUnit(game: &Game, best: fn(Unit, Unit) -> Unit, pred: fn(Unit) -> bool, center: Position, radius: i32) -> *mut UnitInterface;
+        pub fn getBuildLocation(self: &Game, unitType: UnitType, desiredPosition: TilePosition, maxRange: i32, creep: bool) -> TilePosition;
+        pub fn _game_getBullets(game: &Game) -> UniquePtr<BulletsetIterator>;
+        pub fn getClientVersion(self: &Game) -> i32;
+        pub fn _game_getClosestUnit(game: &Game, center: Position, pred: fn(Unit) -> bool, radius: i32) -> *mut UnitInterface;
+        pub fn _game_getClosestUnitInRectangle(game: &Game, center: Position, pred: fn(Unit) -> bool, left: i32, top: i32, right: i32, bottom: i32) -> *mut UnitInterface;
+        pub unsafe fn getDamageFrom(self: &Game, fromType: UnitType, toType: UnitType, fromPlayer: *mut PlayerInterface, toPlayer: *mut PlayerInterface) -> i32;
+        pub unsafe fn getDamageTo(self: &Game, toType: UnitType, fromType: UnitType, toPlayer: *mut PlayerInterface, fromPlayer: *mut PlayerInterface) -> i32;
+        // pub fn getEvents(game: &Game) -> UniquePtr<EventIterator>;
+        pub fn getForce(self: &Game, forceId: i32) -> *mut ForceInterface;
+        pub fn _game_getForces(game: &Game) -> UniquePtr<ForcesetIterator>;
+        pub fn getFPS(self: &Game) -> i32;
+        pub fn getFrameCount(self: &Game) -> i32;
+        pub fn getGameType(self: &Game) -> GameType;
+        pub fn _game_getGeysers(game: &Game) -> UniquePtr<UnitsetIterator>;
+        pub fn getGroundHeight(self: &Game, position: TilePosition) -> i32;
+        pub fn getInstanceNumber(self: &Game) -> i32;
+        pub fn getKeyState(self: &Game, key: Key) -> bool;
+        // pub fn getLastError(self: &Game) -> Error;
+        pub fn getLastEventTime(self: &Game) -> i32;
+        pub fn getLatency(self: &Game) -> i32;
+        pub fn getLatencyFrames(self: &Game) -> i32;
+        pub fn getLatencyTime(self: &Game) -> i32;
+        pub fn _game_getMinerals(game: &Game) -> UniquePtr<UnitsetIterator>;
+        pub fn getMousePosition(self: &Game) -> Position;
+        pub fn getMouseState(self: &Game, button: MouseButton) -> bool;
+        pub fn _game_getNeutralUnits(game: &Game) -> UniquePtr<UnitsetIterator>;
+        // pub fn getNukeDots(self: &Game) -> Position::list;
+        pub fn getPlayer(self: &Game, playerId: i32) -> *mut PlayerInterface;
+        pub fn _game_getPlayers(game: &Game) -> UniquePtr<PlayersetIterator>;
+        pub fn getRandomSeed(self: &Game) -> u32;
+        pub fn getRegion(self: &Game, regionID: i32) -> *mut RegionInterface;
+        pub fn getRegionAt(self: &Game, position: Position) -> *mut RegionInterface;
+        pub fn getRemainingLatencyFrames(self: &Game) -> i32;
+        pub fn getRemainingLatencyTime(self: &Game) -> i32;
+        pub fn getReplayFrameCount(self: &Game) -> i32;
+        pub fn getRevision(self: &Game) -> i32;
+        pub fn getScreenPosition(self: &Game) -> Position;
+        pub fn _game_getSelectedUnits(game: &Game) -> UniquePtr<UnitsetIterator>;
+        // pub fn getStartLocations(self: &Game) -> TilePosition::list;
+        pub fn _game_getStaticGeysers(game: &Game) -> UniquePtr<UnitsetIterator>;
+        pub fn _game_getStaticMinerals(game: &Game) -> UniquePtr<UnitsetIterator>;
+        pub fn _game_getStaticNeutralUnits(game: &Game) -> UniquePtr<UnitsetIterator>;
+        pub fn getUnit(self: &Game, unitID: i32) -> *mut UnitInterface;
+        pub fn _game_getUnitsInRadius(game: &Game, position: Position, radius: i32, pred: fn(Unit) -> bool) -> UniquePtr<UnitsetIterator>;
+        pub fn _game_getUnitsInRectangle(game: &Game, topLeft: Position, bottomRight: Position, pred: fn(Unit) -> bool) -> UniquePtr<UnitsetIterator>;
+        pub fn _game_getUnitsOnTile(game: &Game, tile: TilePosition, pred: fn(Unit) -> bool) -> UniquePtr<UnitsetIterator>;
+        pub fn hasCreep(self: &Game, position: TilePosition) -> bool;
+        pub fn hasPath(self: &Game, source: Position, destination: Position) -> bool;
+        pub fn hasPower(self: &Game, position: TilePosition, unitType: UnitType) -> bool;
+        pub fn hasPowerPrecise(self: &Game, position: Position, unitType: UnitType) -> bool;
+        pub fn indexToUnit(self: &Game, unitIndex: i32) -> *mut UnitInterface;
+        pub fn isBattleNet(self: &Game) -> bool;
+        pub fn isBuildable(self: &Game, position: TilePosition, includeBuildings: bool) -> bool;
+        pub fn isDebug(self: &Game) -> bool;
+        pub fn isExplored(self: &Game, position: TilePosition) -> bool;
+        pub fn isFlagEnabled(self: &Game, flag: i32) -> bool;
+        pub fn isGUIEnabled(self: &Game) -> bool;
+        pub fn isInGame(self: &Game) -> bool;
+        pub fn isLatComEnabled(self: &Game) -> bool;
+        pub fn isMultiplayer(self: &Game) -> bool;
+        pub fn isPaused(self: &Game) -> bool;
+        pub fn isReplay(self: &Game) -> bool;
+        pub fn issueCommand(self: Pin<&mut Game>, units: &Unitset, command: UnitCommand) -> bool;
+        pub fn isVisible(self: &Game, position: TilePosition) -> bool;
+        pub fn isWalkable(self: &Game, position: WalkPosition) -> bool;
+        pub fn leaveGame(self: Pin<&mut Game>);
+        pub fn _game_mapFileName(game: &Game) -> UniquePtr<CxxString>;
+        pub fn _game_mapHash(game: &Game) -> UniquePtr<CxxString>;
+        pub fn mapHeight(self: &Game) -> i32;
+        pub fn _game_mapName(game: &Game) -> UniquePtr<CxxString>;
+        pub fn _game_mapPathName(game: &Game) -> UniquePtr<CxxString>;
+        pub fn mapWidth(self: &Game) -> i32;
+        pub fn neutral(self: &Game) -> *mut PlayerInterface;
+        pub fn _game_observers(game: Pin<&mut Game>) -> UniquePtr<PlayersetIterator>;
+        pub fn pauseGame(self: Pin<&mut Game>);
+        pub fn pingMinimap(self: Pin<&mut Game>, p: Position);
+        pub fn _game_printf(game: Pin<&mut Game>, text: &str);
+        pub fn restartGame(self: Pin<&mut Game>);
+        pub fn resumeGame(self: Pin<&mut Game>);
+        pub fn _game_self(game: &Game) -> *mut PlayerInterface;
+        pub fn _game_sendText(game: Pin<&mut Game>, text: &str);
+        pub fn _game_sendTextEx(game: Pin<&mut Game>, toAllies: bool, text: &str);
+        pub unsafe fn setAlliance(self: Pin<&mut Game>, player: *mut PlayerInterface, allied: bool, alliedVictory: bool) -> bool;
+        pub fn setCommandOptimizationLevel(self: Pin<&mut Game>, level: i32);
+        pub fn setFrameSkip(self: Pin<&mut Game>, frameSkip: i32);
+        pub fn setGUI(self: Pin<&mut Game>, enabled: bool);
+        pub fn setLatCom(self: Pin<&mut Game>, isEnabled: bool);
+        pub fn setLocalSpeed(self: Pin<&mut Game>, speed: i32);
+        pub fn _game_setMap(game: Pin<&mut Game>, text: &str) -> bool;
+        pub fn setRevealAll(self: Pin<&mut Game>, reveal: bool) -> bool;
+        pub fn setScreenPosition(self: Pin<&mut Game>, p: Position);
+        pub unsafe fn setVision(self: Pin<&mut Game>, player: *mut PlayerInterface, enabled: bool) -> bool;
 
-        unsafe fn getFrameCount(self: &Game) -> i32;
-        unsafe fn getForces(self: &Game) -> &Forceset;
-        unsafe fn getPlayers(self: &Game) -> &Playerset;
-        unsafe fn allies(self: Pin<&mut Game>) -> Pin<&mut Playerset>;
-        unsafe fn canBuildHere(self: Pin<&mut Game>, position: TilePosition, uType: UnitType, builder: *mut UnitInterface, checkExplored: bool) -> bool;
-        unsafe fn enemy(self: &Game) -> *mut PlayerInterface;
+        // pub fn vPrintf(self: &Game, text: &str);
+        // pub fn vSendText(self: &Game, text: &str);
+        // pub fn vSendTextEx(self: &Game, toAllies: bool, char: *const format, args: va_list);
 
-        // not implemented yet
-        // unsafe fn canMake(game: *mut Game, utype: UnitType, builder: *const UnitInterface) -> bool;
-        // unsafe fn canResearch(game: *mut Game, ttype: TechType, unit: *const UnitInterface, checkCanIssueCommandType: bool) -> bool;
-        // unsafe fn canUpgrade(game: *mut Game, utype: UpgradeType, unit: *const UnitInterface, checkCanIssueCommandType: bool) -> bool;
-        // unsafe fn countdownTimer(game: *mut Game) -> i32;
-        // unsafe fn elapsedTime(game: *mut Game) -> i32;
-        // unsafe fn enableFlag(game: *mut Game, flag: i32);
-        // unsafe fn enemies(game: *mut Game) -> Playerset;
-        // unsafe fn enemy(game: *mut Game) -> *const PlayerInterface;
-        // unsafe fn getAllRegions(game: *mut Game) -> Regionset;
-        // unsafe fn getAPM(game: *mut Game, includeSelects: bool) -> i32;
-        // unsafe fn getAverageFPS(game: *mut Game) -> f32;
-        // unsafe fn getBestUnit(game: *mut Game, best: BestUnitFilter, pred: UnitFilter, center: Position, radius: i32) -> *const UnitInterface;
-        // unsafe fn getBuildLocation(game: *mut Game, unitType: UnitType, desiredPosition: TilePosition, maxRange: i32, creep: bool) -> TilePosition;
-        // unsafe fn getBullets(game: *mut Game) -> Bulletset;
-        // unsafe fn getClientVersion(game: *mut Game) -> i32;
-        // unsafe fn getClosestUnit(game: *mut Game, center: Position, pred: UnitFilter, radius: i32) -> *const UnitInterface;
-        // unsafe fn getClosestUnitInRectangle(game: *mut Game, center: Position, pred: UnitFilter, left: i32, top: i32, right: i32, bottom: i32) -> *const UnitInterface;
-        // unsafe fn getDamageFrom(game: *mut Game, fromType: UnitType, toType: UnitType, fromPlayer: *const PlayerInterface, toPlayer: *const PlayerInterface) -> i32;
-        // unsafe fn getDamageTo(game: *mut Game, toType: UnitType, fromType: UnitType, toPlayer: *const PlayerInterface, fromPlayer: *const PlayerInterface) -> i32;
-        // unsafe fn getEvents(game: *mut Game) ->  std::list<Event> ;
-        // unsafe fn getForce(game: *mut Game, forceID: i32) -> Force;
-        // unsafe fn getForces(game: *mut Game) -> Forceset;
-        // unsafe fn getFPS(game: *mut Game) -> i32;
-        // // unsafe fn getFrameCount(game: *mut Game) -> i32;
-        // unsafe fn getGameType(game: *mut Game) -> GameType;
-        // unsafe fn getGeysers(game: *mut Game) -> Unitset;
-        // unsafe fn getGroundHeight(game: *mut Game, position: TilePosition) -> i32;
-        // unsafe fn getInstanceNumber(game: *mut Game) -> i32;
-        // unsafe fn getKeyState(game: *mut Game, key: Key) -> bool;
-        // unsafe fn getLastError(game: *mut Game) -> Error;
-        // unsafe fn getLastEventTime(game: *mut Game) -> i32;
-        // unsafe fn getLatency(game: *mut Game) -> i32;
-        // unsafe fn getLatencyFrames(game: *mut Game) -> i32;
-        // unsafe fn getLatencyTime(game: *mut Game) -> i32;
-        // unsafe fn getMinerals(game: *mut Game) -> Unitset;
-        // unsafe fn getMousePosition(game: *mut Game) -> Position;
-        // unsafe fn getMouseState(game: *mut Game, button: MouseButton) -> bool;
-        // unsafe fn getNeutralUnits(game: *mut Game) -> Unitset;
-        // unsafe fn getNukeDots(game: *mut Game) -> Position::list;
-        // unsafe fn getPlayer(game: *mut Game, playerID: i32) -> *const PlayerInterface;
-        // unsafe fn getPlayers(game: *mut Game) -> Playerset;
-        // unsafe fn getRandomSeed(game: *mut Game) -> unsigned;
-        // unsafe fn getRegion(game: *mut Game, regionID: i32) -> Region;
-        // unsafe fn getRegionAt(game: *mut Game, position: Position) -> BWAPI::Region;
-        // unsafe fn getRemainingLatencyFrames(game: *mut Game) -> i32;
-        // unsafe fn getRemainingLatencyTime(game: *mut Game) -> i32;
-        // unsafe fn getReplayFrameCount(game: *mut Game) -> i32;
-        // unsafe fn getRevision(game: *mut Game) -> i32;
-        // unsafe fn getScreenPosition(game: *mut Game) -> BWAPI::Position;
-        // unsafe fn getSelectedUnits(game: *mut Game) -> Unitset;
-        // unsafe fn getStartLocations(game: *mut Game) -> TilePosition::list;
-        // unsafe fn getStaticGeysers(game: *mut Game) -> Unitset;
-        // unsafe fn getStaticMinerals(game: *mut Game) -> Unitset;
-        // unsafe fn getStaticNeutralUnits(game: *mut Game) -> Unitset;
-        // unsafe fn getUnit(game: *mut Game, unitID: i32) -> *const UnitInterface;
-        // unsafe fn getUnitsInRadius(game: *mut Game, center: Position, radius: i32, pred: UnitFilter) -> Unitset;
-        // unsafe fn getUnitsInRectangle(game: *mut Game, topLeft: Position, bottomRight: Position, pred: UnitFilter) -> Unitset;
-        // unsafe fn getUnitsOnTile(game: *mut Game, tile: TilePosition, pred: UnitFilter) -> Unitset;
-        // unsafe fn hasCreep(game: *mut Game, position: TilePosition) -> bool;
-        // unsafe fn hasPath(game: *mut Game, source: Position, destination: Position) -> bool;
-        // unsafe fn hasPower(game: *mut Game, position: TilePosition, unitType: UnitType) -> bool;
-        // unsafe fn hasPowerPrecise(game: *mut Game, position: Position, unitType: UnitType) -> bool;
-        // unsafe fn indexToUnit(game: *mut Game, unitIndex: i32) -> *const UnitInterface;
-        // unsafe fn isBattleNet(game: *mut Game) -> bool;
-        // unsafe fn isBuildable(game: *mut Game, position: TilePosition, includeBuildings: bool) -> bool;
-        // unsafe fn isDebug(game: *mut Game) -> bool;
-        // unsafe fn isExplored(game: *mut Game, position: TilePosition) -> bool;
-        // unsafe fn isFlagEnabled(game: *mut Game, flag: i32) -> bool;
-        // unsafe fn isGUIEnabled(game: *mut Game) -> bool;
-        // unsafe fn isInGame(game: *mut Game) -> bool;
-        // unsafe fn isLatComEnabled(game: *mut Game) -> bool;
-        // unsafe fn isMultiplayer(game: *mut Game) -> bool;
-        // unsafe fn isPaused(game: *mut Game) -> bool;
-        // unsafe fn isReplay(game: *mut Game) -> bool;
-        // unsafe fn issueCommand(game: *mut Game, units: Unitset, command: UnitCommand) -> bool;
-        // unsafe fn isVisible(game: *mut Game, position: TilePosition) -> bool;
-        // unsafe fn isWalkable(game: *mut Game, position: WalkPosition) -> bool;
-        // unsafe fn leaveGame(game: *mut Game);
-        // unsafe fn mapFileName(game: *mut Game) -> std::string;
-        // unsafe fn mapHash(game: *mut Game) -> std::string;
-        // unsafe fn mapHeight(game: *mut Game) -> i32;
-        // unsafe fn mapName(game: *mut Game) -> std::string;
-        // unsafe fn mapPathName(game: *mut Game) -> std::string;
-        // unsafe fn mapWidth(game: *mut Game) -> i32;
-        // unsafe fn neutral(game: *mut Game) -> *const PlayerInterface;
-        // unsafe fn observers(game: *mut Game) -> Playerset;
-        // unsafe fn pauseGame(game: *mut Game);
-        // unsafe fn pingMinimap(game: *mut Game, p: Position);
-        // unsafe fn printf(game: *mut Game, char: *const format);
-        // unsafe fn restartGame(game: *mut Game);
-        // unsafe fn resumeGame(game: *mut Game);
-        // unsafe fn self_player(game: *mut Game) -> *const PlayerInterface;
-        // // unsafe fn sendText(game: *mut Game, text: *const c_char);
-        // unsafe fn sendTextEx(game: *mut Game, toAllies: bool, char: *const format);
-        // unsafe fn setAlliance(game: *mut Game, player: *const PlayerInterface, allied: bool, alliedVictory: bool) -> bool;
-        // unsafe fn setCommandOptimizationLevel(game: *mut Game, level: i32);
-        // unsafe fn setFrameSkip(game: *mut Game, frameSkip: i32);
-        // unsafe fn setGUI(game: *mut Game, enabled: bool);
-        // unsafe fn setLatCom(game: *mut Game, isEnabled: bool);
-        // unsafe fn setLocalSpeed(game: *mut Game, speed: i32);
-        // unsafe fn setMap(game: *mut Game, char: *const mapFileName) -> bool;
-        // unsafe fn setRevealAll(game: *mut Game, reveal: bool) -> bool;
-        // unsafe fn setScreenPosition(game: *mut Game, p: Position);
-        // unsafe fn setVision(game: *mut Game, player: *const PlayerInterface, enabled: bool) -> bool;
-        // unsafe fn vPrintf(game: *mut Game, char: *const format, args: va_list);
-        // unsafe fn vSendText(game: *mut Game, char: *const format, args: va_list);
-        // unsafe fn vSendTextEx(game: *mut Game, toAllies: bool, char: *const format, args: va_list);
-        // unsafe fn setTextSize(game: *mut Game, size: TextSizeEnum);
-        // unsafe fn drawText(game: *mut Game, ctype: CoordinateTypeEnum, x: i32, y: i32, char: *const format);
-        // unsafe fn drawBox(game: *mut Game, ctype: CoordinateTypeEnum, left: i32, top: i32, right: i32, bottom: i32, color: Color, isSolid: bool);
-        // unsafe fn drawTriangle(game: *mut Game, ctype: CoordinateTypeEnum, ax: i32, ay: i32, bx: i32, by: i32, cx: i32, cy: i32, color: Color, isSolid: bool);
-        // unsafe fn drawCircle(game: *mut Game, ctype: CoordinateTypeEnum, x: i32, y: i32, radius: i32, color: Color, isSolid: bool);
-        // unsafe fn drawEllipse(game: *mut Game, ctype: CoordinateTypeEnum, x: i32, y: i32, xrad: i32, yrad: i32, color: Color, isSolid: bool);
-        // unsafe fn drawDot(game: *mut Game, ctype: CoordinateTypeEnum, x: i32, y: i32, color: Color);
-        // unsafe fn drawLine(game: *mut Game, ctype: CoordinateTypeEnum, x1: i32, y1: i32, x2: i32, y2: i32, color: Color);
+        // pub fn setTextSize(self: &Game, size: TextSize);
+        // pub fn drawText(self: &Game, ctype: CoordinateType, x: i32, y: i32, char: *const format);
+        // pub fn drawBox(self: &Game, ctype: CoordinateType, left: i32, top: i32, right: i32, bottom: i32, color: Color, isSolid: bool);
+        // pub fn drawTriangle(self: &Game, ctype: CoordinateType, ax: i32, ay: i32, bx: i32, by: i32, cx: i32, cy: i32, color: Color, isSolid: bool);
+        // pub fn drawCircle(self: &Game, ctype: CoordinateType, x: i32, y: i32, radius: i32, color: Color, isSolid: bool);
+        // pub fn drawEllipse(self: &Game, ctype: CoordinateType, x: i32, y: i32, xrad: i32, yrad: i32, color: Color, isSolid: bool);
+        // pub fn drawDot(self: &Game, ctype: CoordinateType, x: i32, y: i32, color: Color);
+        // pub fn drawLine(self: &Game, ctype: CoordinateType, x1: i32, y1: i32, x2: i32, y2: i32, color: Color);
     }
 
     // BWAPI::PlayerInterface
@@ -392,7 +420,7 @@ pub mod ffi {
     //     fn getID() -> int;
     //     fn getNeighbors() -> Regionset;
     //     fn getRegionGroupID() -> int;
-    //     fn getUnits(pred: UnitFilter) -> Unitset;
+    //     fn getUnits(pred: fn(Unit) -> bool) -> Unitset;
     //     fn isAccessible() -> bool;
     //     fn isHigherGround() -> bool;
     // }
