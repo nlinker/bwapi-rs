@@ -100,30 +100,6 @@ pub mod ffi {
 
     }
 
-    // BWAPI::BulletInterface
-    // extern "C++" {
-    //     unsafe fn exists(raw: *const BulletInterface) -> bool;
-    //     unsafe fn getAngle(raw: *const BulletInterface) -> f32;
-    //     unsafe fn getID(raw: *const BulletInterface) -> i32;
-    //     unsafe fn getPlayer(raw: *const BulletInterface) -> *const PlayerInterface;
-    //     unsafe fn getPosition(raw: *const BulletInterface) -> Position;
-    //     unsafe fn getRemoveTimer(raw: *const BulletInterface) -> i32;
-    //     unsafe fn getSource(raw: *const BulletInterface) -> *const UnitInterface;
-    //     unsafe fn getTarget(raw: *const BulletInterface) -> *const UnitInterface;
-    //     unsafe fn getTargetPosition(raw: *const BulletInterface) -> Position;
-    //     unsafe fn getType(raw: *const BulletInterface) -> BulletType;
-    //     unsafe fn getVelocityX(raw: *const BulletInterface) -> f32;
-    //     unsafe fn getVelocityY(raw: *const BulletInterface) -> f32;
-    //     unsafe fn isVisible(raw: *const BulletInterface, player: *const PlayerInterface) -> bool;
-    // }
-
-    // BWAPI::ForceInterface
-    // extern "C++" {
-    //     unsafe fn getID () -> i32;
-    //     unsafe fn getName () -> *const c_char;
-    //     unsafe fn getPlayers () -> Playerset;
-    // }
-
     unsafe extern "C++" {
         // unfortunately we have to create our type: https://github.com/dtolnay/cxx/issues/796
         pub type c_void;
@@ -168,6 +144,32 @@ pub mod ffi {
         pub unsafe fn Unit_getType(unit: *const UnitInterface) -> UnitType;
         pub unsafe fn Unit_getPosition(unit: *const UnitInterface) -> Position;
     }
+
+    // region BWAPI::BulletInterface
+    // extern "C++" {
+    //     unsafe fn exists(self: &BulletInterface) -> bool;
+    //     unsafe fn getAngle(self: &BulletInterface) -> f32;
+    //     unsafe fn getID(self: &BulletInterface) -> i32;
+    //     unsafe fn getPlayer(self: &BulletInterface) -> *const PlayerInterface;
+    //     unsafe fn getPosition(self: &BulletInterface) -> Position;
+    //     unsafe fn getRemoveTimer(self: &BulletInterface) -> i32;
+    //     unsafe fn getSource(self: &BulletInterface) -> *const UnitInterface;
+    //     unsafe fn getTarget(self: &BulletInterface) -> *const UnitInterface;
+    //     unsafe fn getTargetPosition(self: &BulletInterface) -> Position;
+    //     unsafe fn getType(self: &BulletInterface) -> BulletType;
+    //     unsafe fn getVelocityX(self: &BulletInterface) -> f32;
+    //     unsafe fn getVelocityY(self: &BulletInterface) -> f32;
+    //     unsafe fn isVisible(self: &BulletInterface, player: *const PlayerInterface) -> bool;
+    // }
+    // endregion
+
+    // region BWAPI::ForceInterface
+    // extern "C++" {
+    //     pub fn getID(self: &ForceInterface >) -> i32;
+    //     pub fn _force_getName(x: &ForceInterface) -> UniquePtr<CxxString>;
+    //     pub fn _force_getPlayers(x: &ForceInterface) -> UniquePtr<PlayersetIterator>;
+    // }
+    // endregion
 
     // region BWAPI::Unitset
     unsafe extern "C++" {
@@ -230,112 +232,112 @@ pub mod ffi {
     unsafe extern "C++" {
         pub fn _game_debug(game: &Game);
 
-        pub fn allies(self: Pin<&mut Game>) -> Pin<&mut Playerset>;
+        pub /*..*/ fn allies(self: Pin<&mut Game>) -> Pin<&mut Playerset>;
         pub unsafe fn canBuildHere(self: Pin<&mut Game>, position: TilePosition, uType: UnitType, builder: *mut UnitInterface, checkExplored: bool) -> bool;
         pub unsafe fn canMake(self: &Game, utype: UnitType, builder: *mut UnitInterface) -> bool;
         pub unsafe fn canResearch(self: Pin<&mut Game>, ttype: TechType, unit: *mut UnitInterface, checkCanIssueCommandType: bool) -> bool;
         pub unsafe fn canUpgrade(self: Pin<&mut Game>, utype: UpgradeType, unit: *mut UnitInterface, checkCanIssueCommandType: bool) -> bool;
-        pub fn countdownTimer(self: &Game) -> i32;
-        pub fn elapsedTime(self: &Game) -> i32;
-        pub fn enableFlag(self: Pin<&mut Game>, flag: i32);
-        pub fn _game_enemies(game: Pin<&mut Game>) -> UniquePtr<PlayersetIterator>;
+        pub /*..*/ fn countdownTimer(self: &Game) -> i32;
+        pub /*..*/ fn elapsedTime(self: &Game) -> i32;
+        pub /*..*/ fn enableFlag(self: Pin<&mut Game>, flag: i32);
+        pub /*..*/ fn enemies(self: Pin<&mut Game>) -> Pin<&mut Playerset>;
         pub unsafe fn enemy(self: &Game) -> *mut PlayerInterface;
-        pub fn _game_getAllRegions(game: &Game) -> UniquePtr<RegionsetIterator>;
-        pub fn _game_getAllUnits(game: &Game) -> UniquePtr<UnitsetIterator>;
-        pub fn getAPM(self: &Game, includeSelects: bool) -> i32;
-        pub fn getAverageFPS(self: &Game) -> f64;
-        pub fn _game_getBestUnit(game: &Game, best: fn(Unit, Unit) -> Unit, pred: fn(Unit) -> bool, center: Position, radius: i32) -> *mut UnitInterface;
-        pub fn getBuildLocation(self: &Game, unitType: UnitType, desiredPosition: TilePosition, maxRange: i32, creep: bool) -> TilePosition;
-        pub fn _game_getBullets(game: &Game) -> UniquePtr<BulletsetIterator>;
-        pub fn getClientVersion(self: &Game) -> i32;
-        pub fn _game_getClosestUnit(game: &Game, center: Position, pred: fn(Unit) -> bool, radius: i32) -> *mut UnitInterface;
-        pub fn _game_getClosestUnitInRectangle(game: &Game, center: Position, pred: fn(Unit) -> bool, left: i32, top: i32, right: i32, bottom: i32) -> *mut UnitInterface;
+        pub /*..*/ fn getAllRegions(self: &Game) -> &Regionset;
+        pub /*..*/ fn getAllUnits(self: &Game) -> &Unitset;
+        pub /*..*/ fn getAPM(self: &Game, includeSelects: bool) -> i32;
+        pub /*..*/ fn getAverageFPS(self: &Game) -> f64;
+        pub /*..*/ fn _game_getBestUnit(game: &Game, best: fn(Unit, Unit) -> Unit, pred: fn(Unit) -> bool, center: Position, radius: i32) -> *mut UnitInterface;
+        pub /*..*/ fn getBuildLocation(self: &Game, unitType: UnitType, desiredPosition: TilePosition, maxRange: i32, creep: bool) -> TilePosition;
+        pub /*..*/ fn getBullets(self: &Game) -> &Bulletset;
+        pub /*..*/ fn getClientVersion(self: &Game) -> i32;
+        pub /*..*/ fn _game_getClosestUnit(game: &Game, center: Position, pred: fn(Unit) -> bool, radius: i32) -> *mut UnitInterface;
+        pub /*..*/ fn _game_getClosestUnitInRectangle(game: &Game, center: Position, pred: fn(Unit) -> bool, left: i32, top: i32, right: i32, bottom: i32) -> *mut UnitInterface;
         pub unsafe fn getDamageFrom(self: &Game, fromType: UnitType, toType: UnitType, fromPlayer: *mut PlayerInterface, toPlayer: *mut PlayerInterface) -> i32;
         pub unsafe fn getDamageTo(self: &Game, toType: UnitType, fromType: UnitType, toPlayer: *mut PlayerInterface, fromPlayer: *mut PlayerInterface) -> i32;
-        // pub fn getEvents(game: &Game) -> UniquePtr<EventIterator>;
-        pub fn getForce(self: &Game, forceId: i32) -> *mut ForceInterface;
-        pub fn _game_getForces(game: &Game) -> UniquePtr<ForcesetIterator>;
-        pub fn getFPS(self: &Game) -> i32;
-        pub fn getFrameCount(self: &Game) -> i32;
-        pub fn getGameType(self: &Game) -> GameType;
-        pub fn _game_getGeysers(game: &Game) -> UniquePtr<UnitsetIterator>;
-        pub fn getGroundHeight(self: &Game, position: TilePosition) -> i32;
-        pub fn getInstanceNumber(self: &Game) -> i32;
-        pub fn getKeyState(self: &Game, key: Key) -> bool;
-        // pub fn getLastError(self: &Game) -> Error;
-        pub fn getLastEventTime(self: &Game) -> i32;
-        pub fn getLatency(self: &Game) -> i32;
-        pub fn getLatencyFrames(self: &Game) -> i32;
-        pub fn getLatencyTime(self: &Game) -> i32;
-        pub fn _game_getMinerals(game: &Game) -> UniquePtr<UnitsetIterator>;
-        pub fn getMousePosition(self: &Game) -> Position;
-        pub fn getMouseState(self: &Game, button: MouseButton) -> bool;
-        pub fn _game_getNeutralUnits(game: &Game) -> UniquePtr<UnitsetIterator>;
-        // pub fn getNukeDots(self: &Game) -> Position::list;
-        pub fn getPlayer(self: &Game, playerId: i32) -> *mut PlayerInterface;
-        pub fn _game_getPlayers(game: &Game) -> UniquePtr<PlayersetIterator>;
-        pub fn getRandomSeed(self: &Game) -> u32;
-        pub fn getRegion(self: &Game, regionID: i32) -> *mut RegionInterface;
-        pub fn getRegionAt(self: &Game, position: Position) -> *mut RegionInterface;
-        pub fn getRemainingLatencyFrames(self: &Game) -> i32;
-        pub fn getRemainingLatencyTime(self: &Game) -> i32;
-        pub fn getReplayFrameCount(self: &Game) -> i32;
-        pub fn getRevision(self: &Game) -> i32;
-        pub fn getScreenPosition(self: &Game) -> Position;
-        pub fn _game_getSelectedUnits(game: &Game) -> UniquePtr<UnitsetIterator>;
-        // pub fn getStartLocations(self: &Game) -> TilePosition::list;
-        pub fn _game_getStaticGeysers(game: &Game) -> UniquePtr<UnitsetIterator>;
-        pub fn _game_getStaticMinerals(game: &Game) -> UniquePtr<UnitsetIterator>;
-        pub fn _game_getStaticNeutralUnits(game: &Game) -> UniquePtr<UnitsetIterator>;
-        pub fn getUnit(self: &Game, unitID: i32) -> *mut UnitInterface;
-        pub fn _game_getUnitsInRadius(game: &Game, position: Position, radius: i32, pred: fn(Unit) -> bool) -> UniquePtr<UnitsetIterator>;
-        pub fn _game_getUnitsInRectangle(game: &Game, topLeft: Position, bottomRight: Position, pred: fn(Unit) -> bool) -> UniquePtr<UnitsetIterator>;
-        pub fn _game_getUnitsOnTile(game: &Game, tile: TilePosition, pred: fn(Unit) -> bool) -> UniquePtr<UnitsetIterator>;
-        pub fn hasCreep(self: &Game, position: TilePosition) -> bool;
-        pub fn hasPath(self: &Game, source: Position, destination: Position) -> bool;
-        pub fn hasPower(self: &Game, position: TilePosition, unitType: UnitType) -> bool;
-        pub fn hasPowerPrecise(self: &Game, position: Position, unitType: UnitType) -> bool;
-        pub fn indexToUnit(self: &Game, unitIndex: i32) -> *mut UnitInterface;
-        pub fn isBattleNet(self: &Game) -> bool;
-        pub fn isBuildable(self: &Game, position: TilePosition, includeBuildings: bool) -> bool;
-        pub fn isDebug(self: &Game) -> bool;
-        pub fn isExplored(self: &Game, position: TilePosition) -> bool;
-        pub fn isFlagEnabled(self: &Game, flag: i32) -> bool;
-        pub fn isGUIEnabled(self: &Game) -> bool;
-        pub fn isInGame(self: &Game) -> bool;
-        pub fn isLatComEnabled(self: &Game) -> bool;
-        pub fn isMultiplayer(self: &Game) -> bool;
-        pub fn isPaused(self: &Game) -> bool;
-        pub fn isReplay(self: &Game) -> bool;
-        pub fn issueCommand(self: Pin<&mut Game>, units: &Unitset, command: UnitCommand) -> bool;
-        pub fn isVisible(self: &Game, position: TilePosition) -> bool;
-        pub fn isWalkable(self: &Game, position: WalkPosition) -> bool;
-        pub fn leaveGame(self: Pin<&mut Game>);
-        pub fn _game_mapFileName(game: &Game) -> UniquePtr<CxxString>;
-        pub fn _game_mapHash(game: &Game) -> UniquePtr<CxxString>;
-        pub fn mapHeight(self: &Game) -> i32;
-        pub fn _game_mapName(game: &Game) -> UniquePtr<CxxString>;
-        pub fn _game_mapPathName(game: &Game) -> UniquePtr<CxxString>;
-        pub fn mapWidth(self: &Game) -> i32;
-        pub fn neutral(self: &Game) -> *mut PlayerInterface;
-        pub fn _game_observers(game: Pin<&mut Game>) -> UniquePtr<PlayersetIterator>;
-        pub fn pauseGame(self: Pin<&mut Game>);
-        pub fn pingMinimap(self: Pin<&mut Game>, p: Position);
-        pub fn _game_printf(game: Pin<&mut Game>, text: &str);
-        pub fn restartGame(self: Pin<&mut Game>);
-        pub fn resumeGame(self: Pin<&mut Game>);
-        pub fn _game_self(game: &Game) -> *mut PlayerInterface;
-        pub fn _game_sendText(game: Pin<&mut Game>, text: &str);
-        pub fn _game_sendTextEx(game: Pin<&mut Game>, toAllies: bool, text: &str);
+        // pub     fn getEvents(game: &Game) -> UniquePtr<EventIterator>;
+        pub /*..*/ fn getForce(self: &Game, forceId: i32) -> *mut ForceInterface;
+        pub /*..*/ fn getForces(self: &Game) -> &Forceset;
+        pub /*..*/ fn getFPS(self: &Game) -> i32;
+        pub /*..*/ fn getFrameCount(self: &Game) -> i32;
+        pub /*..*/ fn getGameType(self: &Game) -> GameType;
+        pub /*..*/ fn getGeysers(self: &Game) -> &Unitset;
+        pub /*..*/ fn getGroundHeight(self: &Game, position: TilePosition) -> i32;
+        pub /*..*/ fn getInstanceNumber(self: &Game) -> i32;
+        pub /*..*/ fn getKeyState(self: &Game, key: Key) -> bool;
+        // pub     fn getLastError(self: &Game) -> Error;
+        pub /*..*/ fn getLastEventTime(self: &Game) -> i32;
+        pub /*..*/ fn getLatency(self: &Game) -> i32;
+        pub /*..*/ fn getLatencyFrames(self: &Game) -> i32;
+        pub /*..*/ fn getLatencyTime(self: &Game) -> i32;
+        pub /*..*/ fn getMinerals(self: &Game) -> &Unitset;
+        pub /*..*/ fn getMousePosition(self: &Game) -> Position;
+        pub /*..*/ fn getMouseState(self: &Game, button: MouseButton) -> bool;
+        pub /*..*/ fn getNeutralUnits(self: &Game) -> &Unitset;
+        // pub     fn getNukeDots(self: &Game) -> Position::list;
+        pub /*..*/ fn getPlayer(self: &Game, playerId: i32) -> *mut PlayerInterface;
+        pub /*..*/ fn getPlayers(self: &Game) -> &Playerset;
+        pub /*..*/ fn getRandomSeed(self: &Game) -> u32;
+        pub /*..*/ fn getRegion(self: &Game, regionID: i32) -> *mut RegionInterface;
+        pub /*..*/ fn getRegionAt(self: &Game, position: Position) -> *mut RegionInterface;
+        pub /*..*/ fn getRemainingLatencyFrames(self: &Game) -> i32;
+        pub /*..*/ fn getRemainingLatencyTime(self: &Game) -> i32;
+        pub /*..*/ fn getReplayFrameCount(self: &Game) -> i32;
+        pub /*..*/ fn getRevision(self: &Game) -> i32;
+        pub /*..*/ fn getScreenPosition(self: &Game) -> Position;
+        pub /*..*/ fn getSelectedUnits(self: &Game) -> &Unitset;
+        // pub     fn getStartLocations(self: &Game) -> TilePosition::list;
+        pub /*..*/ fn getStaticGeysers(self: &Game) -> &Unitset;
+        pub /*..*/ fn getStaticMinerals(self: &Game) -> &Unitset;
+        pub /*..*/ fn getStaticNeutralUnits(self: &Game) -> &Unitset;
+        pub /*..*/ fn getUnit(self: &Game, unitID: i32) -> *mut UnitInterface;
+        pub /*..*/ fn _game_getUnitsInRadius(game: &Game, position: Position, radius: i32, pred: fn(Unit) -> bool) -> UniquePtr<UnitsetIterator>;
+        pub /*..*/ fn _game_getUnitsInRectangle(game: &Game, topLeft: Position, bottomRight: Position, pred: fn(Unit) -> bool) -> UniquePtr<UnitsetIterator>;
+        pub /*..*/ fn _game_getUnitsOnTile(game: &Game, tile: TilePosition, pred: fn(Unit) -> bool) -> UniquePtr<UnitsetIterator>;
+        pub /*..*/ fn hasCreep(self: &Game, position: TilePosition) -> bool;
+        pub /*..*/ fn hasPath(self: &Game, source: Position, destination: Position) -> bool;
+        pub /*..*/ fn hasPower(self: &Game, position: TilePosition, unitType: UnitType) -> bool;
+        pub /*..*/ fn hasPowerPrecise(self: &Game, position: Position, unitType: UnitType) -> bool;
+        pub /*..*/ fn indexToUnit(self: &Game, unitIndex: i32) -> *mut UnitInterface;
+        pub /*..*/ fn isBattleNet(self: &Game) -> bool;
+        pub /*..*/ fn isBuildable(self: &Game, position: TilePosition, includeBuildings: bool) -> bool;
+        pub /*..*/ fn isDebug(self: &Game) -> bool;
+        pub /*..*/ fn isExplored(self: &Game, position: TilePosition) -> bool;
+        pub /*..*/ fn isFlagEnabled(self: &Game, flag: i32) -> bool;
+        pub /*..*/ fn isGUIEnabled(self: &Game) -> bool;
+        pub /*..*/ fn isInGame(self: &Game) -> bool;
+        pub /*..*/ fn isLatComEnabled(self: &Game) -> bool;
+        pub /*..*/ fn isMultiplayer(self: &Game) -> bool;
+        pub /*..*/ fn isPaused(self: &Game) -> bool;
+        pub /*..*/ fn isReplay(self: &Game) -> bool;
+        pub /*..*/ fn issueCommand(self: Pin<&mut Game>, units: &Unitset, command: UnitCommand) -> bool;
+        pub /*..*/ fn isVisible(self: &Game, position: TilePosition) -> bool;
+        pub /*..*/ fn isWalkable(self: &Game, position: WalkPosition) -> bool;
+        pub /*..*/ fn leaveGame(self: Pin<&mut Game>);
+        pub /*..*/ fn _game_mapFileName(game: &Game) -> UniquePtr<CxxString>;
+        pub /*..*/ fn _game_mapHash(game: &Game) -> UniquePtr<CxxString>;
+        pub /*..*/ fn mapHeight(self: &Game) -> i32;
+        pub /*..*/ fn _game_mapName(game: &Game) -> UniquePtr<CxxString>;
+        pub /*..*/ fn _game_mapPathName(game: &Game) -> UniquePtr<CxxString>;
+        pub /*..*/ fn mapWidth(self: &Game) -> i32;
+        pub /*..*/ fn neutral(self: &Game) -> *mut PlayerInterface;
+        pub /*..*/ fn observers(self: Pin<&mut Game>) -> Pin<&mut Playerset>;
+        pub /*..*/ fn pauseGame(self: Pin<&mut Game>);
+        pub /*..*/ fn pingMinimap(self: Pin<&mut Game>, p: Position);
+        pub /*..*/ fn _game_printf(game: Pin<&mut Game>, text: &str);
+        pub /*..*/ fn restartGame(self: Pin<&mut Game>);
+        pub /*..*/ fn resumeGame(self: Pin<&mut Game>);
+        pub /*..*/ fn _game_self(game: &Game) -> *mut PlayerInterface;
+        pub /*..*/ fn _game_sendText(game: Pin<&mut Game>, text: &str);
+        pub /*..*/ fn _game_sendTextEx(game: Pin<&mut Game>, toAllies: bool, text: &str);
         pub unsafe fn setAlliance(self: Pin<&mut Game>, player: *mut PlayerInterface, allied: bool, alliedVictory: bool) -> bool;
-        pub fn setCommandOptimizationLevel(self: Pin<&mut Game>, level: i32);
-        pub fn setFrameSkip(self: Pin<&mut Game>, frameSkip: i32);
-        pub fn setGUI(self: Pin<&mut Game>, enabled: bool);
-        pub fn setLatCom(self: Pin<&mut Game>, isEnabled: bool);
-        pub fn setLocalSpeed(self: Pin<&mut Game>, speed: i32);
-        pub fn _game_setMap(game: Pin<&mut Game>, text: &str) -> bool;
-        pub fn setRevealAll(self: Pin<&mut Game>, reveal: bool) -> bool;
-        pub fn setScreenPosition(self: Pin<&mut Game>, p: Position);
+        pub /*..*/ fn setCommandOptimizationLevel(self: Pin<&mut Game>, level: i32);
+        pub /*..*/ fn setFrameSkip(self: Pin<&mut Game>, frameSkip: i32);
+        pub /*..*/ fn setGUI(self: Pin<&mut Game>, enabled: bool);
+        pub /*..*/ fn setLatCom(self: Pin<&mut Game>, isEnabled: bool);
+        pub /*..*/ fn setLocalSpeed(self: Pin<&mut Game>, speed: i32);
+        pub /*..*/ fn _game_setMap(game: Pin<&mut Game>, text: &str) -> bool;
+        pub /*..*/ fn setRevealAll(self: Pin<&mut Game>, reveal: bool) -> bool;
+        pub /*..*/ fn setScreenPosition(self: Pin<&mut Game>, p: Position);
         pub unsafe fn setVision(self: Pin<&mut Game>, player: *mut PlayerInterface, enabled: bool) -> bool;
 
         // pub fn vPrintf(self: &Game, text: &str);

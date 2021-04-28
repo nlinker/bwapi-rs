@@ -3,6 +3,8 @@ use library::ffi;
 use cxx::UniquePtr;
 use std::thread::sleep;
 use std::time::Duration;
+use library::bw::unit_type::UnitType;
+use library::ffi::Unit_getType;
 
 #[no_mangle]
 #[allow(non_snake_case)]
@@ -34,15 +36,17 @@ impl AIModule for DemoAI {
                 // println!("fn on_frame()");
                 let fc = game.get_frame_count();
                 if fc % 20 == 0 {
-                    game.debug();
-                    game.allies();
-                    // game.send_text(&format!("Unitset size_hint: {:?}", );
-                    // for u in game.get_all_units() {
-                    //     println!("All list: unit = {:?} with id {}, type: {:?}", u, u.id(), u.type_());
-                    // }
-
+                    // game.debug();
+                    // game.allies();
+                    game.send_text(&format!("Unitset size_hint: {:?}", game.get_all_units().size_hint()));
+                    for u in game.get_all_units() {
+                        println!("All list: unit = {:?} with id {}, type: {:?}, pos: {:?}", u, u.get_id(), u.get_type(), u.get_position());
+                    }
                     // let c = Position { x: 250, y: 3160 };
-                    // let inr = game.get_units_in_radius(c, 100, |_| true);
+                    // let mut inr = game.get_units_in_radius(c, 100, |_| true).collect::<Vec<_>>();
+                    // if let Some(h) = inr.iter().find(|u| u.get_type() == UnitType::Zerg_Hatchery) {
+                    //     let drones = inr.iter().filter(|u| u.get_type() == UnitType::Zerg_Drone).collect::<Vec<_>>();
+                    // }
                     // game.send_text(&format!("In radius size_hint: {:?}", &inr.size_hint()));
                     // for u in inr {
                     //     println!("In radius: unit with id {:0>3}, type: {:?}, pos: {:?}", u.get_id(), u.get_type(), u.get_position());

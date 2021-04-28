@@ -1,5 +1,4 @@
 use crate::ffi;
-use cxx::UniquePtr;
 use crate::bw::unitset::Unitset;
 use crate::bw::position::Position;
 use crate::bw::unit_filter::UnitFilter;
@@ -11,7 +10,7 @@ pub struct Game {
     pub raw: *mut ffi::Game,
 }
 
-/// Game object doesn't contain self-references
+/// Game object doesn't contain any self-references
 impl Unpin for Game {}
 
 /// Safety: https://stackoverflow.com/a/60295465/5066426
@@ -34,11 +33,13 @@ impl Game {
         unsafe { (*self.raw).getFrameCount() }
     }
     pub fn get_all_units(&self) -> Unitset {
-        let iter: UniquePtr<ffi::UnitsetIterator> = unsafe { ffi::_game_getAllUnits(&*self.raw) };
-        Unitset { iter }
+        let game: &ffi::Game = unsafe { &*self.raw };
+        let set: &ffi::Unitset = game.getAllUnits();
+        Unitset { iter: ffi::createUnitsetIteratorRef(set) }
     }
     pub fn get_units_in_radius(&self, position: Position, radius: i32, pred: UnitFilter) -> Unitset {
-        let iter: UniquePtr<ffi::UnitsetIterator> = unsafe { ffi::_game_getUnitsInRadius(&*self.raw, position, radius, pred) };
+        let game: &ffi::Game = unsafe { &*self.raw };
+        let iter = ffi::_game_getUnitsInRadius(game, position, radius, pred);
         Unitset { iter }
     }
 }
