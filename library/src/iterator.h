@@ -83,19 +83,24 @@ public:
 using BulletsetIterator = BaseIterator<const BWAPI::Bulletset, const BWAPI::BulletInterface *>;
 using BulletsetIteratorOwn = OwnIterator<const BWAPI::Bulletset, const BWAPI::BulletInterface *>;
 using BulletsetIteratorRef = RefIterator<const BWAPI::Bulletset, const BWAPI::BulletInterface *>;
+std::unique_ptr<BulletsetIterator> createBulletsetIteratorRef(const BWAPI::Bulletset &set);
 
 using ForcesetIterator = BaseIterator<const BWAPI::Forceset, const BWAPI::ForceInterface *>;
 using ForcesetIteratorOwn = OwnIterator<const BWAPI::Forceset, const BWAPI::ForceInterface *>;
 using ForcesetIteratorRef = RefIterator<const BWAPI::Forceset, const BWAPI::ForceInterface *>;
+std::unique_ptr<ForcesetIterator> createForcesetIteratorRef(const BWAPI::Forceset &set);
 
 using PlayersetIterator = BaseIterator<const BWAPI::Playerset, const BWAPI::PlayerInterface *>;
 using PlayersetIteratorOwn = OwnIterator<const BWAPI::Playerset, const BWAPI::PlayerInterface *>;
 using PlayersetIteratorRef = RefIterator<const BWAPI::Playerset, const BWAPI::PlayerInterface *>;
+std::unique_ptr<PlayersetIterator> createPlayersetIteratorRef(const BWAPI::Playerset &set);
 
 using RegionsetIterator = BaseIterator<const BWAPI::Regionset, const BWAPI::RegionInterface *>;
 using RegionsetIteratorOwn = OwnIterator<const BWAPI::Regionset, const BWAPI::RegionInterface *>;
 using RegionsetIteratorRef = RefIterator<const BWAPI::Regionset, const BWAPI::RegionInterface *>;
+std::unique_ptr<RegionsetIterator> createRegionsetIteratorRef(const BWAPI::Regionset &set);
 
 using UnitsetIterator = BaseIterator<const BWAPI::Unitset, const BWAPI::UnitInterface *>;
 using UnitsetIteratorOwn = OwnIterator<const BWAPI::Unitset, const BWAPI::UnitInterface *>;
 using UnitsetIteratorRef = RefIterator<const BWAPI::Unitset, const BWAPI::UnitInterface *>;
+std::unique_ptr<UnitsetIterator> createUnitsetIteratorRef(const BWAPI::Unitset &set);

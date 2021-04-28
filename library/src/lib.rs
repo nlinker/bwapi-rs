@@ -132,6 +132,7 @@ pub mod ffi {
         pub fn next(self: Pin<&mut BulletsetIterator>) -> *const BulletInterface;
         pub fn sizeHint(self: &BulletsetIterator) -> usize;
         pub fn underlying(self: &BulletsetIterator) -> &Bulletset;
+        pub fn createBulletsetIteratorRef(set: &Bulletset) -> UniquePtr<BulletsetIterator>;
 
         // pub type EventsetIterator;
         // pub fn next(self: Pin<&mut EventsetIterator>) -> *const EventInterface;
@@ -142,21 +143,25 @@ pub mod ffi {
         pub fn next(self: Pin<&mut ForcesetIterator>) -> *const ForceInterface;
         pub fn sizeHint(self: &ForcesetIterator) -> usize;
         pub fn underlying(self: &ForcesetIterator) -> &Forceset;
+        pub fn createForcesetIteratorRef(set: &Forceset) -> UniquePtr<ForcesetIterator>;
 
         pub type PlayersetIterator;
         pub fn next(self: Pin<&mut PlayersetIterator>) -> *const PlayerInterface;
         pub fn sizeHint(self: &PlayersetIterator) -> usize;
         pub fn underlying(self: &PlayersetIterator) -> &Playerset;
+        pub fn createPlayersetIteratorRef(set: &Playerset) -> UniquePtr<PlayersetIterator>;
 
         pub type UnitsetIterator;
         pub fn next(self: Pin<&mut UnitsetIterator>) -> *const UnitInterface;
         pub fn sizeHint(self: &UnitsetIterator) -> usize;
         pub fn underlying(self: &UnitsetIterator) -> &Unitset;
+        pub fn createRegionsetIteratorRef(set: &Regionset) -> UniquePtr<RegionsetIterator>;
 
         pub type RegionsetIterator;
         pub fn next(self: Pin<&mut RegionsetIterator>) -> *const RegionInterface;
         pub fn sizeHint(self: &RegionsetIterator) -> usize;
         pub fn underlying(self: &RegionsetIterator) -> &Regionset;
+        pub fn createUnitsetIteratorRef(set: &Unitset) -> UniquePtr<UnitsetIterator>;
 
         // helpers so far, unit api is coming
         pub unsafe fn Unit_getId(unit: *const UnitInterface) -> i32;

@@ -13,7 +13,7 @@ use std::ptr::null;
 use cxx::UniquePtr;
 
 pub struct Unitset {
-    pub iter: UniquePtr<ffi::UnitsetIterator>,
+    pub(crate) iter: UniquePtr<ffi::UnitsetIterator>,
 }
 
 impl Iterator for Unitset {

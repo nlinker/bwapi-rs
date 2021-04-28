@@ -49,7 +49,29 @@ std::unique_ptr <AIModuleWrapper> createAIModuleWrapper(rust::Box <BoxedAIModule
     return std::unique_ptr<AIModuleWrapper>(new AIModuleWrapper(box.into_raw()));
 }
 
-// region ======== Unitset ========
+// region === === Iterators === ===
+std::unique_ptr<BulletsetIterator> createBulletsetIteratorRef(const BWAPI::Bulletset &set) {
+    return std::unique_ptr<BulletsetIterator>(new BulletsetIteratorRef(set));
+}
+
+std::unique_ptr<ForcesetIterator> createForcesetIteratorRef(const BWAPI::Forceset &set) {
+    return std::unique_ptr<ForcesetIterator>(new ForcesetIteratorRef(set));
+}
+
+std::unique_ptr<PlayersetIterator> createPlayersetIteratorRef(const BWAPI::Playerset &set) {
+    return std::unique_ptr<PlayersetIterator>(new PlayersetIteratorRef(set));
+}
+
+std::unique_ptr<RegionsetIterator> createRegionsetIteratorRef(const BWAPI::Regionset &set) {
+    return std::unique_ptr<RegionsetIterator>(new RegionsetIteratorRef(set));
+}
+
+std::unique_ptr<UnitsetIterator> createUnitsetIteratorRef(const BWAPI::Unitset &set) {
+    return std::unique_ptr<UnitsetIterator>(new UnitsetIteratorRef(set));
+}
+// endregion
+
+// region === === Unitset === ===
 const BWAPI::UnitInterface *_unitset_getClosestUnit(const BWAPI::Unitset &set, UnitFilter pred, int radius) {
     return set.getClosestUnit(nullptr /* todo convert predicate */, radius);
 }

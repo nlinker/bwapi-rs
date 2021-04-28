@@ -10,9 +10,7 @@ pub mod force;
 pub mod forceset;
 pub mod game;
 pub mod game_type;
-#[allow(non_upper_case_globals)]
 pub mod input;
-pub mod iterator;
 pub mod player;
 pub mod playerset;
 pub mod position;

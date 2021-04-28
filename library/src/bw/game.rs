@@ -4,6 +4,7 @@ use crate::bw::unitset::Unitset;
 use crate::bw::position::Position;
 use crate::bw::unit_filter::UnitFilter;
 use std::pin::Pin;
+use crate::bw::playerset::Playerset;
 
 #[derive(Debug)]
 pub struct Game {
@@ -21,12 +22,11 @@ impl Game {
         unsafe { ffi::_game_debug(&*self.raw) };
     }
 
-    pub fn allies(&self) {
+    pub fn allies(&self) -> Playerset {
         let game: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw) };
         let set: Pin<&mut ffi::Playerset> = game.allies();
-        println!("game.allies() = {:p}", &*set);
+        Playerset { iter: ffi::createPlayersetIteratorRef(&*set) }
     }
-
     pub fn send_text(&self, text: &str) {
         ffi::_game_sendText(unsafe { Pin::new_unchecked(&mut *self.raw) }, text)
     }
