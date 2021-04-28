@@ -4,7 +4,13 @@ pub enum MouseButton {
     Right,
     Middle,
     Max,
-};
+}
+
+// required for ffi layer
+unsafe impl cxx::ExternType for MouseButton {
+    type Id = cxx::type_id!("BWAPI::MouseButton");
+    type Kind = cxx::kind::Trivial;
+}
 
 pub enum KeyButton {
     // K_LBUTTON = 0x01,
@@ -236,4 +242,10 @@ pub enum KeyButton {
     // K_PA1,
     // K_OEM_CLEAR,
     MAX
+}
+
+// required for ffi layer
+unsafe impl cxx::ExternType for KeyButton {
+    type Id = cxx::type_id!("BWAPI::Key");
+    type Kind = cxx::kind::Trivial;
 }

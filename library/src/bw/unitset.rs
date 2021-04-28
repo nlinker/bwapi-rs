@@ -38,19 +38,19 @@ impl Iterator for Unitset {
 impl Unitset {
     pub fn get_closest_unit(&self, pred: UnitFilter, radius: i32) -> Unit {
         let xs: &ffi::Unitset = self.iter.underlying();
-        unsafe { Unit::from_raw(ffi::getClosestUnit(xs, pred, radius)) }
+        unsafe { Unit::from_raw(ffi::_unitset_getClosestUnit(xs, pred, radius)) }
     }
     pub fn get_interceptors(&self) -> Unitset {
         let xs: &ffi::Unitset = self.iter.underlying();
-        Unitset { iter: ffi::getInterceptors(xs) }
+        Unitset { iter: ffi::_unitset_getInterceptors(xs) }
     }
     pub fn get_larva(&self) -> Unitset {
         let xs: &ffi::Unitset = self.iter.underlying();
-        Unitset { iter: ffi::getLarva(xs) }
+        Unitset { iter: ffi::_unitset_getLarva(xs) }
     }
     pub fn get_loaded_units(&self) -> Unitset {
         let xs: &ffi::Unitset = self.iter.underlying();
-        Unitset { iter: ffi::getLoadedUnits(xs) }
+        Unitset { iter: ffi::_unitset_getLoadedUnits(xs) }
     }
     pub fn get_position(&self) -> Position {
         let xs: &ffi::Unitset = self.iter.underlying();
@@ -58,7 +58,7 @@ impl Unitset {
     }
     pub fn get_units_in_radius(&self, radius: i32, pred: UnitFilter) -> Unitset {
         let xs: &ffi::Unitset = self.iter.underlying();
-        Unitset { iter: ffi::getUnitsInRadius_Unitset(xs, radius, pred) }
+        Unitset { iter: ffi::_unitset_getUnitsInRadius(xs, radius, pred) }
     }
     pub fn set_client_info(&self, client_info: *mut c_void, index: i32) {
         let xs: &ffi::Unitset = self.iter.underlying();

@@ -51,7 +51,7 @@ std::unique_ptr<UnitsetIterator> _unitset_getUnitsInRadius(const BWAPI::Unitset 
 bool _unitset_move(const BWAPI::Unitset &set, BWAPI::Position target, bool shift_queue_command);
 
 void _game_debug(const BWAPI::Game &game);
-std::unique_ptr<PlayersetIterator> _game_allies(BWAPI::Game& game);
+//std::unique_ptr<PlayersetIterator> _game_allies(BWAPI::Game& game);
 std::unique_ptr<PlayersetIterator> _game_enemies(BWAPI::Game &game);
 std::unique_ptr<RegionsetIterator> _game_getAllRegions(const BWAPI::Game &game);
 std::unique_ptr<UnitsetIterator> _game_getAllUnits(const BWAPI::Game &game);

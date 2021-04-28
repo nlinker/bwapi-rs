@@ -60,6 +60,10 @@ fn main() {
     //     .include(bwapi_include_dir)
     //     .compile("rice-c");
 
+    println!("cargo:rerun-if-changed=src/lib.rs");
+    println!("cargo:rerun-if-changed=src/lib.cc");
+    println!("cargo:rerun-if-changed=src/lib.h");
+
     println!("cargo:rustc-link-search=native={}", bwapi_lib_dir.display());
     // Phase `BWAPILIB` here stands for the library name (without lib prefix and without .dylib suffix)
     println!("cargo:rustc-link-lib=dylib=BWAPILIB");

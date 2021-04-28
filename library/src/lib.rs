@@ -98,7 +98,7 @@ pub mod ffi {
         // type WeaponType = crate::BWAPI_WeaponTypes_Enum_Enum;
         // type ExplosionType = BWAPI_ExplosionTypes_Enum_Enum;
 
-}
+    }
 
     // BWAPI::BulletInterface
     // extern "C++" {
@@ -225,8 +225,7 @@ pub mod ffi {
     unsafe extern "C++" {
         pub fn _game_debug(game: &Game);
 
-        // methods that need manual shims to C++
-        pub fn _game_allies(game: Pin<&mut Game>) -> UniquePtr<PlayersetIterator>;
+        pub fn allies(self: Pin<&mut Game>) -> Pin<&mut Playerset>;
         pub unsafe fn canBuildHere(self: Pin<&mut Game>, position: TilePosition, uType: UnitType, builder: *mut UnitInterface, checkExplored: bool) -> bool;
         pub unsafe fn canMake(self: &Game, utype: UnitType, builder: *mut UnitInterface) -> bool;
         pub unsafe fn canResearch(self: Pin<&mut Game>, ttype: TechType, unit: *mut UnitInterface, checkCanIssueCommandType: bool) -> bool;
@@ -347,8 +346,9 @@ pub mod ffi {
         // pub fn drawDot(self: &Game, ctype: CoordinateType, x: i32, y: i32, color: Color);
         // pub fn drawLine(self: &Game, ctype: CoordinateType, x1: i32, y1: i32, x2: i32, y2: i32, color: Color);
     }
+    // endregion
 
-    // BWAPI::PlayerInterface
+    // region BWAPI::PlayerInterface
     // extern "C++" {
     //     fn allUnitCount(unit: UnitType) -> i32;
     //     fn armor(unit: UnitType) -> i32;
@@ -405,6 +405,7 @@ pub mod ffi {
     //     fn weaponDamageCooldown(unit: UnitType) -> i32;
     //     fn weaponMaxRange(weapon: WeaponType) -> i32;
     // }
+    // endregion
 
     // BWAPI::RegionInterface
     // extern "C++" {

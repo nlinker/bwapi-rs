@@ -80,21 +80,23 @@ bool _unitset_move(const BWAPI::Unitset &set, BWAPI::Position target, bool shift
 // endregion
 
 // region ======== Game ========
-void _game_debug(BWAPI::Game &game) {
+void _game_debug(const BWAPI::Game &game) {
+    BWAPI::Game &g = const_cast<BWAPI::Game&>(game);
     std::ostringstream os;
-    os << "--- all units count: " << game.getAllUnits().size();
-    game.sendText(os.str().c_str());
-    for (auto &unit : game.getAllUnits()) {
+    BWAPI::Playerset &ps = g.allies();
+    os << "allies raw: " << &ps << ", size: " << ps.size();
+    g.sendText(os.str().c_str());
+    for (auto &p : ps) {
         std::ostringstream os;
-        os << "id:" << unit->getID();// << " type:" << unit->getType();
-        game.sendText(os.str().c_str());
+        os << "raw: " << p << "id:" << p->getID();// << " type:" << unit->getType();
+        g.sendText(os.str().c_str());
     }
 }
 
-std::unique_ptr<PlayersetIterator> _game_allies(BWAPI::Game &game) {
-    const BWAPI::Playerset xs = game.allies();
-    return std::unique_ptr<PlayersetIterator>(new PlayersetIteratorRef(std::move(xs)));
-}
+//std::unique_ptr<PlayersetIterator> _game_allies(BWAPI::Game &game) {
+//    const BWAPI::Playerset xs = game.allies();
+//    return std::unique_ptr<PlayersetIterator>(new PlayersetIteratorRef(std::move(xs)));
+//}
 
 std::unique_ptr<PlayersetIterator> _game_enemies(BWAPI::Game &game) {
     const BWAPI::Playerset xs = game.enemies();

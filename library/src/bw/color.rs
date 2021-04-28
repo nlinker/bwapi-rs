@@ -16,6 +16,6 @@ pub enum TextSize {
 
 // required for ffi layer
 unsafe impl cxx::ExternType for TextSize {
-    type Id = cxx::type_id!("BWAPI::Text::Size::Enum");
+    type Id = cxx::type_id!("BWAPI::TextSize");
     type Kind = cxx::kind::Trivial;
 }

@@ -33,17 +33,20 @@ impl AIModule for DemoAI {
             Event::OnFrame() => {
                 // println!("fn on_frame()");
                 let fc = game.get_frame_count();
-                if fc % 10 == 0 {
-                    // game.send_text(&format!("Unitset size_hint: {:?}", game.get_all_units().size_hint()));
+                if fc % 20 == 0 {
+                    game.debug();
+                    game.allies();
+                    // game.send_text(&format!("Unitset size_hint: {:?}", );
                     // for u in game.get_all_units() {
                     //     println!("All list: unit = {:?} with id {}, type: {:?}", u, u.id(), u.type_());
                     // }
-                    let c = Position { x: 250, y: 3160 };
-                    let inr = game.get_units_in_radius(c, 100, |_| true);
-                    game.send_text(&format!("In radius size_hint: {:?}", &inr.size_hint()));
-                    for u in inr {
-                        println!("In radius: unit with id {:0>3}, type: {:?}, pos: {:?}", u.get_id(), u.get_type(), u.get_position());
-                    }
+
+                    // let c = Position { x: 250, y: 3160 };
+                    // let inr = game.get_units_in_radius(c, 100, |_| true);
+                    // game.send_text(&format!("In radius size_hint: {:?}", &inr.size_hint()));
+                    // for u in inr {
+                    //     println!("In radius: unit with id {:0>3}, type: {:?}, pos: {:?}", u.get_id(), u.get_type(), u.get_position());
+                    // }
                     // game.debug();
                     game.send_text(&format!("Hello, SSCAIT!, frame count = {}", fc));
                     sleep(Duration::from_millis(100));
