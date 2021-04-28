@@ -173,58 +173,58 @@ pub mod ffi {
 
     // region BWAPI::Unitset
     unsafe extern "C++" {
-        fn _unitset_getClosestUnit(set: &Unitset, pred: fn(Unit) -> bool, radius: i32) -> *const UnitInterface;
-        fn _unitset_getInterceptors(set: &Unitset) -> UniquePtr<UnitsetIterator>;
-        fn _unitset_getLarva(set: &Unitset) -> UniquePtr<UnitsetIterator>;
-        fn _unitset_getLoadedUnits(set: &Unitset) -> UniquePtr<UnitsetIterator>;
-        fn getPosition(self: &Unitset) -> Position;
-        fn _unitset_getUnitsInRadius(set: &Unitset, radius: i32, pred: fn(Unit) -> bool) -> UniquePtr<UnitsetIterator>;
+        /*..*/ fn _unitset_getClosestUnit(set: &Unitset, pred: fn(Unit) -> bool, radius: i32) -> *const UnitInterface;
+        /*..*/ fn _unitset_getInterceptors(set: &Unitset) -> UniquePtr<UnitsetIterator>;
+        /*..*/ fn _unitset_getLarva(set: &Unitset) -> UniquePtr<UnitsetIterator>;
+        /*..*/ fn _unitset_getLoadedUnits(set: &Unitset) -> UniquePtr<UnitsetIterator>;
+        /*..*/ fn getPosition(self: &Unitset) -> Position;
+        /*..*/ fn _unitset_getUnitsInRadius(set: &Unitset, radius: i32, pred: fn(Unit) -> bool) -> UniquePtr<UnitsetIterator>;
         unsafe fn setClientInfo(self: &Unitset, clientInfo: *mut c_void, index: i32);
         #[cxx_name = "setClientInfo"]
-        fn setClientInfo1(self: &Unitset, client_info: i32, index: i32);
-        fn issueCommand(self: &Unitset, command: UnitCommand) -> bool;
+        /*..*/ fn setClientInfo1(self: &Unitset, client_info: i32, index: i32);
+        /*..*/ fn issueCommand(self: &Unitset, command: UnitCommand) -> bool;
         unsafe fn attack(self: &Unitset, target: *mut UnitInterface, shiftQueueCommand: bool) -> bool;
         #[cxx_name = "attack"]
-        fn attack1(self: &Unitset, target: Position, shiftQueueCommand: bool) -> bool;
-        fn build(self: &Unitset, utype: UnitType, target: TilePosition) -> bool;
-        fn buildAddon(self: &Unitset, utype: UnitType) -> bool;
-        fn train(self: &Unitset, utype: UnitType) -> bool;
-        fn morph(self: &Unitset, utype: UnitType) -> bool;
+        /*..*/ fn attack1(self: &Unitset, target: Position, shiftQueueCommand: bool) -> bool;
+        /*..*/ fn build(self: &Unitset, utype: UnitType, target: TilePosition) -> bool;
+        /*..*/ fn buildAddon(self: &Unitset, utype: UnitType) -> bool;
+        /*..*/ fn train(self: &Unitset, utype: UnitType) -> bool;
+        /*..*/ fn morph(self: &Unitset, utype: UnitType) -> bool;
         unsafe fn setRallyPoint(self: &Unitset, target: *mut UnitInterface) -> bool;
         #[cxx_name = "setRallyPoint"]
-        fn setRallyPoint1(self: &Unitset, target: Position) -> bool;
-        fn _unitset_move(set: &Unitset, target: Position, shiftQueueCommand: bool) -> bool;
-        fn patrol(self: &Unitset, target: Position, shiftQueueCommand: bool) -> bool;
-        fn holdPosition(self: &Unitset, shiftQueueCommand: bool) -> bool;
-        fn stop(self: &Unitset, shiftQueueCommand: bool) -> bool;
+        /*..*/ fn setRallyPoint1(self: &Unitset, target: Position) -> bool;
+        /*..*/ fn _unitset_move(set: &Unitset, target: Position, shiftQueueCommand: bool) -> bool;
+        /*..*/ fn patrol(self: &Unitset, target: Position, shiftQueueCommand: bool) -> bool;
+        /*..*/ fn holdPosition(self: &Unitset, shiftQueueCommand: bool) -> bool;
+        /*..*/ fn stop(self: &Unitset, shiftQueueCommand: bool) -> bool;
         unsafe fn follow(self: &Unitset, target: *mut UnitInterface, shiftQueueCommand: bool) -> bool;
         unsafe fn gather(self: &Unitset, target: *mut UnitInterface, shiftQueueCommand: bool) -> bool;
-        fn returnCargo(self: &Unitset, shiftQueueCommand: bool) -> bool;
+        /*..*/ fn returnCargo(self: &Unitset, shiftQueueCommand: bool) -> bool;
         unsafe fn repair(self: &Unitset, target: *mut UnitInterface, shiftQueueCommand: bool) -> bool;
-        fn burrow(self: &Unitset) -> bool;
-        fn unburrow(self: &Unitset) -> bool;
-        fn cloak(self: &Unitset) -> bool;
-        fn decloak(self: &Unitset) -> bool;
-        fn siege(self: &Unitset) -> bool;
-        fn unsiege(self: &Unitset) -> bool;
-        fn lift(self: &Unitset) -> bool;
+        /*..*/ fn burrow(self: &Unitset) -> bool;
+        /*..*/ fn unburrow(self: &Unitset) -> bool;
+        /*..*/ fn cloak(self: &Unitset) -> bool;
+        /*..*/ fn decloak(self: &Unitset) -> bool;
+        /*..*/ fn siege(self: &Unitset) -> bool;
+        /*..*/ fn unsiege(self: &Unitset) -> bool;
+        /*..*/ fn lift(self: &Unitset) -> bool;
         unsafe fn load(self: &Unitset, target: *mut UnitInterface, shiftQueueCommand: bool) -> bool;
-        fn unloadAll(self: &Unitset, shiftQueueCommand: bool) -> bool;
+        /*..*/ fn unloadAll(self: &Unitset, shiftQueueCommand: bool) -> bool;
         #[cxx_name = "unloadAll"]
-        fn unloadAll1(self: &Unitset, target: Position, shiftQueueCommand: bool) -> bool;
+        /*..*/ fn unloadAll1(self: &Unitset, target: Position, shiftQueueCommand: bool) -> bool;
         unsafe fn rightClick(self: &Unitset, target: *mut UnitInterface, shiftQueueCommand: bool) -> bool;
         #[cxx_name = "rightClick"]
-        fn rightClick1(self: &Unitset, target: Position, shiftQueueCommand: bool) -> bool;
-        fn haltConstruction(self: &Unitset) -> bool;
-        fn cancelConstruction(self: &Unitset) -> bool;
-        fn cancelAddon(self: &Unitset) -> bool;
-        fn cancelTrain(self: &Unitset, slot: i32) -> bool;
-        fn cancelMorph(self: &Unitset) -> bool;
-        fn cancelResearch(self: &Unitset) -> bool;
-        fn cancelUpgrade(self: &Unitset) -> bool;
+        /*..*/ fn rightClick1(self: &Unitset, target: Position, shiftQueueCommand: bool) -> bool;
+        /*..*/ fn haltConstruction(self: &Unitset) -> bool;
+        /*..*/ fn cancelConstruction(self: &Unitset) -> bool;
+        /*..*/ fn cancelAddon(self: &Unitset) -> bool;
+        /*..*/ fn cancelTrain(self: &Unitset, slot: i32) -> bool;
+        /*..*/ fn cancelMorph(self: &Unitset) -> bool;
+        /*..*/ fn cancelResearch(self: &Unitset) -> bool;
+        /*..*/ fn cancelUpgrade(self: &Unitset) -> bool;
         unsafe fn useTech(self: &Unitset, tech: TechType, target: *mut UnitInterface) -> bool;
         #[cxx_name = "useTech"]
-        fn useTech1(self: &Unitset, tech: TechType, target: Position) -> bool;
+        /*..*/ fn useTech1(self: &Unitset, tech: TechType, target: Position) -> bool;
     }
     // endregion
 
