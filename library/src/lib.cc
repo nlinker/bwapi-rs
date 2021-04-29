@@ -3,6 +3,7 @@
 #include "BWAPI/Game.h"
 #include "BWAPI/Unit.h"
 #include "../openbw/bwapilib/include/BWAPI/Game.h"
+#include "../openbw/bwapilib/include/BWAPI/Filters.h"
 
 int cpp_test() {
     std::cout << "cpp_test started" << std::endl;
@@ -115,6 +116,21 @@ void _game_debug(const BWAPI::Game &game) {
     }
 }
 
+void _game_debug_fun(const BWAPI::Game &game, UnitFilter fun) {
+    BWAPI::Game &g = const_cast<BWAPI::Game&>(game);
+    const BWAPI::UnitFilter &pred = nullptr;
+    auto left = 100;
+    auto right = 1000;
+    auto top = 100;
+    auto bottom = 1000;
+    BWAPI::Unitset set = g.getUnitsInRectangle(left, top, right, bottom, pred);
+    for (auto &p : set) {
+        std::ostringstream os;
+        os << "raw: " << p << "id:" << p->getID() << " type:" << p->getType() << " position:" << p->getPosition();
+        g.sendText(os.str().c_str());
+    }
+}
+
 BWAPI::UnitInterface *_game_getBestUnit(const BWAPI::Game &game, BestUnitFilter best, UnitFilter pred, BWAPI::Position center, int radius) {
     return game.getBestUnit(nullptr /*todo*/, nullptr /*todo*/, center, radius);
 }
@@ -125,6 +141,10 @@ BWAPI::UnitInterface *_game_getClosestUnit(const BWAPI::Game &game, BWAPI::Posit
 
 BWAPI::UnitInterface *_game_getClosestUnitInRectangle(const BWAPI::Game &game, BWAPI::Position center, UnitFilter pred, int left, int top, int right, int bottom) {
     return game.getClosestUnitInRectangle(center, pred /*todo*/, left, top, right, bottom);
+}
+
+const EventList& _game_getEvents(const BWAPI::Game &game) {
+    return game.getEvents();
 }
 
 std::unique_ptr<UnitsetIterator> _game_getUnitsInRadius(const BWAPI::Game &game, BWAPI::Position position, int radius, UnitFilter pred) {
@@ -180,6 +200,11 @@ void _game_sendTextEx(BWAPI::Game &game, bool toAllies, rust::Str text) {
 bool _game_setMap(BWAPI::Game &game, rust::Str text) {
     std::string s(text);
     return game.setMap(s.c_str());
+}
+
+void _game_drawText(BWAPI::Game &game, BWAPI::CoordinateType::Enum ctype, int x, int y, rust::Str text) {
+    std::string s(text);
+    game.drawText(ctype, x, y, s.c_str());
 }
 // endregion
 

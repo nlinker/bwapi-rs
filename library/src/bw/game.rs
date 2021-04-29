@@ -42,4 +42,5 @@ impl Game {
         let iter = ffi::_game_getUnitsInRadius(game, position, radius, pred);
         Unitset { iter }
     }
+
 }

@@ -42,6 +42,7 @@ impl AIModule for DemoAI {
                     for u in game.get_all_units() {
                         println!("All list: unit = {:?} with id {}, type: {:?}, pos: {:?}", u, u.get_id(), u.get_type(), u.get_position());
                     }
+
                     // let c = Position { x: 250, y: 3160 };
                     // let mut inr = game.get_units_in_radius(c, 100, |_| true).collect::<Vec<_>>();
                     // if let Some(h) = inr.iter().find(|u| u.get_type() == UnitType::Zerg_Hatchery) {

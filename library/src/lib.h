@@ -51,9 +51,11 @@ std::unique_ptr<UnitsetIterator> _unitset_getUnitsInRadius(const BWAPI::Unitset 
 bool _unitset_move(const BWAPI::Unitset &set, BWAPI::Position target, bool shift_queue_command);
 
 void _game_debug(const BWAPI::Game &game);
+void _game_debug_fun(const BWAPI::Game &game, UnitFilter fun);
 BWAPI::UnitInterface* _game_getBestUnit(const BWAPI::Game &game, BestUnitFilter best, UnitFilter pred, BWAPI::Position center, int radius);
 BWAPI::UnitInterface *_game_getClosestUnit(const BWAPI::Game &game, BWAPI::Position center, UnitFilter pred, int radius);
 BWAPI::UnitInterface *_game_getClosestUnitInRectangle(const BWAPI::Game &game, BWAPI::Position center, UnitFilter pred, int left, int top, int right, int bottom);
+const EventList& _game_getEvents(const BWAPI::Game &game);
 std::unique_ptr<UnitsetIterator> _game_getUnitsInRadius(const BWAPI::Game &game, BWAPI::Position position, int radius, UnitFilter pred);
 std::unique_ptr<UnitsetIterator> _game_getUnitsInRectangle(const BWAPI::Game &game, BWAPI::Position topLeft, BWAPI::Position bottomRight, UnitFilter pred);
 std::unique_ptr<UnitsetIterator> _game_getUnitsOnTile(const BWAPI::Game &game, BWAPI::TilePosition tile, UnitFilter pred);
@@ -66,7 +68,13 @@ BWAPI::PlayerInterface *_game_self(const BWAPI::Game &game);
 void _game_sendText(BWAPI::Game &game, rust::Str text);
 void _game_sendTextEx(BWAPI::Game &game, bool toAllies, rust::Str text);
 bool _game_setMap(BWAPI::Game &game, rust::Str text);
+void _game_drawText(BWAPI::Game &game, BWAPI::CoordinateType::Enum ctype, int x, int y, rust::Str text);
 
 int Unit_getId(const BWAPI::UnitInterface *unit);
 BWAPI::UnitType Unit_getType(const BWAPI::UnitInterface *unit);
 BWAPI::Position Unit_getPosition(const BWAPI::UnitInterface *unit);
+
+
+static_assert (sizeof(BWAPI::Color) == 4, "BWAPI::Color size is not correct");
+static_assert (sizeof(BWAPI::Text::Size::Enum) == 4, "BWAPI::Text::Size::Enum size is not correct");
+static_assert (sizeof(BWAPI::UpgradeType) == 4, "BWAPI::UpgradeType size is not correct");

@@ -10,6 +10,8 @@
 #include "BWAPI/Regionset.h"
 #include "BWAPI/Unit.h"
 #include "BWAPI/Unitset.h"
+#include "BWAPI/Event.h"
+#include "BWAPI/Position.h"
 
 template<typename Container, typename Out>
 class BaseIterator {
@@ -104,3 +106,7 @@ using UnitsetIterator = BaseIterator<const BWAPI::Unitset, const BWAPI::UnitInte
 using UnitsetIteratorOwn = OwnIterator<const BWAPI::Unitset, const BWAPI::UnitInterface *>;
 using UnitsetIteratorRef = RefIterator<const BWAPI::Unitset, const BWAPI::UnitInterface *>;
 std::unique_ptr<UnitsetIterator> createUnitsetIteratorRef(const BWAPI::Unitset &set);
+
+using PositionList = BWAPI::Position::list;
+using TilePositionList = BWAPI::TilePosition::list;
+using EventList = std::list<BWAPI::Event>;

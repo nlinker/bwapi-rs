@@ -11,6 +11,6 @@ pub enum CoordinateType {
 
 // required for ffi layer
 unsafe impl cxx::ExternType for CoordinateType {
-    type Id = cxx::type_id!("BWAPI::CoordinateType");
+    type Id = cxx::type_id!("BWAPI::CoordinateType::Enum");
     type Kind = cxx::kind::Trivial;
 }
