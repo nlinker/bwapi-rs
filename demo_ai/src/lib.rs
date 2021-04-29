@@ -5,6 +5,8 @@ use std::thread::sleep;
 use std::time::Duration;
 use library::bw::unit_type::UnitType;
 use library::ffi::Unit_getType;
+use library::bw::color::Color;
+use library::bw::coordinate_type::CoordinateType;
 
 #[no_mangle]
 #[allow(non_snake_case)]
@@ -33,16 +35,24 @@ impl AIModule for DemoAI {
                 println!("fn on_end(is_winner: {})", is_winner);
             }
             Event::OnFrame() => {
+                // game.debug();
+                let colors = [Color::Black, Color::Brown, Color::Grey, Color::Red, Color::Green, Color::Cyan,
+                    Color::Yellow, Color::Teal, Color::Purple, Color::Blue, Color::Orange, Color::White,
+                ];
+                for i in 0..colors.len() {
+                    let delta = (i * 37) as i32;
+                    game.draw_box(CoordinateType::Map, 100 + delta, 100 + delta, 200 + delta, 200 + delta, colors[i], true);
+                    game.draw_box(CoordinateType::Map, 300 + delta, 100 + delta, 400 + delta, 200 + delta, colors[i], false);
+                }
+
                 // println!("fn on_frame()");
                 let fc = game.get_frame_count();
                 if fc % 20 == 0 {
-                    // game.debug();
                     // game.allies();
                     game.send_text(&format!("Unitset size_hint: {:?}", game.get_all_units().size_hint()));
-                    for u in game.get_all_units() {
-                        println!("All list: unit = {:?} with id {}, type: {:?}, pos: {:?}", u, u.get_id(), u.get_type(), u.get_position());
-                    }
-
+                    // for u in game.get_all_units() {
+                    //     println!("All list: unit = {:?} with id {}, type: {:?}, pos: {:?}", u, u.get_id(), u.get_type(), u.get_position());
+                    // }
                     // let c = Position { x: 250, y: 3160 };
                     // let mut inr = game.get_units_in_radius(c, 100, |_| true).collect::<Vec<_>>();
                     // if let Some(h) = inr.iter().find(|u| u.get_type() == UnitType::Zerg_Hatchery) {

@@ -156,31 +156,31 @@ unsafe extern "C++" {
     pub unsafe fn Unit_getPosition(unit: *const UnitInterface) -> Position;
 }
 
-    // region BWAPI::BulletInterface
-    // extern "C++" {
-    //     unsafe fn exists(self: &BulletInterface) -> bool;
-    //     unsafe fn getAngle(self: &BulletInterface) -> f32;
-    //     unsafe fn getID(self: &BulletInterface) -> i32;
-    //     unsafe fn getPlayer(self: &BulletInterface) -> *const PlayerInterface;
-    //     unsafe fn getPosition(self: &BulletInterface) -> Position;
-    //     unsafe fn getRemoveTimer(self: &BulletInterface) -> i32;
-    //     unsafe fn getSource(self: &BulletInterface) -> *const UnitInterface;
-    //     unsafe fn getTarget(self: &BulletInterface) -> *const UnitInterface;
-    //     unsafe fn getTargetPosition(self: &BulletInterface) -> Position;
-    //     unsafe fn getType(self: &BulletInterface) -> BulletType;
-    //     unsafe fn getVelocityX(self: &BulletInterface) -> f32;
-    //     unsafe fn getVelocityY(self: &BulletInterface) -> f32;
-    //     unsafe fn isVisible(self: &BulletInterface, player: *const PlayerInterface) -> bool;
-    // }
-    // endregion
+// region BWAPI::BulletInterface
+// extern "C++" {
+//     unsafe fn exists(self: &BulletInterface) -> bool;
+//     unsafe fn getAngle(self: &BulletInterface) -> f32;
+//     unsafe fn getID(self: &BulletInterface) -> i32;
+//     unsafe fn getPlayer(self: &BulletInterface) -> *const PlayerInterface;
+//     unsafe fn getPosition(self: &BulletInterface) -> Position;
+//     unsafe fn getRemoveTimer(self: &BulletInterface) -> i32;
+//     unsafe fn getSource(self: &BulletInterface) -> *const UnitInterface;
+//     unsafe fn getTarget(self: &BulletInterface) -> *const UnitInterface;
+//     unsafe fn getTargetPosition(self: &BulletInterface) -> Position;
+//     unsafe fn getType(self: &BulletInterface) -> BulletType;
+//     unsafe fn getVelocityX(self: &BulletInterface) -> f32;
+//     unsafe fn getVelocityY(self: &BulletInterface) -> f32;
+//     unsafe fn isVisible(self: &BulletInterface, player: *const PlayerInterface) -> bool;
+// }
+// endregion
 
-    // region BWAPI::ForceInterface
-    // extern "C++" {
-    //     pub fn getID(self: &ForceInterface >) -> i32;
-    //     pub fn _force_getName(x: &ForceInterface) -> UniquePtr<CxxString>;
-    //     pub fn _force_getPlayers(x: &ForceInterface) -> UniquePtr<PlayersetIterator>;
-    // }
-    // endregion
+// region BWAPI::ForceInterface
+// extern "C++" {
+//     pub fn getID(self: &ForceInterface >) -> i32;
+//     pub fn _force_getName(x: &ForceInterface) -> UniquePtr<CxxString>;
+//     pub fn _force_getPlayers(x: &ForceInterface) -> UniquePtr<PlayersetIterator>;
+// }
+// endregion
 
 // region BWAPI::Unitset
 unsafe extern "C++" {
@@ -363,83 +363,83 @@ unsafe extern "C++" {
 }
 // endregion
 
-    // region BWAPI::PlayerInterface
-    // extern "C++" {
-    //     fn allUnitCount(unit: UnitType) -> i32;
-    //     fn armor(unit: UnitType) -> i32;
-    //     fn completedUnitCount(unit: UnitType) -> i32;
-    //     fn damage(wpn: WeaponType) -> i32;
-    //     fn deadUnitCount(unit: UnitType) -> i32;
-    //     fn gas() -> i32;
-    //     fn gatheredGas() -> i32;
-    //     fn gatheredMinerals() -> i32;
-    //     fn getBuildingScore() -> i32;
-    //     fn getColor() -> Color;
-    //     fn getCustomScore() -> i32;
-    //     fn getForce() -> Force;
-    //     fn getID() -> i32;
-    //     fn getKillScore() -> i32;
-    //     fn getMaxUpgradeLevel(upgrade: UpgradeType) -> i32;
-    //     fn getName() -> string;
-    //     fn getRace() -> Race;
-    //     fn getRazingScore() -> i32;
-    //     fn getStartLocation() -> TilePosition;
-    //     fn getTextColor() -> char;
-    //     fn getType() -> PlayerType;
-    //     fn getUnits() -> Unitset;
-    //     fn getUnitScore() -> i32;
-    //     fn getUpgradeLevel(upgrade: UpgradeType) -> i32;
-    //     fn hasResearched(tech: TechType) -> bool;
-    //     fn hasUnitTypeRequirement (unit: UnitType, amount: i32) -> bool;
-    //     fn incompleteUnitCount(unit: UnitType) -> i32;
-    //     fn isAlly(player: Player) -> bool;
-    //     fn isDefeated() -> bool;
-    //     fn isEnemy(player: Player) -> bool;
-    //     fn isNeutral() -> bool;
-    //     fn isObserver() -> bool;
-    //     fn isResearchAvailable(tech: TechType) -> bool;
-    //     fn isResearching(tech: TechType) -> bool;
-    //     fn isUnitAvailable(unit: UnitType) -> bool;
-    //     fn isUpgrading(upgrade: UpgradeType) -> bool;
-    //     fn isVictorious() -> bool;
-    //     fn killedUnitCount(unit: UnitType) -> i32;
-    //     fn leftGame() -> bool;
-    //     fn maxEnergy(unit: UnitType) -> i32;
-    //     fn minerals() -> i32;
-    //     fn refundedGas() -> i32;
-    //     fn refundedMinerals() -> i32;
-    //     fn repairedGas() -> i32;
-    //     fn repairedMinerals() -> i32;
-    //     fn sightRange(unit: UnitType) -> i32;
-    //     fn spentGas() -> i32;
-    //     fn spentMinerals() -> i32;
-    //     fn supplyTotal(race: Race) -> i32;
-    //     fn supplyUsed(race: Race) -> i32;
-    //     fn topSpeed(unit: UnitType) -> f32;
-    //     fn visibleUnitCount(unit: UnitType) -> i32;
-    //     fn weaponDamageCooldown(unit: UnitType) -> i32;
-    //     fn weaponMaxRange(weapon: WeaponType) -> i32;
-    // }
-    // endregion
+// region BWAPI::PlayerInterface
+// extern "C++" {
+//     fn allUnitCount(unit: UnitType) -> i32;
+//     fn armor(unit: UnitType) -> i32;
+//     fn completedUnitCount(unit: UnitType) -> i32;
+//     fn damage(wpn: WeaponType) -> i32;
+//     fn deadUnitCount(unit: UnitType) -> i32;
+//     fn gas() -> i32;
+//     fn gatheredGas() -> i32;
+//     fn gatheredMinerals() -> i32;
+//     fn getBuildingScore() -> i32;
+//     fn getColor() -> Color;
+//     fn getCustomScore() -> i32;
+//     fn getForce() -> Force;
+//     fn getID() -> i32;
+//     fn getKillScore() -> i32;
+//     fn getMaxUpgradeLevel(upgrade: UpgradeType) -> i32;
+//     fn getName() -> string;
+//     fn getRace() -> Race;
+//     fn getRazingScore() -> i32;
+//     fn getStartLocation() -> TilePosition;
+//     fn getTextColor() -> char;
+//     fn getType() -> PlayerType;
+//     fn getUnits() -> Unitset;
+//     fn getUnitScore() -> i32;
+//     fn getUpgradeLevel(upgrade: UpgradeType) -> i32;
+//     fn hasResearched(tech: TechType) -> bool;
+//     fn hasUnitTypeRequirement (unit: UnitType, amount: i32) -> bool;
+//     fn incompleteUnitCount(unit: UnitType) -> i32;
+//     fn isAlly(player: Player) -> bool;
+//     fn isDefeated() -> bool;
+//     fn isEnemy(player: Player) -> bool;
+//     fn isNeutral() -> bool;
+//     fn isObserver() -> bool;
+//     fn isResearchAvailable(tech: TechType) -> bool;
+//     fn isResearching(tech: TechType) -> bool;
+//     fn isUnitAvailable(unit: UnitType) -> bool;
+//     fn isUpgrading(upgrade: UpgradeType) -> bool;
+//     fn isVictorious() -> bool;
+//     fn killedUnitCount(unit: UnitType) -> i32;
+//     fn leftGame() -> bool;
+//     fn maxEnergy(unit: UnitType) -> i32;
+//     fn minerals() -> i32;
+//     fn refundedGas() -> i32;
+//     fn refundedMinerals() -> i32;
+//     fn repairedGas() -> i32;
+//     fn repairedMinerals() -> i32;
+//     fn sightRange(unit: UnitType) -> i32;
+//     fn spentGas() -> i32;
+//     fn spentMinerals() -> i32;
+//     fn supplyTotal(race: Race) -> i32;
+//     fn supplyUsed(race: Race) -> i32;
+//     fn topSpeed(unit: UnitType) -> f32;
+//     fn visibleUnitCount(unit: UnitType) -> i32;
+//     fn weaponDamageCooldown(unit: UnitType) -> i32;
+//     fn weaponMaxRange(weapon: WeaponType) -> i32;
+// }
+// endregion
 
-    // BWAPI::RegionInterface
-    // extern "C++" {
-    //     fn getBoundsBottom() -> int;
-    //     fn getBoundsLeft() -> int;
-    //     fn getBoundsRight() -> int;
-    //     fn getBoundsTop() -> int;
-    //     fn getCenter() -> Position;
-    //     fn getClosestAccessibleRegion() -> Region;
-    //     fn getClosestInaccessibleRegion() -> Region;
-    //     fn getDefensePriority() -> int;
-    //     fn getDistance(other: Region) -> int;
-    //     fn getID() -> int;
-    //     fn getNeighbors() -> Regionset;
-    //     fn getRegionGroupID() -> int;
-    //     fn getUnits(pred: fn(Unit) -> bool) -> Unitset;
-    //     fn isAccessible() -> bool;
-    //     fn isHigherGround() -> bool;
-    // }
+// region BWAPI::RegionInterface
+// extern "C++" {
+//     fn getBoundsBottom() -> int;
+//     fn getBoundsLeft() -> int;
+//     fn getBoundsRight() -> int;
+//     fn getBoundsTop() -> int;
+//     fn getCenter() -> Position;
+//     fn getClosestAccessibleRegion() -> Region;
+//     fn getClosestInaccessibleRegion() -> Region;
+//     fn getDefensePriority() -> int;
+//     fn getDistance(other: Region) -> int;
+//     fn getID() -> int;
+//     fn getNeighbors() -> Regionset;
+//     fn getRegionGroupID() -> int;
+//     fn getUnits(pred: fn(Unit) -> bool) -> Unitset;
+//     fn isAccessible() -> bool;
+//     fn isHigherGround() -> bool;
+// }
 
     // BWAPI::UnitInterface
     // extern "C++" {
