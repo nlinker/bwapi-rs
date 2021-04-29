@@ -5,7 +5,7 @@ use std::thread::sleep;
 use std::time::Duration;
 use library::bw::unit_type::UnitType;
 use library::ffi::Unit_getType;
-use library::bw::color::Color;
+use library::bw::color::{Color, TextSize};
 use library::bw::coordinate_type::CoordinateType;
 
 #[no_mangle]
@@ -43,6 +43,11 @@ impl AIModule for DemoAI {
                     let delta = (i * 37) as i32;
                     game.draw_box(CoordinateType::Map, 100 + delta, 100 + delta, 200 + delta, 200 + delta, colors[i], true);
                     game.draw_box(CoordinateType::Map, 300 + delta, 100 + delta, 400 + delta, 200 + delta, colors[i], false);
+                }
+                let sizes = [TextSize::Huge, TextSize::Large, TextSize::Small, TextSize::Default];
+                for i in 0..sizes.len() {
+                    game.set_text_size(sizes[i]);
+                    game.draw_text(CoordinateType::Map, 1800, 1800 + (i as i32 * 50), "Hello, SSCAIT!");
                 }
 
                 // println!("fn on_frame()");

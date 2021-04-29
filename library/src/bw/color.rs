@@ -1,5 +1,5 @@
 #[repr(i32)]
-#[derive(PartialEq, PartialOrd, Copy, Clone)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub enum Color {
     Black = 0,
     Brown = 19,
@@ -21,8 +21,10 @@ unsafe impl cxx::ExternType for Color {
     type Kind = cxx::kind::Trivial;
 }
 
+#[repr(i32)]
+#[derive(Debug, Copy, Clone, Eq, PartialEq)]
 pub enum TextSize {
-    Small,
+    Small = 0,
     Default,
     Large,
     Huge,
