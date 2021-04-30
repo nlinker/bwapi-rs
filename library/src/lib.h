@@ -64,9 +64,6 @@ std::unique_ptr<std::string> _game_mapFileName(const BWAPI::Game &game);
 std::unique_ptr<std::string> _game_mapHash(const BWAPI::Game &game);
 std::unique_ptr<std::string> _game_mapName(const BWAPI::Game &game);
 std::unique_ptr<std::string> _game_mapPathName(const BWAPI::Game &game);
-
-std::vector<int> theVector();
-
 void _game_printf(BWAPI::Game &game, rust::Str text);
 BWAPI::PlayerInterface *_game_self(const BWAPI::Game &game);
 void _game_sendText(BWAPI::Game &game, rust::Str text);
@@ -78,7 +75,20 @@ int Unit_getId(const BWAPI::UnitInterface *unit);
 BWAPI::UnitType Unit_getType(const BWAPI::UnitInterface *unit);
 BWAPI::Position Unit_getPosition(const BWAPI::UnitInterface *unit);
 
-
+static_assert (sizeof(BWAPI::BulletType) == 4, "BWAPI::BulletType size is not correct");
 static_assert (sizeof(BWAPI::Color) == 4, "BWAPI::Color size is not correct");
-static_assert (sizeof(BWAPI::Text::Size::Enum) == 4, "BWAPI::Text::Size::Enum size is not correct");
+static_assert (sizeof(BWAPI::DamageType) == 4, "BWAPI::DamageType size is not correct");
+static_assert (sizeof(BWAPI::Error) == 4, "BWAPI::Error size is not correct");
+static_assert (sizeof(BWAPI::ExplosionType) == 4, "BWAPI::ExplosionType size is not correct");
+static_assert (sizeof(BWAPI::GameType) == 4, "BWAPI::GameType size is not correct");
+static_assert (sizeof(BWAPI::Order) == 4, "BWAPI::Order size is not correct");
+static_assert (sizeof(BWAPI::PlayerType) == 4, "BWAPI::PlayerType size is not correct");
+static_assert (sizeof(BWAPI::Race) == 4, "BWAPI::Race size is not correct");
+static_assert (sizeof(BWAPI::TechType) == 4, "BWAPI::TechType size is not correct");
+static_assert (sizeof(BWAPI::UnitCommand) == 40, "BWAPI::UnitCommand size is not correct");
+static_assert (sizeof(BWAPI::UnitCommandType) == 4, "BWAPI::UnitCommandType size is not correct");
+static_assert (sizeof(BWAPI::UnitSizeType) == 4, "BWAPI::UnitSizeType size is not correct");
+static_assert (sizeof(BWAPI::UnitType) == 4, "BWAPI::UnitType size is not correct");
 static_assert (sizeof(BWAPI::UpgradeType) == 4, "BWAPI::UpgradeType size is not correct");
+static_assert (sizeof(BWAPI::WeaponType) == 4, "BWAPI::WeaponType size is not correct");
+static_assert (sizeof(BWAPI::Text::Size::Enum) == 4, "BWAPI::Text::Size::Enum size is not correct");

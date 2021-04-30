@@ -106,13 +106,12 @@ bool _unitset_move(const BWAPI::Unitset &set, BWAPI::Position target, bool shift
 void _game_debug(const BWAPI::Game &game) {
     using namespace BWAPI;
     BWAPI::Game &g = const_cast<BWAPI::Game&>(game);
-    Color colors[] = {Colors::Black, Colors::Brown, Colors::Grey, Colors::Red, Colors::Green, Colors::Cyan,
-                      Colors::Yellow, Colors::Teal, Colors::Purple, Colors::Blue, Colors::Orange, Colors::White};
-    int size = sizeof(colors)/sizeof(colors[0]);
+    Text::Size::Enum sizes[] = {Text::Size::Enum::Huge, Text::Size::Enum::Large, Text::Size::Enum::Small, Text::Size::Enum::Default};
+    int size = sizeof(sizes)/sizeof(sizes[0]);
     for (int i = 0; i < size; i++) {
         int delta = i * 37;
-        g.drawBox(CoordinateType::Enum::Map, 100 + delta, 100 + delta, 200 + delta, 200 + delta, colors[i], true);
-        g.drawBox(CoordinateType::Enum::Map, 300 + delta, 100 + delta, 400 + delta, 200 + delta, colors[i], false);
+        g.setTextSize(sizes[i]);
+        g.drawText(CoordinateType::Enum::Map, 1800, 1800 + (i * 50), "Hello, SSCAIT from c++!");
     }
 }
 
@@ -129,6 +128,9 @@ void _game_debug_fun(const BWAPI::Game &game, UnitFilter fun) {
         os << "raw: " << p << "id:" << p->getID() << " type:" << p->getType() << " position:" << p->getPosition();
         g.sendText(os.str().c_str());
     }
+    //std::ostringstream os;
+    //os << "sizeof(UnitCommand) = " << sizeof(BWAPI::UnitCommand);
+    //g.sendText(os.str().c_str());
 }
 
 BWAPI::UnitInterface *_game_getBestUnit(const BWAPI::Game &game, BestUnitFilter best, UnitFilter pred, BWAPI::Position center, int radius) {

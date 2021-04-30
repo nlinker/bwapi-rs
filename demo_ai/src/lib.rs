@@ -35,7 +35,7 @@ impl AIModule for DemoAI {
                 println!("fn on_end(is_winner: {})", is_winner);
             }
             Event::OnFrame() => {
-                // game.debug();
+                game.debug();
                 let colors = [Color::Black, Color::Brown, Color::Grey, Color::Red, Color::Green, Color::Cyan,
                     Color::Yellow, Color::Teal, Color::Purple, Color::Blue, Color::Orange, Color::White,
                 ];
@@ -44,11 +44,11 @@ impl AIModule for DemoAI {
                     game.draw_box(CoordinateType::Map, 100 + delta, 100 + delta, 200 + delta, 200 + delta, colors[i], true);
                     game.draw_box(CoordinateType::Map, 300 + delta, 100 + delta, 400 + delta, 200 + delta, colors[i], false);
                 }
-                let sizes = [TextSize::Huge, TextSize::Large, TextSize::Small, TextSize::Default];
-                for i in 0..sizes.len() {
-                    game.set_text_size(sizes[i]);
-                    game.draw_text(CoordinateType::Map, 1800, 1800 + (i as i32 * 50), "Hello, SSCAIT!");
-                }
+                // let sizes = [TextSize::Huge, TextSize::Large, TextSize::Small, TextSize::Default];
+                // for i in 0..sizes.len() {
+                //     game.set_text_size(sizes[i]);
+                //     game.draw_text(CoordinateType::Map, 1800, 1800 + (i as i32 * 50), "Hello, SSCAIT!");
+                // }
 
                 // println!("fn on_frame()");
                 let fc = game.get_frame_count();
