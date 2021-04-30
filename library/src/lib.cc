@@ -146,31 +146,25 @@ const EventList& _game_getEvents(const BWAPI::Game &game) {
     return game.getEvents();
 }
 
-//template class rust::Vec<BWAPI::Position>; // explicit instantiation definition
-template class rust::Vec<BWAPI::Point<int, 1> >;  // explicit instantiation definition
-// template std::size_t rust::Vec<BWAPI::Point<int, 1> >::size() const;
-
 rust::Vec<BWAPI::Position> _game_getNukeDots(const BWAPI::Game& game) {
     auto &dots = game.getNukeDots();
-    rust::Vec<BWAPI::Position> xs { dots[0], dots[1], dots[2] };
-//    xs.reserve(dots.size());
-//    for (auto &dot: dots) {
-//        xs.push_back(dot);
-//    }
+    rust::Vec<BWAPI::Position> xs;
+    xs.reserve(dots.size());
+    for (auto &dot: dots) {
+        xs.push_back(dot);
+    }
     return xs;
 }
 
-//template void rust::Vec<BWAPI::Position>::drop();   /* explicit instantiation definition */
-
-//rust::Vec<BWAPI::TilePosition> _game_getStartLocations(const BWAPI::Game& game) {
-//    auto &tiles = game.getStartLocations();
-//    rust::Vec<BWAPI::TilePosition> xs { tiles[0] };
-////    xs.reserve(tiles.size());
-////    for (auto &tile: tiles) {
-////        xs.push_back(tile);
-////    }
-//    return xs;
-//}
+rust::Vec<BWAPI::TilePosition> _game_getStartLocations(const BWAPI::Game& game) {
+    auto &tiles = game.getStartLocations();
+    rust::Vec<BWAPI::TilePosition> xs;
+    xs.reserve(tiles.size());
+    for (auto &tile: tiles) {
+        xs.push_back(tile);
+    }
+    return xs;
+}
 
 std::unique_ptr<UnitsetIterator> _game_getUnitsInRadius(const BWAPI::Game &game, BWAPI::Position position, int radius, UnitFilter pred) {
     const BWAPI::Unitset xs = game.getUnitsInRadius(position, radius, nullptr /*todo*/);

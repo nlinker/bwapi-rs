@@ -1,6 +1,6 @@
 use crate::ffi;
 use crate::bw::unitset::Unitset;
-use crate::bw::position::Position;
+use crate::bw::position::{Position, TilePosition};
 use crate::bw::unit_filter::UnitFilter;
 use std::pin::Pin;
 use crate::bw::playerset::Playerset;
@@ -9,7 +9,7 @@ use crate::bw::color::{TextSize, Color};
 
 #[derive(Debug)]
 pub struct Game {
-    pub raw: *mut ffi::Game,
+    pub(crate) raw: *mut ffi::Game,
 }
 
 /// Game object doesn't contain any self-references
@@ -47,7 +47,16 @@ impl Game {
 
     pub fn get_nuke_dots(&self) -> Vec<Position> {
         let game: &ffi::Game = unsafe { &*self.raw };
-        ffi::_game_getNukeDots(game)
+        let xs = ffi::_game_getNukeDots(game);
+        // https://github.com/dtolnay/cxx/issues/855
+        xs.into_iter().map(|p| Position { x: p.x, y: p.y }).collect()
+    }
+
+    pub fn get_start_locations(&self) -> Vec<TilePosition> {
+        let game: &ffi::Game = unsafe { &*self.raw };
+        let xs = ffi::_game_getStartLocations(game);
+        // https://github.com/dtolnay/cxx/issues/855
+        xs.into_iter().map(|p| TilePosition { x: p.x, y: p.y }).collect()
     }
 
     // let ctype = ctype.unwrap_or(CoordinateType::Map);

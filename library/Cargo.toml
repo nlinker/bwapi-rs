@@ -9,7 +9,6 @@ license = "Unlicense/MIT"
 build = "build.rs"
 edition = "2018"
 
-## temporary, better to make it (default) rlib
 [lib]
 crate-type = ["rlib"]
 

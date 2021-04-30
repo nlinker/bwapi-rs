@@ -37,6 +37,19 @@ pub unsafe extern "C" fn gameInit(game: *const std::ffi::c_void) {
 #[cxx::bridge]
 pub mod ffi {
 
+    // https://github.com/dtolnay/cxx/issues/855
+    #[derive(Debug, Copy, Clone)]
+    struct PositionSyn {
+        x: i32,
+        y: i32,
+    }
+
+    // https://github.com/dtolnay/cxx/issues/855
+    #[derive(Debug, Copy, Clone)]
+    struct TilePositionSyn {
+        x: i32,
+        y: i32,
+    }
 
 #[namespace = "BWAPI"]
 unsafe extern "C++" {
@@ -241,6 +254,12 @@ unsafe extern "C++" {
 
 // region BWAPI::Game
 unsafe extern "C++" {
+    #[namespace = "BWAPI"]
+    #[cxx_name = "Position"]
+    type PositionSyn;
+    #[namespace = "BWAPI"]
+    #[cxx_name = "TilePosition"]
+    type TilePositionSyn;
 
     pub fn _game_debug(game: &Game);
     pub fn _game_debug_fun(game: &Game, fun: fn(Unit) -> bool);
@@ -286,7 +305,7 @@ unsafe extern "C++" {
     pub /*..*/ fn getMousePosition(self: &Game) -> Position;
     pub /*..*/ fn getMouseState(self: &Game, button: MouseButton) -> bool;
     pub /*..*/ fn getNeutralUnits(self: &Game) -> &Unitset;
-    pub /*..*/ fn _game_getNukeDots(game: &Game) -> Vec<Position>;
+    pub /*..*/ fn _game_getNukeDots(game: &Game) -> Vec<PositionSyn>;
     pub /*..*/ fn getPlayer(self: &Game, playerId: i32) -> *mut PlayerInterface;
     pub /*..*/ fn getPlayers(self: &Game) -> &Playerset;
     pub /*..*/ fn getRandomSeed(self: &Game) -> u32;
@@ -298,7 +317,7 @@ unsafe extern "C++" {
     pub /*..*/ fn getRevision(self: &Game) -> i32;
     pub /*..*/ fn getScreenPosition(self: &Game) -> Position;
     pub /*..*/ fn getSelectedUnits(self: &Game) -> &Unitset;
-    // pub /*..*/ fn _game_getStartLocations(game: &Game) -> Vec<TilePosition>;
+    pub /*..*/ fn _game_getStartLocations(game: &Game) -> Vec<TilePositionSyn>;
     pub /*..*/ fn getStaticGeysers(self: &Game) -> &Unitset;
     pub /*..*/ fn getStaticMinerals(self: &Game) -> &Unitset;
     pub /*..*/ fn getStaticNeutralUnits(self: &Game) -> &Unitset;

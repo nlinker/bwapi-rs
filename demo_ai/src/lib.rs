@@ -54,7 +54,9 @@ impl AIModule for DemoAI {
                     // game.allies();
                     game.send_text(&format!("Unitset size_hint: {:?}", game.get_all_units().size_hint()));
                     let xs = game.get_nuke_dots();
-                    println!("{:?}", xs);
+                    println!("get_nuke_dots = {:?}", xs);
+                    let xs = game.get_start_locations();
+                    println!("get_start_locations = {:?}", xs);
                     // for u in game.get_all_units() {
                     //     println!("All list: unit = {:?} with id {}, type: {:?}, pos: {:?}", u, u.get_id(), u.get_type(), u.get_position());
                     // }
