@@ -1,16 +1,19 @@
-use library::prelude::*;
-use library::ffi;
 use cxx::UniquePtr;
-use std::thread::sleep;
-use std::time::Duration;
 use library::bw::color::Color;
 use library::bw::coordinate_type::CoordinateType;
+use library::ffi;
+use library::prelude::*;
+use std::thread::sleep;
+use std::time::Duration;
 
 #[no_mangle]
 #[allow(non_snake_case)]
 pub unsafe extern "C" fn newAIModule() -> *mut ffi::AIModuleWrapper {
     println!("newAIModule called!");
-    let demo = DemoAI { name: "DemoAI here".to_string(), counter: 0 };
+    let demo = DemoAI {
+        name: "DemoAI here".to_string(),
+        counter: 0,
+    };
     let ai = BoxedAIModule::new(demo);
     let wrapper: UniquePtr<ffi::AIModuleWrapper> = ffi::create_ai_module_wrapper(Box::new(ai));
     wrapper.into_raw()
@@ -34,8 +37,19 @@ impl AIModule for DemoAI {
             }
             Event::OnFrame() => {
                 game.debug();
-                let colors = [Color::Black, Color::Brown, Color::Grey, Color::Red, Color::Green, Color::Cyan,
-                    Color::Yellow, Color::Teal, Color::Purple, Color::Blue, Color::Orange, Color::White,
+                let colors = [
+                    Color::Black,
+                    Color::Brown,
+                    Color::Grey,
+                    Color::Red,
+                    Color::Green,
+                    Color::Cyan,
+                    Color::Yellow,
+                    Color::Teal,
+                    Color::Purple,
+                    Color::Blue,
+                    Color::Orange,
+                    Color::White,
                 ];
                 for i in 0..colors.len() {
                     let delta = (i * 37) as i32;
@@ -89,8 +103,8 @@ impl AIModule for DemoAI {
 
 #[cfg(test)]
 mod tests {
-    use library::prelude::*;
     use crate::DemoAI;
+    use library::prelude::*;
 
     #[test]
     fn it_works() {
@@ -99,7 +113,6 @@ mod tests {
 
     #[test]
     fn boxed_test() {
-
         struct TestAI;
 
         impl AIModule for TestAI {
@@ -112,7 +125,10 @@ mod tests {
                 }
             }
         }
-        let mut demo = DemoAI { name: "DemoAI here".to_string(), counter: 0 };
+        let mut demo = DemoAI {
+            name: "DemoAI here".to_string(),
+            counter: 0,
+        };
         let mut ai = BoxedAIModule::new(demo);
         ai.on_event(Event::OnNukeDetect(Position { x: 11, y: 22 }));
     }

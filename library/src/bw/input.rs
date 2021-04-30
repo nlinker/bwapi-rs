@@ -1,4 +1,3 @@
-
 pub enum MouseButton {
     Left = 0,
     Right,
@@ -241,7 +240,7 @@ pub enum KeyButton {
     // K_NONAME,
     // K_PA1,
     // K_OEM_CLEAR,
-    MAX
+    MAX,
 }
 
 // required for ffi layer

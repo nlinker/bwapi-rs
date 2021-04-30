@@ -73,6 +73,9 @@ void _game_sendTextEx(BWAPI::Game &game, bool toAllies, rust::Str text);
 bool _game_setMap(BWAPI::Game &game, rust::Str text);
 void _game_drawText(BWAPI::Game &game, BWAPI::CoordinateType::Enum ctype, int x, int y, rust::Str text);
 
+std::unique_ptr<std::string> _player_getName(const BWAPI::PlayerInterface& player);
+BWAPI::Text::Enum _player_getTextColor(const BWAPI::PlayerInterface& player);
+
 int Unit_getId(const BWAPI::UnitInterface *unit);
 BWAPI::UnitType Unit_getType(const BWAPI::UnitInterface *unit);
 BWAPI::Position Unit_getPosition(const BWAPI::UnitInterface *unit);

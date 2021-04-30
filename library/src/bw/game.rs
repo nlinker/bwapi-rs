@@ -1,11 +1,11 @@
-use crate::ffi;
-use crate::bw::unitset::Unitset;
+use crate::bw::color::{Color, TextSize};
+use crate::bw::coordinate_type::CoordinateType;
+use crate::bw::playerset::Playerset;
 use crate::bw::position::{Position, TilePosition};
 use crate::bw::unit_filter::UnitFilter;
+use crate::bw::unitset::Unitset;
+use crate::ffi;
 use std::pin::Pin;
-use crate::bw::playerset::Playerset;
-use crate::bw::coordinate_type::CoordinateType;
-use crate::bw::color::{TextSize, Color};
 
 #[derive(Debug)]
 pub struct Game {
@@ -26,7 +26,9 @@ impl Game {
     pub fn allies(&self) -> Playerset {
         let game: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw) };
         let set: Pin<&mut ffi::Playerset> = game.allies();
-        Playerset { iter: ffi::createPlayersetIteratorRef(&*set) }
+        Playerset {
+            iter: ffi::createPlayersetIteratorRef(&*set),
+        }
     }
     pub fn send_text(&self, text: &str) {
         ffi::_game_sendText(unsafe { Pin::new_unchecked(&mut *self.raw) }, text)
@@ -37,7 +39,9 @@ impl Game {
     pub fn get_all_units(&self) -> Unitset {
         let game: &ffi::Game = unsafe { &*self.raw };
         let set: &ffi::Unitset = game.getAllUnits();
-        Unitset { iter: ffi::createUnitsetIteratorRef(set) }
+        Unitset {
+            iter: ffi::createUnitsetIteratorRef(set),
+        }
     }
     pub fn get_units_in_radius(&self, position: Position, radius: i32, pred: UnitFilter) -> Unitset {
         let game: &ffi::Game = unsafe { &*self.raw };

@@ -1,4 +1,3 @@
-
 #[allow(non_camel_case_types)]
 pub enum TechType {
     Stim_Packs = 0,
@@ -40,7 +39,7 @@ pub enum TechType {
     None = 44,
     Nuclear_Strike,
     Unknown,
-    MAX
+    MAX,
 }
 
 // required for ffi layer

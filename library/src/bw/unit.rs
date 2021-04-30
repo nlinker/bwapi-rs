@@ -1,6 +1,6 @@
-use crate::ffi;
-use crate::bw::unit_type::UnitType;
 use crate::bw::position::Position;
+use crate::bw::unit_type::UnitType;
+use crate::ffi;
 
 #[derive(Debug, Clone)]
 pub struct Unit {

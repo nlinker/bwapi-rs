@@ -1,2 +1,2 @@
-mod game;
 mod from_raw;
+mod game;

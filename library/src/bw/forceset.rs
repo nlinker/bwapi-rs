@@ -1,1 +1,1 @@
-pub struct Forceset ;
+pub struct Forceset;

@@ -1,9 +1,7 @@
-use crate::{
-    bw::player::Player,
-};
+use crate::bw::player::Player;
 use crate::ffi;
-use std::ptr::null;
 use cxx::UniquePtr;
+use std::ptr::null;
 
 pub struct Playerset {
     pub(crate) iter: UniquePtr<ffi::PlayersetIterator>,

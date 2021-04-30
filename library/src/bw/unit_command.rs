@@ -53,7 +53,7 @@ pub enum UnitCommandType {
     Place_COP,
     None,
     Unknown,
-    MAX
+    MAX,
 }
 
 impl Default for UnitCommandType {

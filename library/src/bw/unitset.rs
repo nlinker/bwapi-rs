@@ -1,16 +1,8 @@
-use crate::{
-    bw::position::Position,
-    bw::unit::Unit,
-    bw::unit_filter::UnitFilter,
-    bw::position::TilePosition,
-    bw::unit_type::UnitType,
-    bw::tech_type::TechType,
-    bw::unit_command::UnitCommand,
-};
 use crate::ffi;
 use crate::ffi::c_void;
-use std::ptr::null;
+use crate::{bw::position::Position, bw::position::TilePosition, bw::tech_type::TechType, bw::unit::Unit, bw::unit_command::UnitCommand, bw::unit_filter::UnitFilter, bw::unit_type::UnitType};
 use cxx::UniquePtr;
+use std::ptr::null;
 
 pub struct Unitset {
     pub(crate) iter: UniquePtr<ffi::UnitsetIterator>,
@@ -34,7 +26,6 @@ impl Iterator for Unitset {
     }
 }
 
-
 impl Unitset {
     pub fn get_closest_unit(&self, pred: UnitFilter, radius: i32) -> Unit {
         let xs: &ffi::Unitset = self.iter.underlying();
@@ -42,7 +33,9 @@ impl Unitset {
     }
     pub fn get_interceptors(&self) -> Unitset {
         let xs: &ffi::Unitset = self.iter.underlying();
-        Unitset { iter: ffi::_unitset_getInterceptors(xs) }
+        Unitset {
+            iter: ffi::_unitset_getInterceptors(xs),
+        }
     }
     pub fn get_larva(&self) -> Unitset {
         let xs: &ffi::Unitset = self.iter.underlying();
@@ -50,7 +43,9 @@ impl Unitset {
     }
     pub fn get_loaded_units(&self) -> Unitset {
         let xs: &ffi::Unitset = self.iter.underlying();
-        Unitset { iter: ffi::_unitset_getLoadedUnits(xs) }
+        Unitset {
+            iter: ffi::_unitset_getLoadedUnits(xs),
+        }
     }
     pub fn get_position(&self) -> Position {
         let xs: &ffi::Unitset = self.iter.underlying();
@@ -58,7 +53,9 @@ impl Unitset {
     }
     pub fn get_units_in_radius(&self, radius: i32, pred: UnitFilter) -> Unitset {
         let xs: &ffi::Unitset = self.iter.underlying();
-        Unitset { iter: ffi::_unitset_getUnitsInRadius(xs, radius, pred) }
+        Unitset {
+            iter: ffi::_unitset_getUnitsInRadius(xs, radius, pred),
+        }
     }
     pub fn set_client_info(&self, client_info: *mut c_void, index: i32) {
         let xs: &ffi::Unitset = self.iter.underlying();

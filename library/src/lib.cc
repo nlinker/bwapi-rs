@@ -100,7 +100,7 @@ bool _unitset_move(const BWAPI::Unitset &set, BWAPI::Position target, bool shift
 }
 // endregion
 
-// region ======== Game ========
+// region === === Game === ===
 void _game_debug(const BWAPI::Game &game) {
     using namespace BWAPI;
     BWAPI::Game &g = const_cast<BWAPI::Game&>(game);
@@ -227,6 +227,57 @@ void _game_drawText(BWAPI::Game &game, BWAPI::CoordinateType::Enum ctype, int x,
 }
 // endregion
 
+// region === === Player === ===
+std::unique_ptr<std::string> _player_getName(const BWAPI::PlayerInterface& player) {
+    return std::unique_ptr<std::string>(new std::string(player.getName()));
+}
+
+BWAPI::Text::Enum _player_getTextColor(const BWAPI::PlayerInterface& player) {
+    switch (static_cast<int>(player.getTextColor())) {
+        case 111: // red
+            return BWAPI::Text::Enum::BrightRed;
+            break;
+        case 165: // blue
+            return BWAPI::Text::Enum::Blue;
+            break;
+        case 159: // teal
+            return BWAPI::Text::Enum::Teal;
+            break;
+        case 164: // purp
+            return BWAPI::Text::Enum::Purple;
+            break;
+        case 156: // orange
+            return BWAPI::Text::Enum::Orange;
+            break;
+        case 19:  // brown
+            return BWAPI::Text::Enum::Brown;
+            break;
+        case 84:  // white
+            return BWAPI::Text::Enum::PlayerWhite;
+            break;
+        case 135: // yellow
+            return BWAPI::Text::Enum::PlayerYellow;
+            break;
+        case 185: // green p9
+            return BWAPI::Text::Enum::DarkGreen;
+            break;
+        case 136: // p10
+            return BWAPI::Text::Enum::LightYellow;
+            break;
+        case 134: // p11
+            return BWAPI::Text::Enum::Tan;
+            break;
+        case 51:  // p12
+            return BWAPI::Text::Enum::GreyBlue;
+            break;
+        default:
+            return BWAPI::Text::Enum::Default;
+    }
+}
+
+
+
+// endregion
 
 int Unit_getId(const BWAPI::UnitInterface *unit) {
     return unit->getID();
