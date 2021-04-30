@@ -107,6 +107,4 @@ using UnitsetIteratorOwn = OwnIterator<const BWAPI::Unitset, const BWAPI::UnitIn
 using UnitsetIteratorRef = RefIterator<const BWAPI::Unitset, const BWAPI::UnitInterface *>;
 std::unique_ptr<UnitsetIterator> createUnitsetIteratorRef(const BWAPI::Unitset &set);
 
-using PositionList = BWAPI::Position::list;
-using TilePositionList = BWAPI::TilePosition::list;
 using EventList = std::list<BWAPI::Event>;

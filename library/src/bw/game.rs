@@ -45,6 +45,11 @@ impl Game {
         Unitset { iter }
     }
 
+    pub fn get_nuke_dots(&self) -> Vec<Position> {
+        let game: &ffi::Game = unsafe { &*self.raw };
+        ffi::_game_getNukeDots(game)
+    }
+
     // let ctype = ctype.unwrap_or(CoordinateType::Map);
     pub fn set_text_size(&self, size: TextSize) {
         let game: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw) };

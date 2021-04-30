@@ -103,10 +103,10 @@ unsafe extern "C++" {
     // type WeaponType = crate::BWAPI_WeaponTypes_Enum_Enum;
     // type ExplosionType = BWAPI_ExplosionTypes_Enum_Enum;
 
-    #[namespace = ""]
-    pub type PositionList;
-    #[namespace = ""]
-    pub type TilePositionList;
+    // #[namespace = ""]
+    // pub type PositionList;
+    // #[namespace = ""]
+    // pub type TilePositionList;
     #[namespace = ""]
     pub type EventList;
 }
@@ -286,7 +286,7 @@ unsafe extern "C++" {
     pub /*..*/ fn getMousePosition(self: &Game) -> Position;
     pub /*..*/ fn getMouseState(self: &Game, button: MouseButton) -> bool;
     pub /*..*/ fn getNeutralUnits(self: &Game) -> &Unitset;
-    pub /*..*/ fn getNukeDots(self: &Game) -> &PositionList;
+    pub /*..*/ fn _game_getNukeDots(game: &Game) -> Vec<Position>;
     pub /*..*/ fn getPlayer(self: &Game, playerId: i32) -> *mut PlayerInterface;
     pub /*..*/ fn getPlayers(self: &Game) -> &Playerset;
     pub /*..*/ fn getRandomSeed(self: &Game) -> u32;
@@ -298,7 +298,7 @@ unsafe extern "C++" {
     pub /*..*/ fn getRevision(self: &Game) -> i32;
     pub /*..*/ fn getScreenPosition(self: &Game) -> Position;
     pub /*..*/ fn getSelectedUnits(self: &Game) -> &Unitset;
-    pub /*..*/ fn getStartLocations(self: &Game) -> &TilePositionList;
+    // pub /*..*/ fn _game_getStartLocations(game: &Game) -> Vec<TilePosition>;
     pub /*..*/ fn getStaticGeysers(self: &Game) -> &Unitset;
     pub /*..*/ fn getStaticMinerals(self: &Game) -> &Unitset;
     pub /*..*/ fn getStaticNeutralUnits(self: &Game) -> &Unitset;

@@ -3,11 +3,11 @@
 #include "aim.h"
 #include "aliases.h"
 #include "iterator.h"
-#include "BWAPI/AIModule.h"
-#include "BWAPI/Game.h"
-#include "BWAPI/Unit.h"
+#include <BWAPI/AIModule.h>
+#include <BWAPI/Game.h>
+#include <BWAPI/Unit.h>
+#include <BWAPI/Position.h>
 #include "library/src/lib.rs.h"
-#include "../openbw/bwapilib/include/BWAPI/Game.h"
 
 int cpp_test();
 
@@ -57,6 +57,8 @@ BWAPI::UnitInterface *_game_getBestUnit(const BWAPI::Game &game, BestUnitFilter 
 BWAPI::UnitInterface *_game_getClosestUnit(const BWAPI::Game &game, BWAPI::Position center, UnitFilter pred, int radius);
 BWAPI::UnitInterface *_game_getClosestUnitInRectangle(const BWAPI::Game &game, BWAPI::Position center, UnitFilter pred, int left, int top, int right, int bottom);
 const EventList &_game_getEvents(const BWAPI::Game &game);
+rust::Vec<BWAPI::Position> _game_getNukeDots(const BWAPI::Game& game);
+rust::Vec<BWAPI::TilePosition> _game_getStartLocations(const BWAPI::Game& game);
 std::unique_ptr<UnitsetIterator> _game_getUnitsInRadius(const BWAPI::Game &game, BWAPI::Position position, int radius, UnitFilter pred);
 std::unique_ptr<UnitsetIterator> _game_getUnitsInRectangle(const BWAPI::Game &game, BWAPI::Position topLeft, BWAPI::Position bottomRight, UnitFilter pred);
 std::unique_ptr<UnitsetIterator> _game_getUnitsOnTile(const BWAPI::Game &game, BWAPI::TilePosition tile, UnitFilter pred);

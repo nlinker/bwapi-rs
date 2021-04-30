@@ -3,9 +3,7 @@ use library::ffi;
 use cxx::UniquePtr;
 use std::thread::sleep;
 use std::time::Duration;
-use library::bw::unit_type::UnitType;
-use library::ffi::Unit_getType;
-use library::bw::color::{Color, TextSize};
+use library::bw::color::Color;
 use library::bw::coordinate_type::CoordinateType;
 
 #[no_mangle]
@@ -55,6 +53,8 @@ impl AIModule for DemoAI {
                 if fc % 20 == 0 {
                     // game.allies();
                     game.send_text(&format!("Unitset size_hint: {:?}", game.get_all_units().size_hint()));
+                    let xs = game.get_nuke_dots();
+                    println!("{:?}", xs);
                     // for u in game.get_all_units() {
                     //     println!("All list: unit = {:?} with id {}, type: {:?}, pos: {:?}", u, u.get_id(), u.get_type(), u.get_position());
                     // }

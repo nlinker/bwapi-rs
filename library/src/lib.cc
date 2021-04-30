@@ -2,8 +2,6 @@
 #include "library/src/lib.rs.h"
 #include "BWAPI/Game.h"
 #include "BWAPI/Unit.h"
-#include "../openbw/bwapilib/include/BWAPI/Game.h"
-#include "../openbw/bwapilib/include/BWAPI/Filters.h"
 
 int cpp_test() {
     std::cout << "cpp_test started" << std::endl;
@@ -109,7 +107,6 @@ void _game_debug(const BWAPI::Game &game) {
     Text::Size::Enum sizes[] = {Text::Size::Enum::Huge, Text::Size::Enum::Large, Text::Size::Enum::Small, Text::Size::Enum::Default};
     int size = sizeof(sizes)/sizeof(sizes[0]);
     for (int i = 0; i < size; i++) {
-        int delta = i * 37;
         g.setTextSize(sizes[i]);
         g.drawText(CoordinateType::Enum::Map, 1800, 1800 + (i * 50), "Hello, SSCAIT from c++!");
     }
@@ -123,11 +120,11 @@ void _game_debug_fun(const BWAPI::Game &game, UnitFilter fun) {
     auto top = 100;
     auto bottom = 1000;
     BWAPI::Unitset set = g.getUnitsInRectangle(left, top, right, bottom, pred);
-    for (auto &p : set) {
-        std::ostringstream os;
-        os << "raw: " << p << "id:" << p->getID() << " type:" << p->getType() << " position:" << p->getPosition();
-        g.sendText(os.str().c_str());
-    }
+    //for (auto &p : set) {
+    //    std::ostringstream os;
+    //    os << "raw: " << p << "id:" << p->getID() << " type:" << p->getType() << " position:" << p->getPosition();
+    //    g.sendText(os.str().c_str());
+    //}
     //std::ostringstream os;
     //os << "sizeof(UnitCommand) = " << sizeof(BWAPI::UnitCommand);
     //g.sendText(os.str().c_str());
@@ -148,6 +145,32 @@ BWAPI::UnitInterface *_game_getClosestUnitInRectangle(const BWAPI::Game &game, B
 const EventList& _game_getEvents(const BWAPI::Game &game) {
     return game.getEvents();
 }
+
+//template class rust::Vec<BWAPI::Position>; // explicit instantiation definition
+template class rust::Vec<BWAPI::Point<int, 1> >;  // explicit instantiation definition
+// template std::size_t rust::Vec<BWAPI::Point<int, 1> >::size() const;
+
+rust::Vec<BWAPI::Position> _game_getNukeDots(const BWAPI::Game& game) {
+    auto &dots = game.getNukeDots();
+    rust::Vec<BWAPI::Position> xs { dots[0], dots[1], dots[2] };
+//    xs.reserve(dots.size());
+//    for (auto &dot: dots) {
+//        xs.push_back(dot);
+//    }
+    return xs;
+}
+
+//template void rust::Vec<BWAPI::Position>::drop();   /* explicit instantiation definition */
+
+//rust::Vec<BWAPI::TilePosition> _game_getStartLocations(const BWAPI::Game& game) {
+//    auto &tiles = game.getStartLocations();
+//    rust::Vec<BWAPI::TilePosition> xs { tiles[0] };
+////    xs.reserve(tiles.size());
+////    for (auto &tile: tiles) {
+////        xs.push_back(tile);
+////    }
+//    return xs;
+//}
 
 std::unique_ptr<UnitsetIterator> _game_getUnitsInRadius(const BWAPI::Game &game, BWAPI::Position position, int radius, UnitFilter pred) {
     const BWAPI::Unitset xs = game.getUnitsInRadius(position, radius, nullptr /*todo*/);
