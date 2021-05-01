@@ -14,6 +14,6 @@ pub enum Race {
 }
 
 unsafe impl cxx::ExternType for Race {
-    type Id = cxx::type_id!("BWAPI::Races::Enum::Enum");
+    type Id = cxx::type_id!("BWAPI::Race");
     type Kind = cxx::kind::Trivial;
 }

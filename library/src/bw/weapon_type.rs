@@ -119,6 +119,6 @@ pub enum WeaponType {
 }
 
 unsafe impl cxx::ExternType for WeaponType {
-    type Id = cxx::type_id!("BWAPI::WeaponTypes::Enum::Enum");
+    type Id = cxx::type_id!("BWAPI::WeaponType");
     type Kind = cxx::kind::Trivial;
 }

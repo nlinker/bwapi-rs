@@ -102,29 +102,20 @@ pub mod ffi {
         #[cxx_name = "Enum"]
         type TextColor = crate::bw::color::TextColor;
 
-        #[namespace = "BWAPI::Races::Enum"]
-        #[cxx_name = "Enum"]
-        type Race = crate::bw::race::Race;
-
-        #[namespace = "BWAPI::WeaponTypes::Enum"]
-        #[cxx_name = "Enum"]
-        type WeaponType = crate::bw::weapon_type::WeaponType;
-
-        #[namespace = "BWAPI::PlayerTypes::Enum"]
-        #[cxx_name = "Enum"]
-        type PlayerType = crate::bw::player_type::PlayerType;
-
         type Color = crate::bw::color::Color;
         type GameType = crate::bw::game_type::GameType;
         type Key = crate::bw::input::KeyButton;
         type MouseButton = crate::bw::input::MouseButton;
+        type PlayerType = crate::bw::player_type::PlayerType;
         type Position = crate::bw::position::Position;
+        type Race = crate::bw::race::Race;
         type TechType = crate::bw::tech_type::TechType;
         type TilePosition = crate::bw::position::TilePosition;
         type UnitCommand = crate::bw::unit_command::UnitCommand;
         type UnitType = crate::bw::unit_type::UnitType;
         type UpgradeType = crate::bw::upgrade_type::UpgradeType;
         type WalkPosition = crate::bw::position::WalkPosition;
+        type WeaponType = crate::bw::weapon_type::WeaponType;
 
         // type Error = BWAPI_Errors_Enum_Enum;
         // type Flag = BWAPI_Flag_Enum;

@@ -1,5 +1,3 @@
-use crate::ffi::PlayerInterface;
-
 #[repr(i32)]
 #[allow(non_camel_case_types)]
 pub enum PlayerType {
@@ -20,6 +18,6 @@ pub enum PlayerType {
 }
 
 unsafe impl cxx::ExternType for PlayerType {
-    type Id = cxx::type_id!("BWAPI::PlayerTypes::Enum::Enum");
+    type Id = cxx::type_id!("BWAPI::PlayerType");
     type Kind = cxx::kind::Trivial;
 }
