@@ -76,6 +76,8 @@ void _game_drawText(BWAPI::Game &game, BWAPI::CoordinateType::Enum ctype, int x,
 std::unique_ptr<std::string> _player_getName(const BWAPI::PlayerInterface& player);
 BWAPI::Text::Enum _player_getTextColor(const BWAPI::PlayerInterface& player);
 
+const BWAPI::Unitset& _region_getUnits(const BWAPI::RegionInterface& region, UnitFilter pred);
+
 int Unit_getId(const BWAPI::UnitInterface *unit);
 BWAPI::UnitType Unit_getType(const BWAPI::UnitInterface *unit);
 BWAPI::Position Unit_getPosition(const BWAPI::UnitInterface *unit);

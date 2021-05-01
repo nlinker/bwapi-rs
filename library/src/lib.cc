@@ -279,6 +279,12 @@ BWAPI::Text::Enum _player_getTextColor(const BWAPI::PlayerInterface& player) {
 
 // endregion
 
+// region === === Region === ===
+const BWAPI::Unitset& _region_getUnits(const BWAPI::RegionInterface& region, UnitFilter pred) {
+    return region.getUnits(nullptr /*todo*/);
+}
+// endregion
+
 int Unit_getId(const BWAPI::UnitInterface *unit) {
     return unit->getID();
 }
