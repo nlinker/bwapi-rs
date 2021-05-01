@@ -2,6 +2,7 @@
 #include "library/src/lib.rs.h"
 #include "BWAPI/Game.h"
 #include "BWAPI/Unit.h"
+#include "../../target/debug/build/library-10a440775d1794e8/out/cxxbridge/include/library/src/lib.rs.h"
 
 int cpp_test() {
     std::cout << "cpp_test started" << std::endl;
@@ -48,59 +49,6 @@ std::unique_ptr <AIModuleWrapper> createAIModuleWrapper(rust::Box <BoxedAIModule
     return std::unique_ptr<AIModuleWrapper>(new AIModuleWrapper(box.into_raw()));
 }
 
-// region === === Iterators === ===
-std::unique_ptr<BulletsetIterator> createBulletsetIteratorRef(const BWAPI::Bulletset &set) {
-    return std::unique_ptr<BulletsetIterator>(new BulletsetIteratorRef(set));
-}
-
-std::unique_ptr<ForcesetIterator> createForcesetIteratorRef(const BWAPI::Forceset &set) {
-    return std::unique_ptr<ForcesetIterator>(new ForcesetIteratorRef(set));
-}
-
-std::unique_ptr<PlayersetIterator> createPlayersetIteratorRef(const BWAPI::Playerset &set) {
-    return std::unique_ptr<PlayersetIterator>(new PlayersetIteratorRef(set));
-}
-
-std::unique_ptr<RegionsetIterator> createRegionsetIteratorRef(const BWAPI::Regionset &set) {
-    return std::unique_ptr<RegionsetIterator>(new RegionsetIteratorRef(set));
-}
-
-std::unique_ptr<UnitsetIterator> createUnitsetIteratorRef(const BWAPI::Unitset &set) {
-    return std::unique_ptr<UnitsetIterator>(new UnitsetIteratorRef(set));
-}
-// endregion
-
-// region === === Unitset === ===
-const BWAPI::UnitInterface *_unitset_getClosestUnit(const BWAPI::Unitset &set, UnitFilter pred, int radius) {
-    return set.getClosestUnit(nullptr /* todo convert predicate */, radius);
-}
-
-std::unique_ptr <UnitsetIterator> _unitset_getInterceptors(const BWAPI::Unitset &set) {
-    const BWAPI::Unitset xs = set.getInterceptors();
-    return std::unique_ptr<UnitsetIterator>(new UnitsetIteratorOwn(std::move(xs)));
-}
-
-std::unique_ptr <UnitsetIterator> _unitset_getLarva(const BWAPI::Unitset &set) {
-    const BWAPI::Unitset xs = set.getLarva();
-    return std::unique_ptr<UnitsetIterator>(new UnitsetIteratorOwn(std::move(xs)));
-}
-
-std::unique_ptr <UnitsetIterator> _unitset_getLoadedUnits(const BWAPI::Unitset &set) {
-    const BWAPI::Unitset xs = set.getLoadedUnits();
-    return std::unique_ptr<UnitsetIterator>(new UnitsetIteratorOwn(std::move(xs)));
-}
-
-std::unique_ptr <UnitsetIterator> _unitset_getUnitsInRadius(const BWAPI::Unitset &set, int radius, UnitFilter pred) {
-    const BWAPI::Unitset xs = set.getUnitsInRadius(radius, nullptr /* todo convert predicate */);
-    return std::unique_ptr<UnitsetIterator>(new UnitsetIteratorOwn(std::move(xs)));
-}
-
-bool _unitset_move(const BWAPI::Unitset &set, BWAPI::Position target, bool shift_queue_command) {
-    return set.move(target, shift_queue_command);
-}
-// endregion
-
-// region === === Game === ===
 void _game_debug(const BWAPI::Game &game) {
     using namespace BWAPI;
     BWAPI::Game &g = const_cast<BWAPI::Game&>(game);
@@ -130,6 +78,55 @@ void _game_debug_fun(const BWAPI::Game &game, UnitFilter fun) {
     //g.sendText(os.str().c_str());
 }
 
+// region === === Iterators === ===
+std::unique_ptr<BulletsetIterator> createBulletsetIteratorRef(const BWAPI::Bulletset &set) {
+    return std::unique_ptr<BulletsetIterator>(new BulletsetIteratorRef(set));
+}
+
+std::unique_ptr<ForcesetIterator> createForcesetIteratorRef(const BWAPI::Forceset &set) {
+    return std::unique_ptr<ForcesetIterator>(new ForcesetIteratorRef(set));
+}
+
+std::unique_ptr<PlayersetIterator> createPlayersetIteratorRef(const BWAPI::Playerset &set) {
+    return std::unique_ptr<PlayersetIterator>(new PlayersetIteratorRef(set));
+}
+
+std::unique_ptr<RegionsetIterator> createRegionsetIteratorRef(const BWAPI::Regionset &set) {
+    return std::unique_ptr<RegionsetIterator>(new RegionsetIteratorRef(set));
+}
+
+std::unique_ptr<UnitsetIterator> createUnitsetIteratorRef(const BWAPI::Unitset &set) {
+    return std::unique_ptr<UnitsetIterator>(new UnitsetIteratorRef(set));
+}
+// endregion
+
+// region === === Unitset === ===
+const BWAPI::UnitInterface *_unitset_getClosestUnit(const BWAPI::Unitset &set, UnitFilter pred, int radius) {
+    return set.getClosestUnit(nullptr /* todo convert predicate */, radius);
+}
+
+std::unique_ptr<BWAPI::Unitset> _unitset_getInterceptors(const BWAPI::Unitset &set) {
+    return std::make_unique<BWAPI::Unitset>(set.getInterceptors());
+}
+
+std::unique_ptr<BWAPI::Unitset> _unitset_getLarva(const BWAPI::Unitset &set) {
+    return std::make_unique<BWAPI::Unitset>(set.getLarva());
+}
+
+std::unique_ptr<BWAPI::Unitset> _unitset_getLoadedUnits(const BWAPI::Unitset &set) {
+    return std::make_unique<BWAPI::Unitset>(set.getLoadedUnits());
+}
+
+std::unique_ptr<BWAPI::Unitset> _unitset_getUnitsInRadius(const BWAPI::Unitset &set, int radius, rust::Fn<bool(BWAPI::Unit)> pred) {
+    return std::make_unique<BWAPI::Unitset>(set.getUnitsInRadius(radius, nullptr /* todo convert predicate */));
+}
+
+bool _unitset_move(const BWAPI::Unitset &set, BWAPI::Position target, bool shift_queue_command) {
+    return set.move(target, shift_queue_command);
+}
+// endregion
+
+// region === === Game === ===
 BWAPI::UnitInterface *_game_getBestUnit(const BWAPI::Game &game, BestUnitFilter best, UnitFilter pred, BWAPI::Position center, int radius) {
     return game.getBestUnit(nullptr /*todo*/, nullptr /*todo*/, center, radius);
 }
@@ -166,35 +163,32 @@ rust::Vec<BWAPI::TilePosition> _game_getStartLocations(const BWAPI::Game& game) 
     return xs;
 }
 
-std::unique_ptr<UnitsetIterator> _game_getUnitsInRadius(const BWAPI::Game &game, BWAPI::Position position, int radius, UnitFilter pred) {
-    const BWAPI::Unitset xs = game.getUnitsInRadius(position, radius, nullptr /*todo*/);
-    return std::unique_ptr<UnitsetIterator>(new UnitsetIteratorOwn(std::move(xs)));
+std::unique_ptr<BWAPI::Unitset> _game_getUnitsInRadius(const BWAPI::Game &game, BWAPI::Position position, int radius, UnitFilter pred) {
+    return std::make_unique<BWAPI::Unitset>(game.getUnitsInRadius(position, radius, nullptr /*todo*/));
 }
 
-std::unique_ptr<UnitsetIterator> _game_getUnitsInRectangle(const BWAPI::Game &game, BWAPI::Position topLeft, BWAPI::Position bottomRight, UnitFilter pred) {
-    const BWAPI::Unitset xs = game.getUnitsInRectangle(topLeft, bottomRight, nullptr /*todo*/);
-    return std::unique_ptr<UnitsetIterator>(new UnitsetIteratorOwn(std::move(xs)));
+std::unique_ptr<BWAPI::Unitset> _game_getUnitsInRectangle(const BWAPI::Game &game, BWAPI::Position topLeft, BWAPI::Position bottomRight, UnitFilter pred) {
+    return std::make_unique<BWAPI::Unitset>(game.getUnitsInRectangle(topLeft, bottomRight, nullptr /*todo*/));
 }
 
-std::unique_ptr<UnitsetIterator> _game_getUnitsOnTile(const BWAPI::Game &game, BWAPI::TilePosition tile, UnitFilter pred) {
-    const BWAPI::Unitset xs = game.getUnitsOnTile(tile, nullptr /*todo*/);
-    return std::unique_ptr<UnitsetIterator>(new UnitsetIteratorOwn(std::move(xs)));
+std::unique_ptr<BWAPI::Unitset> _game_getUnitsOnTile(const BWAPI::Game &game, BWAPI::TilePosition tile, UnitFilter pred) {
+    return std::make_unique<BWAPI::Unitset>(game.getUnitsOnTile(tile, nullptr /*todo*/));
 }
 
 std::unique_ptr<std::string> _game_mapFileName(const BWAPI::Game& game) {
-    return std::unique_ptr<std::string>(new std::string(game.mapFileName()));
+    return std::make_unique<std::string>(game.mapFileName());
 }
 
 std::unique_ptr<std::string> _game_mapHash(const BWAPI::Game& game) {
-    return std::unique_ptr<std::string>(new std::string(game.mapHash()));
+    return std::make_unique<std::string>(game.mapHash());
 }
 
 std::unique_ptr<std::string> _game_mapName(const BWAPI::Game& game) {
-    return std::unique_ptr<std::string>(new std::string(game.mapName()));
+    return std::make_unique<std::string>(game.mapName());
 }
 
 std::unique_ptr<std::string> _game_mapPathName(const BWAPI::Game& game) {
-    return std::unique_ptr<std::string>(new std::string(game.mapPathName()));
+    return std::make_unique<std::string>(game.mapPathName());
 }
 
 void _game_printf(BWAPI::Game &game, rust::Str text) {
@@ -229,7 +223,7 @@ void _game_drawText(BWAPI::Game &game, BWAPI::CoordinateType::Enum ctype, int x,
 
 // region === === Player === ===
 std::unique_ptr<std::string> _player_getName(const BWAPI::PlayerInterface& player) {
-    return std::unique_ptr<std::string>(new std::string(player.getName()));
+    return std::make_unique<std::string>(player.getName());
 }
 
 BWAPI::Text::Enum _player_getTextColor(const BWAPI::PlayerInterface& player) {
@@ -280,8 +274,8 @@ BWAPI::Text::Enum _player_getTextColor(const BWAPI::PlayerInterface& player) {
 // endregion
 
 // region === === Region === ===
-const BWAPI::Unitset& _region_getUnits(const BWAPI::RegionInterface& region, UnitFilter pred) {
-    return region.getUnits(nullptr /*todo*/);
+std::unique_ptr<BWAPI::Unitset> _region_getUnits(const BWAPI::RegionInterface& region, UnitFilter pred) {
+    return std::make_unique<BWAPI::Unitset>(region.getUnits(nullptr /*todo*/));
 }
 // endregion
 

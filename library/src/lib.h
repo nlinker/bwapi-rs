@@ -8,6 +8,7 @@
 #include <BWAPI/Unit.h>
 #include <BWAPI/Position.h>
 #include "library/src/lib.rs.h"
+#include "../../target/debug/build/library-10a440775d1794e8/out/cxxbridge/include/library/src/lib.rs.h"
 
 int cpp_test();
 
@@ -45,10 +46,10 @@ using UnitFilter = rust::Fn<bool(BWAPI::Unit)>;
 using BestUnitFilter = rust::Fn<BWAPI::Unit(BWAPI::Unit, BWAPI::Unit)>;
 
 const BWAPI::UnitInterface *_unitset_getClosestUnit(const BWAPI::Unitset &set, UnitFilter pred, int radius);
-std::unique_ptr <UnitsetIterator> _unitset_getInterceptors(const BWAPI::Unitset &set);
-std::unique_ptr <UnitsetIterator> _unitset_getLarva(const BWAPI::Unitset &set);
-std::unique_ptr <UnitsetIterator> _unitset_getLoadedUnits(const BWAPI::Unitset &set);
-std::unique_ptr <UnitsetIterator> _unitset_getUnitsInRadius(const BWAPI::Unitset &set, int radius, UnitFilter pred);
+std::unique_ptr<BWAPI::Unitset> _unitset_getInterceptors(const BWAPI::Unitset &set);
+std::unique_ptr<BWAPI::Unitset> _unitset_getLarva(const BWAPI::Unitset &set);
+std::unique_ptr<BWAPI::Unitset> _unitset_getLoadedUnits(const BWAPI::Unitset &set);
+std::unique_ptr<BWAPI::Unitset> _unitset_getUnitsInRadius(const BWAPI::Unitset &set, int radius, rust::Fn<bool(BWAPI::Unit)> pred);
 bool _unitset_move(const BWAPI::Unitset &set, BWAPI::Position target, bool shift_queue_command);
 
 void _game_debug(const BWAPI::Game &game);
@@ -59,9 +60,9 @@ BWAPI::UnitInterface *_game_getClosestUnitInRectangle(const BWAPI::Game &game, B
 const EventList &_game_getEvents(const BWAPI::Game &game);
 rust::Vec<BWAPI::Position> _game_getNukeDots(const BWAPI::Game& game);
 rust::Vec<BWAPI::TilePosition> _game_getStartLocations(const BWAPI::Game& game);
-std::unique_ptr<UnitsetIterator> _game_getUnitsInRadius(const BWAPI::Game &game, BWAPI::Position position, int radius, UnitFilter pred);
-std::unique_ptr<UnitsetIterator> _game_getUnitsInRectangle(const BWAPI::Game &game, BWAPI::Position topLeft, BWAPI::Position bottomRight, UnitFilter pred);
-std::unique_ptr<UnitsetIterator> _game_getUnitsOnTile(const BWAPI::Game &game, BWAPI::TilePosition tile, UnitFilter pred);
+std::unique_ptr<BWAPI::Unitset> _game_getUnitsInRadius(const BWAPI::Game &game, BWAPI::Position position, int radius, UnitFilter pred);
+std::unique_ptr<BWAPI::Unitset> _game_getUnitsInRectangle(const BWAPI::Game &game, BWAPI::Position topLeft, BWAPI::Position bottomRight, UnitFilter pred);
+std::unique_ptr<BWAPI::Unitset> _game_getUnitsOnTile(const BWAPI::Game &game, BWAPI::TilePosition tile, UnitFilter pred);
 std::unique_ptr<std::string> _game_mapFileName(const BWAPI::Game &game);
 std::unique_ptr<std::string> _game_mapHash(const BWAPI::Game &game);
 std::unique_ptr<std::string> _game_mapName(const BWAPI::Game &game);
@@ -76,7 +77,7 @@ void _game_drawText(BWAPI::Game &game, BWAPI::CoordinateType::Enum ctype, int x,
 std::unique_ptr<std::string> _player_getName(const BWAPI::PlayerInterface& player);
 BWAPI::Text::Enum _player_getTextColor(const BWAPI::PlayerInterface& player);
 
-const BWAPI::Unitset& _region_getUnits(const BWAPI::RegionInterface& region, UnitFilter pred);
+std::unique_ptr<BWAPI::Unitset> _region_getUnits(const BWAPI::RegionInterface& region, UnitFilter pred);
 
 int Unit_getId(const BWAPI::UnitInterface *unit);
 BWAPI::UnitType Unit_getType(const BWAPI::UnitInterface *unit);

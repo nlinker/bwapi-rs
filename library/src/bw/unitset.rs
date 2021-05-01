@@ -33,19 +33,18 @@ impl Unitset {
     }
     pub fn get_interceptors(&self) -> Unitset {
         let xs: &ffi::Unitset = self.iter.underlying();
-        Unitset {
-            iter: ffi::_unitset_getInterceptors(xs),
-        }
+        let set = ffi::_unitset_getInterceptors(xs);
+        todo!()
     }
     pub fn get_larva(&self) -> Unitset {
         let xs: &ffi::Unitset = self.iter.underlying();
-        Unitset { iter: ffi::_unitset_getLarva(xs) }
+        let set = ffi::_unitset_getLarva(xs);
+        todo!()
     }
     pub fn get_loaded_units(&self) -> Unitset {
         let xs: &ffi::Unitset = self.iter.underlying();
-        Unitset {
-            iter: ffi::_unitset_getLoadedUnits(xs),
-        }
+        let set = ffi::_unitset_getLoadedUnits(xs);
+        todo!()
     }
     pub fn get_position(&self) -> Position {
         let xs: &ffi::Unitset = self.iter.underlying();
@@ -53,9 +52,8 @@ impl Unitset {
     }
     pub fn get_units_in_radius(&self, radius: i32, pred: UnitFilter) -> Unitset {
         let xs: &ffi::Unitset = self.iter.underlying();
-        Unitset {
-            iter: ffi::_unitset_getUnitsInRadius(xs, radius, pred),
-        }
+        let set = ffi::_unitset_getUnitsInRadius(xs, radius, pred);
+        todo!()
     }
     pub fn set_client_info(&self, client_info: *mut c_void, index: i32) {
         let xs: &ffi::Unitset = self.iter.underlying();

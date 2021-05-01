@@ -50,9 +50,14 @@ pub mod ffi {
     }
 
     // #[namespace = "BWAPI"]
-    // struct Unit {
+    // #[cxx_name = "Unit"]
+    // struct UnitSyn {
     //     raw: * mut UnitInterface,
     // }
+    extern "C++" {
+        unsafe fn setRallyPoint(self: &Unitset, target: *mut UnitInterface) -> bool;
+    }
+
     // #[namespace = "BWAPI"]
     // struct Player {
     //     raw: * mut PlayerInterface,
@@ -202,11 +207,11 @@ pub mod ffi {
     // region BWAPI::Unitset
     unsafe extern "C++" {
         fn _unitset_getClosestUnit(set: &Unitset, pred: fn(Unit) -> bool, radius: i32) -> *const UnitInterface;
-        fn _unitset_getInterceptors(set: &Unitset) -> UniquePtr<UnitsetIterator>;
-        fn _unitset_getLarva(set: &Unitset) -> UniquePtr<UnitsetIterator>;
-        fn _unitset_getLoadedUnits(set: &Unitset) -> UniquePtr<UnitsetIterator>;
+        fn _unitset_getInterceptors(set: &Unitset) -> UniquePtr<Unitset>;
+        fn _unitset_getLarva(set: &Unitset) -> UniquePtr<Unitset>;
+        fn _unitset_getLoadedUnits(set: &Unitset) -> UniquePtr<Unitset>;
         fn getPosition(self: &Unitset) -> Position;
-        fn _unitset_getUnitsInRadius(set: &Unitset, radius: i32, pred: fn(Unit) -> bool) -> UniquePtr<UnitsetIterator>;
+        fn _unitset_getUnitsInRadius(set: &Unitset, radius: i32, pred: fn(Unit) -> bool) -> UniquePtr<Unitset>;
         unsafe fn setClientInfo(self: &Unitset, clientInfo: *mut c_void, index: i32);
         #[cxx_name = "setClientInfo"]
         fn setClientInfo1(self: &Unitset, client_info: i32, index: i32);
@@ -218,7 +223,7 @@ pub mod ffi {
         fn buildAddon(self: &Unitset, utype: UnitType) -> bool;
         fn train(self: &Unitset, utype: UnitType) -> bool;
         fn morph(self: &Unitset, utype: UnitType) -> bool;
-        unsafe fn setRallyPoint(self: &Unitset, target: *mut UnitInterface) -> bool;
+        // unsafe fn setRallyPoint(self: &Unitset, target: Unit) -> bool;
         #[cxx_name = "setRallyPoint"]
         fn setRallyPoint1(self: &Unitset, target: Position) -> bool;
         fn _unitset_move(set: &Unitset, target: Position, shiftQueueCommand: bool) -> bool;
@@ -326,9 +331,9 @@ pub mod ffi {
         pub fn getStaticMinerals(self: &Game) -> &Unitset;
         pub fn getStaticNeutralUnits(self: &Game) -> &Unitset;
         pub fn getUnit(self: &Game, unitID: i32) -> *mut UnitInterface;
-        pub fn _game_getUnitsInRadius(game: &Game, position: Position, radius: i32, pred: fn(Unit) -> bool) -> UniquePtr<UnitsetIterator>;
-        pub fn _game_getUnitsInRectangle(game: &Game, topLeft: Position, bottomRight: Position, pred: fn(Unit) -> bool) -> UniquePtr<UnitsetIterator>;
-        pub fn _game_getUnitsOnTile(game: &Game, tile: TilePosition, pred: fn(Unit) -> bool) -> UniquePtr<UnitsetIterator>;
+        pub fn _game_getUnitsInRadius(game: &Game, position: Position, radius: i32, pred: fn(Unit) -> bool) -> UniquePtr<Unitset>;
+        pub fn _game_getUnitsInRectangle(game: &Game, topLeft: Position, bottomRight: Position, pred: fn(Unit) -> bool) -> UniquePtr<Unitset>;
+        pub fn _game_getUnitsOnTile(game: &Game, tile: TilePosition, pred: fn(Unit) -> bool) -> UniquePtr<Unitset>;
         pub fn hasCreep(self: &Game, position: TilePosition) -> bool;
         pub fn hasPath(self: &Game, source: Position, destination: Position) -> bool;
         pub fn hasPower(self: &Game, position: TilePosition, unitType: UnitType) -> bool;
@@ -460,7 +465,7 @@ pub mod ffi {
         fn getID(self: &RegionInterface) -> i32;
         fn getNeighbors(self: &RegionInterface) -> &Regionset;
         fn getRegionGroupID(self: &RegionInterface) -> i32;
-        fn _region_getUnits(region: &RegionInterface, pred: fn(Unit) -> bool) -> &Unitset;
+        fn _region_getUnits(region: &RegionInterface, pred: fn(Unit) -> bool) -> UniquePtr<Unitset>;
         fn isAccessible(self: &RegionInterface) -> bool;
         fn isHigherGround(self: &RegionInterface) -> bool;
     }
