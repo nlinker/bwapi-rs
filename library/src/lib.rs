@@ -177,6 +177,8 @@ pub mod ffi {
         pub unsafe fn Unit_getId(unit: *const UnitInterface) -> i32;
         pub unsafe fn Unit_getType(unit: *const UnitInterface) -> UnitType;
         pub unsafe fn Unit_getPosition(unit: *const UnitInterface) -> Position;
+
+
     }
 
     // region BWAPI::BulletInterface
@@ -271,7 +273,7 @@ pub mod ffi {
         #[cxx_name = "TilePosition"]
         type TilePositionSyn;
 
-        pub fn _game_debug(game: &Game);
+        pub fn _game_debug(game: &Game) -> UniquePtr<Playerset>;
         pub fn _game_debug_fun(game: &Game, fun: fn(Unit) -> bool);
 
         pub fn allies(self: Pin<&mut Game>) -> Pin<&mut Playerset>;

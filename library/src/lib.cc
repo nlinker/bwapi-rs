@@ -49,7 +49,7 @@ std::unique_ptr <AIModuleWrapper> createAIModuleWrapper(rust::Box <BoxedAIModule
     return std::unique_ptr<AIModuleWrapper>(new AIModuleWrapper(box.into_raw()));
 }
 
-void _game_debug(const BWAPI::Game &game) {
+std::unique_ptr<BWAPI::Playerset> _game_debug(const BWAPI::Game &game) {
     using namespace BWAPI;
     BWAPI::Game &g = const_cast<BWAPI::Game&>(game);
     Text::Size::Enum sizes[] = {Text::Size::Enum::Huge, Text::Size::Enum::Large, Text::Size::Enum::Small, Text::Size::Enum::Default};
@@ -58,6 +58,7 @@ void _game_debug(const BWAPI::Game &game) {
         g.setTextSize(sizes[i]);
         g.drawText(CoordinateType::Enum::Map, 1800, 1800 + (i * 50), "Hello, SSCAIT from c++!");
     }
+    return std::unique_ptr<BWAPI::Playerset>();
 }
 
 void _game_debug_fun(const BWAPI::Game &game, UnitFilter fun) {

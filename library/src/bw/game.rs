@@ -27,9 +27,10 @@ impl Game {
     pub fn allies(&self) -> Playerset {
         let game: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw) };
         let set: Pin<&mut ffi::Playerset> = game.allies();
-        Playerset {
-            iter: ffi::createPlayersetIterator(&*set),
-        }
+        // Playerset {
+        //     raw: ffi::createPlayersetIterator(&*set),
+        // }
+        todo!()
     }
     pub fn send_text(&self, text: &str) {
         ffi::_game_sendText(unsafe { Pin::new_unchecked(&mut *self.raw) }, text)

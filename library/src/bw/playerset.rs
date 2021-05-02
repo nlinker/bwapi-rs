@@ -2,25 +2,31 @@ use crate::bw::player::Player;
 use crate::ffi;
 use cxx::UniquePtr;
 use std::ptr::null;
+use crate::bw::{ForeignIterator, ForeignIter, Handle};
+use std::pin::Pin;
+use std::marker::PhantomData;
 
-pub struct Playerset {
-    pub(crate) iter: UniquePtr<ffi::PlayersetIterator>,
+pub struct Playerset<'a> {
+    pub(crate) raw: Handle<'a, ffi::Playerset>,
 }
 
-// impl Iterator for Playerset {
-//     type Item = Player;
-//
-//     fn next(&mut self) -> Option<Self::Item> {
-//         let raw: *const ffi::PlayerInterface = self.iter.pin_mut().next();
-//         if raw != null() {
-//             Some(unsafe { Player::from_raw(raw) })
-//         } else {
-//             None
-//         }
-//     }
-//
-//     fn size_hint(&self) -> (usize, Option<usize>) {
-//         let lb = self.iter.sizeHint();
-//         (lb, None)
-//     }
-// }
+impl ForeignIterator for ffi::PlayersetIterator {
+    type ForeignItem = ffi::PlayerInterface;
+    type TargetItem = Player;
+    fn next(self: Pin<&mut Self>) -> *const Self::ForeignItem {
+        self.next() // ffi call
+    }
+    fn size_hint(&self) -> (usize, Option<usize>) {
+        let lb = self.sizeHint(); // ffi call
+        (lb, None)
+    }
+}
+
+impl<'a> IntoIterator for &'a Playerset<'a> {
+    type Item = Player;
+    type IntoIter = ForeignIter<'a, ffi::PlayersetIterator>;
+    fn into_iter(self) -> Self::IntoIter {
+        let iter = ffi::createPlayersetIterator(self.raw.underlying());
+        ForeignIter { iter, marker: PhantomData }
+    }
+}
