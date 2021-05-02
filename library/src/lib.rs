@@ -31,6 +31,12 @@ pub unsafe extern "C" fn gameInit(game: *const std::ffi::c_void) {
     *GAME.lock().unwrap() = Game { raw: game as *mut ffi::Game };
 }
 
+/// `FromRaw` is a trait for entities that
+/// are typically created outside of Rust code.
+pub trait FromRaw<T> {
+    unsafe fn from_raw(raw: *const T) -> Self;
+}
+
 #[allow(non_snake_case)]
 #[cxx::bridge]
 pub mod ffi {
@@ -145,32 +151,27 @@ pub mod ffi {
         pub type BulletsetIterator;
         pub fn next(self: Pin<&mut BulletsetIterator>) -> *const BulletInterface;
         pub fn sizeHint(self: &BulletsetIterator) -> usize;
-        pub fn underlying(self: &BulletsetIterator) -> &Bulletset;
-        pub fn createBulletsetIteratorRef(set: &Bulletset) -> UniquePtr<BulletsetIterator>;
+        pub fn createBulletsetIterator(set: &Bulletset) -> UniquePtr<BulletsetIterator>;
 
         pub type ForcesetIterator;
         pub fn next(self: Pin<&mut ForcesetIterator>) -> *const ForceInterface;
         pub fn sizeHint(self: &ForcesetIterator) -> usize;
-        pub fn underlying(self: &ForcesetIterator) -> &Forceset;
-        pub fn createForcesetIteratorRef(set: &Forceset) -> UniquePtr<ForcesetIterator>;
+        pub fn createForcesetIterator(set: &Forceset) -> UniquePtr<ForcesetIterator>;
 
         pub type PlayersetIterator;
         pub fn next(self: Pin<&mut PlayersetIterator>) -> *const PlayerInterface;
         pub fn sizeHint(self: &PlayersetIterator) -> usize;
-        pub fn underlying(self: &PlayersetIterator) -> &Playerset;
-        pub fn createPlayersetIteratorRef(set: &Playerset) -> UniquePtr<PlayersetIterator>;
+        pub fn createPlayersetIterator(set: &Playerset) -> UniquePtr<PlayersetIterator>;
 
         pub type UnitsetIterator;
         pub fn next(self: Pin<&mut UnitsetIterator>) -> *const UnitInterface;
         pub fn sizeHint(self: &UnitsetIterator) -> usize;
-        pub fn underlying(self: &UnitsetIterator) -> &Unitset;
-        pub fn createRegionsetIteratorRef(set: &Regionset) -> UniquePtr<RegionsetIterator>;
+        pub fn createRegionsetIterator(set: &Regionset) -> UniquePtr<RegionsetIterator>;
 
         pub type RegionsetIterator;
         pub fn next(self: Pin<&mut RegionsetIterator>) -> *const RegionInterface;
         pub fn sizeHint(self: &RegionsetIterator) -> usize;
-        pub fn underlying(self: &RegionsetIterator) -> &Regionset;
-        pub fn createUnitsetIteratorRef(set: &Unitset) -> UniquePtr<UnitsetIterator>;
+        pub fn createUnitsetIterator(set: &Unitset) -> UniquePtr<UnitsetIterator>;
 
         // helpers so far, unit api is coming
         pub unsafe fn Unit_getId(unit: *const UnitInterface) -> i32;

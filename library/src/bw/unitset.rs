@@ -1,53 +1,36 @@
-use crate::ffi;
+use crate::{ffi, FromRaw};
 use crate::ffi::c_void;
 use crate::{bw::position::Position, bw::position::TilePosition, bw::tech_type::TechType, bw::unit::Unit, bw::unit_command::UnitCommand, bw::unit_filter::UnitFilter, bw::unit_type::UnitType};
 use cxx::UniquePtr;
-use std::ptr::null;
-use std::pin::Pin;
 use std::marker::PhantomData;
 use std::ops::Deref;
-use cxx::memory::UniquePtrTarget;
+use crate::bw::{Handle, ForeignIter, ForeignIterator};
+use std::ptr::null;
+use std::pin::Pin;
 
 pub struct Unitset<'a> {
     pub(crate) raw: Handle<'a, ffi::Unitset>,
 }
 
-/// `FC` - foreign collection
-pub enum Handle<'a, FC: UniquePtrTarget> {
-    Own(UniquePtr<FC>),
-    Ref(&'a FC),
-}
+impl ForeignIterator for ffi::UnitsetIterator {
+    type ForeignItem = ffi::UnitInterface;
 
-/// `FI` - foreign iterator
-pub struct TheIter<'a, FI: UniquePtrTarget> {
-    pub(crate) iter: UniquePtr<FI>,
-    marker: PhantomData<&'a FI>,
+    fn next(self: Pin<&mut Self>) -> *const Self::ForeignItem {
+        self.next() // ffi call
+    }
+    fn size_hint(&self) -> (usize, Option<usize>) {
+        let lb = self.sizeHint(); // ffi call
+        (lb, None)
+    }
 }
 
 impl<'a> IntoIterator for &'a Unitset<'a> {
     type Item = Unit;
-    type IntoIter = TheIter<'a, ffi::UnitsetIterator>;
+    type IntoIter = ForeignIter<'a, ffi::UnitsetIterator, Unit>;
     fn into_iter(self) -> Self::IntoIter {
         let r: &ffi::Unitset = self.underlying();
-        let iter = ffi::createUnitsetIteratorRef(r);
-        TheIter { iter, marker: PhantomData }
-    }
-}
-
-impl<'a> Iterator for TheIter<'a, ffi::UnitsetIterator> {
-    type Item = Unit;
-    fn next(&mut self) -> Option<Self::Item> {
-        let it: Pin<&mut ffi::UnitsetIterator> = self.iter.pin_mut();
-        let raw: *const ffi::UnitInterface = it.next();
-        if raw != null() {
-            Some(unsafe { Unit::from_raw(raw) })
-        } else {
-            None
-        }
-    }
-    fn size_hint(&self) -> (usize, Option<usize>) {
-        let lb = self.iter.sizeHint();
-        (lb, None)
+        let iter = ffi::createUnitsetIterator(r);
+        ForeignIter { iter, marker: PhantomData }
     }
 }
 
@@ -59,7 +42,7 @@ impl Unitset<'_> {
         }
     }
 
-    pub fn iter(&self) -> TheIter<'_, ffi::UnitsetIterator> {
+    pub fn iter(&self) -> ForeignIter<'_, ffi::UnitsetIterator, Unit> {
         self.into_iter()
     }
 
