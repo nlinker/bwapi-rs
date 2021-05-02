@@ -47,18 +47,15 @@ impl Unitset<'_> {
     }
     pub fn get_interceptors(&self) -> Unitset {
         let xs: &ffi::Unitset = self.raw.underlying();
-        let set = ffi::_unitset_getInterceptors(xs);
-        todo!()
+        Unitset { raw: Handle::Owned(ffi::_unitset_getInterceptors(xs)) }
     }
     pub fn get_larva(&self) -> Unitset {
         let xs: &ffi::Unitset = self.raw.underlying();
-        let set = ffi::_unitset_getLarva(xs);
-        todo!()
+        Unitset { raw: Handle::Owned(ffi::_unitset_getLarva(xs)) }
     }
     pub fn get_loaded_units(&self) -> Unitset {
         let xs: &ffi::Unitset = self.raw.underlying();
-        let set = ffi::_unitset_getLoadedUnits(xs);
-        todo!()
+        Unitset { raw: Handle::Owned(ffi::_unitset_getLoadedUnits(xs)) }
     }
     pub fn get_position(&self) -> Position {
         let xs: &ffi::Unitset = self.raw.underlying();
@@ -66,8 +63,7 @@ impl Unitset<'_> {
     }
     pub fn get_units_in_radius(&self, radius: i32, pred: UnitFilter) -> Unitset {
         let xs: &ffi::Unitset = self.raw.underlying();
-        let set: UniquePtr<ffi::Unitset> = ffi::_unitset_getUnitsInRadius(xs, radius, pred);
-        todo!()
+        Unitset { raw: Handle::Owned(ffi::_unitset_getUnitsInRadius(xs, radius, pred)) }
     }
     pub fn set_client_info(&self, client_info: *mut c_void, index: i32) {
         let xs: &ffi::Unitset = self.raw.underlying();

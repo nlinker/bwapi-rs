@@ -36,15 +36,15 @@ pub static GAME: Lazy<Arc<Mutex<Game>>> = Lazy::new(|| Arc::new(Mutex::new(Game 
 
 /// `FC` - foreign collection like `ffi::Unitset` or `ffi::Playerset`
 pub enum Handle<'a, FC: UniquePtrTarget> {
-    Own(UniquePtr<FC>),
-    Ref(&'a FC),
+    Owned(UniquePtr<FC>),
+    Borrowed(&'a FC),
 }
 
 impl<'a, FC: UniquePtrTarget> Handle<'a, FC> {
     pub fn underlying(&self) -> &FC {
         match &self {
-            Handle::Own(p) => p.deref(),
-            Handle::Ref(r) => *r,
+            Handle::Owned(p) => p.deref(),
+            Handle::Borrowed(r) => *r,
         }
     }
 }
@@ -65,7 +65,6 @@ pub struct ForeignIter<'a, FI: ForeignIterator + UniquePtrTarget> {
 impl<'a, FI: ForeignIterator + UniquePtrTarget> Iterator for ForeignIter<'a, FI> {
     type Item = FI::TargetItem;
     fn next(&mut self) -> Option<Self::Item> {
-        //let it: Pin<&mut FI> = ;
         let raw = self.iter.pin_mut().next();
         if raw != null() {
             Some(unsafe { Self::Item::from_raw(raw) })

@@ -28,10 +28,7 @@ impl Game {
     pub fn allies(&self) -> Playerset {
         let game: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw) };
         let set: Pin<&mut ffi::Playerset> = game.allies();
-        // Playerset {
-        //     raw: ffi::createPlayersetIterator(&*set),
-        // }
-        todo!()
+        Playerset { raw: Handle::Borrowed(&*set) }
     }
     pub fn send_text(&self, text: &str) {
         ffi::_game_sendText(unsafe { Pin::new_unchecked(&mut *self.raw) }, text)
@@ -42,12 +39,12 @@ impl Game {
     pub fn get_all_units(&self) -> Unitset {
         let game: &ffi::Game = unsafe { &*self.raw };
         let set: &ffi::Unitset = game.getAllUnits();
-        Unitset { raw: Handle::Ref(set) }
+        Unitset { raw: Handle::Borrowed(set) }
     }
     pub fn get_units_in_radius(&self, position: Position, radius: i32, pred: UnitFilter) -> Unitset {
         let game: &ffi::Game = unsafe { &*self.raw };
         let set: UniquePtr<ffi::Unitset> = ffi::_game_getUnitsInRadius(game, position, radius, pred);
-        Unitset { raw: Handle::Own(set) }
+        Unitset { raw: Handle::Owned(set) }
     }
 
     pub fn get_nuke_dots(&self) -> Vec<Position> {
