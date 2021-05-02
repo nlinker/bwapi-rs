@@ -2,6 +2,7 @@ use crate::bw::game::Game;
 use once_cell::sync::Lazy;
 use std::ptr::null_mut;
 use std::sync::{Arc, Mutex};
+use cxx::UniquePtr;
 
 pub mod ai_module;
 pub mod color;

@@ -66,7 +66,7 @@ impl AIModule for DemoAI {
                 let fc = game.get_frame_count();
                 if fc % 20 == 0 {
                     // game.allies();
-                    game.send_text(&format!("Unitset size_hint: {:?}", game.get_all_units().size_hint()));
+                    game.send_text(&format!("Unitset size: {:?}", game.get_all_units().len()));
                     let xs = game.get_nuke_dots();
                     println!("get_nuke_dots = {:?}", xs);
                     let xs = game.get_start_locations();
