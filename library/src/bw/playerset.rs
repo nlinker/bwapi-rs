@@ -1,10 +1,10 @@
 use crate::bw::player::Player;
+use crate::bw::{ForeignIter, ForeignIterator, Handle};
 use crate::ffi;
 use cxx::UniquePtr;
-use std::ptr::null;
-use crate::bw::{ForeignIterator, ForeignIter, Handle};
-use std::pin::Pin;
 use std::marker::PhantomData;
+use std::pin::Pin;
+use std::ptr::null;
 
 pub struct Playerset<'a> {
     pub(crate) raw: Handle<'a, ffi::Playerset>,

@@ -4,10 +4,10 @@ use crate::bw::playerset::Playerset;
 use crate::bw::position::{Position, TilePosition};
 use crate::bw::unit_filter::UnitFilter;
 use crate::bw::unitset::Unitset;
-use crate::ffi;
-use std::pin::Pin;
-use cxx::UniquePtr;
 use crate::bw::Handle;
+use crate::ffi;
+use cxx::UniquePtr;
+use std::pin::Pin;
 
 #[derive(Debug)]
 pub struct Game {

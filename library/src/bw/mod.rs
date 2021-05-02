@@ -1,13 +1,13 @@
 use crate::bw::game::Game;
-use once_cell::sync::Lazy;
-use std::ptr::{null_mut, null};
-use std::sync::{Arc, Mutex};
-use cxx::UniquePtr;
-use cxx::memory::UniquePtrTarget;
-use std::marker::PhantomData;
 use crate::FromRaw;
-use std::pin::Pin;
+use cxx::memory::UniquePtrTarget;
+use cxx::UniquePtr;
+use once_cell::sync::Lazy;
+use std::marker::PhantomData;
 use std::ops::Deref;
+use std::pin::Pin;
+use std::ptr::{null, null_mut};
+use std::sync::{Arc, Mutex};
 
 pub mod ai_module;
 pub mod color;
@@ -57,18 +57,12 @@ pub trait ForeignIterator {
 }
 
 /// `FI` - foreign iterator
-pub struct ForeignIter<'a, FI>
-    where
-        FI: ForeignIterator + UniquePtrTarget
-{
+pub struct ForeignIter<'a, FI: ForeignIterator + UniquePtrTarget> {
     pub(crate) iter: UniquePtr<FI>,
     marker: PhantomData<&'a FI>,
 }
 
-impl<'a, FI> Iterator for ForeignIter<'a, FI>
-    where
-        FI: ForeignIterator + UniquePtrTarget
-{
+impl<'a, FI: ForeignIterator + UniquePtrTarget> Iterator for ForeignIter<'a, FI> {
     type Item = FI::TargetItem;
     fn next(&mut self) -> Option<Self::Item> {
         //let it: Pin<&mut FI> = ;

@@ -178,7 +178,6 @@ pub mod ffi {
         pub unsafe fn Unit_getType(unit: *const UnitInterface) -> UnitType;
         pub unsafe fn Unit_getPosition(unit: *const UnitInterface) -> Position;
 
-
     }
 
     // region BWAPI::BulletInterface

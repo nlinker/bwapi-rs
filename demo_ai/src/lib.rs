@@ -1,12 +1,12 @@
 use cxx::UniquePtr;
 use library::bw::color::Color;
 use library::bw::coordinate_type::CoordinateType;
+use library::bw::unit_type::UnitType;
 use library::ffi;
 use library::prelude::*;
+use std::sync::MutexGuard;
 use std::thread::sleep;
 use std::time::Duration;
-use library::bw::unit_type::UnitType;
-use std::sync::MutexGuard;
 
 #[no_mangle]
 #[allow(non_snake_case)]
@@ -73,7 +73,7 @@ impl AIModule for DemoAI {
                     let xs = game.get_start_locations();
                     println!("get_start_locations = {:?}", xs);
                     // for u in game.get_all_units().iter() {
-                        // println!("All list: unit = {:?} with id {}, type: {:?}, pos: {:?}", u, u.get_id(), u.get_type(), u.get_position());
+                    // println!("All list: unit = {:?} with id {}, type: {:?}, pos: {:?}", u, u.get_id(), u.get_type(), u.get_position());
                     // }
                     let c = Position { x: 250, y: 3160 };
                     let mut inr = game.get_units_in_radius(c, 100, |_| true).iter().collect::<Vec<_>>();
