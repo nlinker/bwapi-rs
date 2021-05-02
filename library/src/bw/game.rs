@@ -7,6 +7,7 @@ use crate::bw::unitset::Unitset;
 use crate::ffi;
 use std::pin::Pin;
 use cxx::UniquePtr;
+use crate::bw::Handle;
 
 #[derive(Debug)]
 pub struct Game {
@@ -41,14 +42,12 @@ impl Game {
     pub fn get_all_units(&self) -> Unitset {
         let game: &ffi::Game = unsafe { &*self.raw };
         let set: &ffi::Unitset = game.getAllUnits();
-        // let set: UniquePtr<ffi::Unitset> = ffi::createUnitsetIteratorRef(set);
-        todo!()
+        Unitset { raw: Handle::Ref(set) }
     }
     pub fn get_units_in_radius(&self, position: Position, radius: i32, pred: UnitFilter) -> Unitset {
         let game: &ffi::Game = unsafe { &*self.raw };
-        let iter: UniquePtr<ffi::Unitset> = ffi::_game_getUnitsInRadius(game, position, radius, pred);
-        // Unitset { iter }
-        todo!()
+        let set: UniquePtr<ffi::Unitset> = ffi::_game_getUnitsInRadius(game, position, radius, pred);
+        Unitset { raw: Handle::Own(set) }
     }
 
     pub fn get_nuke_dots(&self) -> Vec<Position> {
