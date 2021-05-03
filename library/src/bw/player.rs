@@ -2,7 +2,7 @@ use crate::{ffi, FromRaw};
 
 #[derive(Debug, Clone)]
 pub struct Player {
-    raw: *const ffi::PlayerInterface,
+    pub(crate) raw: *const ffi::PlayerInterface,
 }
 
 impl FromRaw<ffi::PlayerInterface> for Player {

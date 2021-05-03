@@ -1,7 +1,6 @@
 use cxx::UniquePtr;
 use library::bw::color::Color;
 use library::bw::coordinate_type::CoordinateType;
-use library::bw::unit_type::UnitType;
 use library::ffi;
 use library::prelude::*;
 use std::sync::MutexGuard;
@@ -66,7 +65,7 @@ impl AIModule for DemoAI {
                 // println!("fn on_frame()");
                 let fc = game.get_frame_count();
                 if fc % 20 == 0 {
-                    // game.allies();
+                    println!("game.allies = {:?}", game.allies().into_iter().next());
                     game.send_text(&format!("Unitset size: {:?}", game.get_all_units().len()));
                     let xs = game.get_nuke_dots();
                     println!("get_nuke_dots = {:?}", xs);
@@ -76,7 +75,7 @@ impl AIModule for DemoAI {
                     // println!("All list: unit = {:?} with id {}, type: {:?}, pos: {:?}", u, u.get_id(), u.get_type(), u.get_position());
                     // }
                     let c = Position { x: 250, y: 3160 };
-                    let mut inr = game.get_units_in_radius(c, 100, |_| true).iter().collect::<Vec<_>>();
+                    let inr = game.get_units_in_radius(c, 100, |_| true).iter().collect::<Vec<_>>();
                     // if let Some(h) = inr.iter().find(|u| u.get_type() == UnitType::Zerg_Hatchery) {
                     //     let drones = inr.iter().filter(|u| u.get_type() == UnitType::Zerg_Drone).collect::<Vec<_>>();
                     // }

@@ -1,4 +1,6 @@
+#[repr(i32)]
 #[allow(non_camel_case_types)]
+#[derive(Debug, Copy, Clone, Eq, PartialEq)]
 pub enum TechType {
     Stim_Packs = 0,
     Lockdown,

@@ -1,5 +1,6 @@
 #[repr(i32)]
 #[allow(non_camel_case_types)]
+#[derive(Debug, Copy, Clone, Eq, PartialEq)]
 pub enum UpgradeType {
     Terran_Infantry_Armor = 0,
     Terran_Vehicle_Plating = 1,

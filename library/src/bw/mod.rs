@@ -10,6 +10,7 @@ use std::ptr::{null, null_mut};
 use std::sync::{Arc, Mutex};
 
 pub mod ai_module;
+pub mod bullet_type;
 pub mod color;
 pub mod coordinate_type;
 pub mod force;
@@ -35,16 +36,19 @@ pub mod weapon_type;
 pub static GAME: Lazy<Arc<Mutex<Game>>> = Lazy::new(|| Arc::new(Mutex::new(Game { raw: null_mut() })));
 
 /// `FC` - foreign collection like `ffi::Unitset` or `ffi::Playerset`
+#[derive(Debug)]
 pub enum Handle<'a, FC: UniquePtrTarget> {
     Owned(UniquePtr<FC>),
     Borrowed(&'a FC),
+    BorrowedMut(Pin<&'a mut FC>),
 }
 
 impl<'a, FC: UniquePtrTarget> Handle<'a, FC> {
     pub fn underlying(&self) -> &FC {
         match &self {
             Handle::Owned(p) => p.deref(),
-            Handle::Borrowed(r) => *r,
+            Handle::Borrowed(r) => r.deref(),
+            Handle::BorrowedMut(r) => r.deref(),
         }
     }
 }

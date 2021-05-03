@@ -8,6 +8,8 @@ use crate::bw::Handle;
 use crate::ffi;
 use cxx::UniquePtr;
 use std::pin::Pin;
+use std::ops::Deref;
+use crate::bw::player::Player;
 
 #[derive(Debug)]
 pub struct Game {
@@ -28,8 +30,13 @@ impl Game {
     pub fn allies(&self) -> Playerset {
         let game: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw) };
         let set: Pin<&mut ffi::Playerset> = game.allies();
-        Playerset { raw: Handle::Borrowed(&*set) }
+        Playerset { raw: Handle::BorrowedMut(set) }
     }
+    pub fn set_alliance(&self, player: Player, allied: bool, allied_victory: bool) -> bool {
+        let game: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw) };
+        unsafe { game.setAlliance(player.raw as *mut _, allied, allied_victory) }
+    }
+
     pub fn send_text(&self, text: &str) {
         ffi::_game_sendText(unsafe { Pin::new_unchecked(&mut *self.raw) }, text)
     }

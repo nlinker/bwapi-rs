@@ -4,6 +4,7 @@ use crate::bw::unit::Unit;
 // use crate::bw::tech_type::TechType;
 // use crate::bw::upgrade_type::UpgradeType;
 
+#[repr(i32)]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Copy, Clone, Eq, PartialEq)]
 pub enum UnitCommandType {

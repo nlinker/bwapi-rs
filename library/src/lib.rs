@@ -84,7 +84,6 @@ pub mod ffi {
         pub type UnitInterface;
         pub type Unit;
 
-        pub type BulletType;
         pub type DamageType;
         pub type Error;
         pub type ExplosionType;
@@ -113,6 +112,7 @@ pub mod ffi {
         #[cxx_name = "Enum"]
         type TextColor = crate::bw::color::TextColor;
 
+        type BulletType = crate::bw::bullet_type::BulletType;
         type Color = crate::bw::color::Color;
         type GameType = crate::bw::game_type::GameType;
         type Key = crate::bw::input::KeyButton;
@@ -181,21 +181,21 @@ pub mod ffi {
     }
 
     // region BWAPI::BulletInterface
-    // extern "C++" {
-    //     unsafe fn exists(self: &BulletInterface) -> bool;
-    //     unsafe fn getAngle(self: &BulletInterface) -> f32;
-    //     unsafe fn getID(self: &BulletInterface) -> i32;
-    //     unsafe fn getPlayer(self: &BulletInterface) -> *const PlayerInterface;
-    //     unsafe fn getPosition(self: &BulletInterface) -> Position;
-    //     unsafe fn getRemoveTimer(self: &BulletInterface) -> i32;
-    //     unsafe fn getSource(self: &BulletInterface) -> *const UnitInterface;
-    //     unsafe fn getTarget(self: &BulletInterface) -> *const UnitInterface;
-    //     unsafe fn getTargetPosition(self: &BulletInterface) -> Position;
-    //     unsafe fn getType(self: &BulletInterface) -> BulletType;
-    //     unsafe fn getVelocityX(self: &BulletInterface) -> f32;
-    //     unsafe fn getVelocityY(self: &BulletInterface) -> f32;
-    //     unsafe fn isVisible(self: &BulletInterface, player: *const PlayerInterface) -> bool;
-    // }
+    unsafe extern "C++" {
+        fn exists(self: &BulletInterface) -> bool;
+        fn getAngle(self: &BulletInterface) -> f64;
+        fn getID(self: &BulletInterface) -> i32;
+        fn getPlayer(self: &BulletInterface) -> *mut PlayerInterface;
+        fn getPosition(self: &BulletInterface) -> Position;
+        fn getRemoveTimer(self: &BulletInterface) -> i32;
+        fn getSource(self: &BulletInterface) -> *mut UnitInterface;
+        fn getTarget(self: &BulletInterface) -> *mut UnitInterface;
+        fn getTargetPosition(self: &BulletInterface) -> Position;
+        fn getType(self: &BulletInterface) -> BulletType;
+        fn getVelocityX(self: &BulletInterface) -> f64;
+        fn getVelocityY(self: &BulletInterface) -> f64;
+        unsafe fn isVisible(self: &BulletInterface, player: *mut PlayerInterface) -> bool;
+    }
     // endregion
 
     // region BWAPI::ForceInterface
