@@ -18,6 +18,7 @@ pub mod forceset;
 pub mod game;
 pub mod game_type;
 pub mod input;
+pub mod order;
 pub mod player;
 pub mod player_type;
 pub mod playerset;
