@@ -68,6 +68,9 @@ std::unique_ptr<BWAPI::Unitset> _unitset_getLoadedUnits(const BWAPI::Unitset &se
 std::unique_ptr<BWAPI::Unitset> _unitset_getUnitsInRadius(const BWAPI::Unitset &set, int radius, rust::Fn<bool(BWAPI::Unit)> pred);
 bool _unitset_move(const BWAPI::Unitset &set, BWAPI::Position target, bool shift_queue_command);
 
+std::unique_ptr<std::string> _force_getName(const BWAPI::ForceInterface& force);
+std::unique_ptr<BWAPI::Playerset> _force_getPlayers(const BWAPI::ForceInterface& force);
+
 std::unique_ptr<BWAPI::Playerset> _game_debug(const BWAPI::Game &game);
 void _game_debug_fun(const BWAPI::Game &game, UnitFilter fun);
 BWAPI::UnitInterface *_game_getBestUnit(const BWAPI::Game &game, BestUnitFilter best, UnitFilter pred, BWAPI::Position center, int radius);

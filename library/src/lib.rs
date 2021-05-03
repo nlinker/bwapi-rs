@@ -199,11 +199,11 @@ pub mod ffi {
     // endregion
 
     // region BWAPI::ForceInterface
-    // extern "C++" {
-    //     pub fn getID(self: &ForceInterface >) -> i32;
-    //     pub fn _force_getName(x: &ForceInterface) -> UniquePtr<CxxString>;
-    //     pub fn _force_getPlayers(x: &ForceInterface) -> UniquePtr<PlayersetIterator>;
-    // }
+    unsafe extern "C++" {
+        pub fn getID(self: &ForceInterface) -> i32;
+        pub fn _force_getName(force: &ForceInterface) -> UniquePtr<CxxString>;
+        pub fn _force_getPlayers(force: &ForceInterface) -> UniquePtr<Playerset>;
+    }
     // endregion
 
     // region BWAPI::Unitset

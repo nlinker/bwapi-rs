@@ -127,6 +127,16 @@ bool _unitset_move(const BWAPI::Unitset &set, BWAPI::Position target, bool shift
 }
 // endregion
 
+// region === === Force === ===
+std::unique_ptr<std::string> _force_getName(const BWAPI::ForceInterface& force) {
+    return std::make_unique<std::string>(force.getName());
+}
+
+std::unique_ptr<BWAPI::Playerset> _force_getPlayers(const BWAPI::ForceInterface& force) {
+    return std::make_unique<BWAPI::Playerset>(force.getPlayers());
+}
+// endregion
+
 // region === === Game === ===
 BWAPI::UnitInterface *_game_getBestUnit(const BWAPI::Game &game, BestUnitFilter best, UnitFilter pred, BWAPI::Position center, int radius) {
     return game.getBestUnit(nullptr /*todo*/, nullptr /*todo*/, center, radius);
