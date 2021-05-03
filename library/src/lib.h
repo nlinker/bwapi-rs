@@ -82,6 +82,8 @@ rust::Vec<BWAPI::TilePosition> _game_getStartLocations(const BWAPI::Game &game);
 std::unique_ptr<BWAPI::Unitset> _game_getUnitsInRadius(const BWAPI::Game &game, BWAPI::Position position, int radius, UnitFilter pred);
 std::unique_ptr<BWAPI::Unitset> _game_getUnitsInRectangle(const BWAPI::Game &game, BWAPI::Position topLeft, BWAPI::Position bottomRight, UnitFilter pred);
 std::unique_ptr<BWAPI::Unitset> _game_getUnitsOnTile(const BWAPI::Game &game, BWAPI::TilePosition tile, UnitFilter pred);
+void _game_enableFlag(BWAPI::Game &game, BWAPI::Flag::Enum flag);
+bool _game_isFlagEnabled(const BWAPI::Game &game, BWAPI::Flag::Enum flag);
 std::unique_ptr<std::string> _game_mapFileName(const BWAPI::Game &game);
 std::unique_ptr<std::string> _game_mapHash(const BWAPI::Game &game);
 std::unique_ptr<std::string> _game_mapName(const BWAPI::Game &game);

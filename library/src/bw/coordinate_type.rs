@@ -1,7 +1,5 @@
-// todo
-
-#[repr(i32)]
-#[derive(Debug, Copy, Clone, PartialOrd, PartialEq, Ord, Eq)]
+#[repr(u32)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub enum CoordinateType {
     None = 0,
     Screen = 1,

@@ -55,20 +55,6 @@ pub mod ffi {
         y: i32,
     }
 
-    // #[namespace = "BWAPI"]
-    // #[cxx_name = "Unit"]
-    // struct UnitSyn {
-    //     raw: * mut UnitInterface,
-    // }
-    extern "C++" {
-        unsafe fn setRallyPoint(self: &Unitset, target: *mut UnitInterface) -> bool;
-    }
-
-    // #[namespace = "BWAPI"]
-    // struct Player {
-    //     raw: * mut PlayerInterface,
-    // }
-
     #[namespace = "BWAPI"]
     unsafe extern "C++" {
         include!("library/openbw/include/BWAPI.h");
@@ -82,14 +68,13 @@ pub mod ffi {
         pub type RegionInterface;
         pub type TournamentModule;
         pub type UnitInterface;
-        pub type Unit;
 
-        pub type DamageType;
+        #[namespace = ""]
+        pub type EventList;
+
         pub type Error;
-        pub type ExplosionType;
-        pub type UnitSizeType;
 
-        type Event;
+        type Unit;
         type UnitFilter;
 
         pub type Bulletset;
@@ -110,6 +95,10 @@ pub mod ffi {
         #[cxx_name = "Enum"]
         type TextColor = crate::bw::color::TextColor;
 
+        #[namespace = "BWAPI::Flag"]
+        #[cxx_name = "Enum"]
+        type Flag = crate::bw::flag::Flag;
+
         type BulletType = crate::bw::bullet_type::BulletType;
         type Color = crate::bw::color::Color;
         type GameType = crate::bw::game_type::GameType;
@@ -127,21 +116,9 @@ pub mod ffi {
         type WeaponType = crate::bw::weapon_type::WeaponType;
         type UnitCommandType = crate::bw::unit_command::UnitCommandType;
         type Order = crate::bw::order::Order;
-
-        // type Error = BWAPI_Errors_Enum_Enum;
-        // type Flag = BWAPI_Flag_Enum;
-        // type Order = BWAPI_Orders_Enum_Enum;
-        // type DamageType = BWAPI_DamageTypes_Enum_Enum;
-        // type UnitSizeType = BWAPI_UnitSizeTypes_Enum_Enum;
-        // type UpgradeType = crate::BWAPI_UpgradeTypes_Enum_Enum;
-        // type ExplosionType = BWAPI_ExplosionTypes_Enum_Enum;
-
-        // #[namespace = ""]
-        // pub type PositionList;
-        // #[namespace = ""]
-        // pub type TilePositionList;
-        #[namespace = ""]
-        pub type EventList;
+        type DamageType = crate::bw::damage_type::DamageType;
+        type ExplosionType = crate::bw::explosion_type::ExplosionType;
+        type UnitSizeType = crate::bw::unit_size_type::UnitSizeType;
     }
 
     unsafe extern "C++" {
@@ -288,7 +265,7 @@ pub mod ffi {
         unsafe fn canUpgrade(self: Pin<&mut Game>, utype: UpgradeType, unit: *mut UnitInterface, checkCanIssueCommandType: bool) -> bool;
         fn countdownTimer(self: &Game) -> i32;
         fn elapsedTime(self: &Game) -> i32;
-        fn enableFlag(self: Pin<&mut Game>, flag: i32);
+        fn _game_enableFlag(game: Pin<&mut Game>, flag: Flag);
         fn enemies(self: Pin<&mut Game>) -> Pin<&mut Playerset>;
         unsafe fn enemy(self: &Game) -> *mut PlayerInterface;
         fn getAllRegions(self: &Game) -> &Regionset;
@@ -350,7 +327,7 @@ pub mod ffi {
         fn isBuildable(self: &Game, position: TilePosition, includeBuildings: bool) -> bool;
         fn isDebug(self: &Game) -> bool;
         fn isExplored(self: &Game, position: TilePosition) -> bool;
-        fn isFlagEnabled(self: &Game, flag: i32) -> bool;
+        fn _game_isFlagEnabled(game: &Game, flag: Flag) -> bool;
         fn isGUIEnabled(self: &Game) -> bool;
         fn isInGame(self: &Game) -> bool;
         fn isLatComEnabled(self: &Game) -> bool;

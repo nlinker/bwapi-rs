@@ -101,7 +101,7 @@ impl Unitset<'_> {
     }
     pub fn set_rally_point(&self, target: Unit) -> bool {
         let xs: &ffi::Unitset = self.raw.underlying();
-        unsafe { xs.setRallyPoint(target.raw as *mut _) }
+        unsafe { xs.setRallyPointU(target.raw as *mut _) }
     }
     pub fn set_rally_point_(&self, target: Position) -> bool {
         let xs: &ffi::Unitset = self.raw.underlying();

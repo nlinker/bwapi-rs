@@ -1,8 +1,8 @@
 use crate::bw::unit::Unit;
 
-#[repr(i32)]
+#[repr(u32)]
 #[allow(non_camel_case_types)]
-#[derive(Debug, Copy, Clone, Eq, PartialEq)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub enum UnitCommandType {
     Attack_Move = 0,
     Attack_Unit,

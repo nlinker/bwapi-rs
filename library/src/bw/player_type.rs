@@ -1,5 +1,6 @@
-#[repr(i32)]
+#[repr(u32)]
 #[allow(non_camel_case_types)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub enum PlayerType {
     None = 0,
     Computer,
