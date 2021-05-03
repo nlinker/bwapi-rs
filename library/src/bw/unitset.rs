@@ -2,11 +2,9 @@ use crate::bw::{ForeignIter, ForeignIterator, Handle};
 use crate::ffi::c_void;
 use crate::{bw::position::Position, bw::position::TilePosition, bw::tech_type::TechType, bw::unit::Unit, bw::unit_command::UnitCommand, bw::unit_filter::UnitFilter, bw::unit_type::UnitType};
 use crate::{ffi, FromRaw};
-use cxx::UniquePtr;
 use std::marker::PhantomData;
-use std::ops::Deref;
 use std::pin::Pin;
-use std::ptr::null;
+
 
 pub struct Unitset<'a> {
     pub(crate) raw: Handle<'a, ffi::Unitset>,

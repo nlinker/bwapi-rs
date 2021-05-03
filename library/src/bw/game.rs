@@ -8,7 +8,6 @@ use crate::bw::Handle;
 use crate::ffi;
 use cxx::UniquePtr;
 use std::pin::Pin;
-use std::ops::Deref;
 use crate::bw::player::Player;
 
 #[derive(Debug)]
