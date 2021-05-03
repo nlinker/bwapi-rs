@@ -195,3 +195,9 @@ pub enum Order {
     Unknown,
     MAX
 }
+
+// required for ffi layer
+unsafe impl cxx::ExternType for Order {
+    type Id = cxx::type_id!("BWAPI::Order");
+    type Kind = cxx::kind::Trivial;
+}

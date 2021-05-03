@@ -67,7 +67,7 @@ impl Unitset<'_> {
         let xs: &ffi::Unitset = self.raw.underlying();
         unsafe { xs.setClientInfo(client_info, index) }
     }
-    pub fn set_client_info_1(&self, client_info: i32, index: i32) {
+    pub fn set_client_info_(&self, client_info: i32, index: i32) {
         let xs: &ffi::Unitset = self.raw.underlying();
         xs.setClientInfo1(client_info, index)
     }
@@ -77,11 +77,11 @@ impl Unitset<'_> {
     }
     pub fn attack(&self, target: Unit, shift_queue_command: bool) -> bool {
         let xs: &ffi::Unitset = self.raw.underlying();
-        unsafe { xs.attack(target.raw as *mut _, shift_queue_command) }
+        unsafe { xs.attackU(target.raw as *mut _, shift_queue_command) }
     }
-    pub fn attack_1(&self, target: Position, shift_queue_command: bool) -> bool {
+    pub fn attack_(&self, target: Position, shift_queue_command: bool) -> bool {
         let xs: &ffi::Unitset = self.raw.underlying();
-        xs.attack1(target, shift_queue_command)
+        xs.attackP(target, shift_queue_command)
     }
     pub fn build(&self, utype: UnitType, target: TilePosition) -> bool {
         let xs: &ffi::Unitset = self.raw.underlying();
@@ -103,9 +103,9 @@ impl Unitset<'_> {
         let xs: &ffi::Unitset = self.raw.underlying();
         unsafe { xs.setRallyPoint(target.raw as *mut _) }
     }
-    pub fn set_rally_point_1(&self, target: Position) -> bool {
+    pub fn set_rally_point_(&self, target: Position) -> bool {
         let xs: &ffi::Unitset = self.raw.underlying();
-        xs.setRallyPoint1(target)
+        xs.setRallyPointP(target)
     }
     pub fn move_(&self, target: Position, shift_queue_command: bool) -> bool {
         let xs: &ffi::Unitset = self.raw.underlying();
@@ -173,19 +173,19 @@ impl Unitset<'_> {
     }
     pub fn unload_all(&self, shift_queue_command: bool) -> bool {
         let xs: &ffi::Unitset = self.raw.underlying();
-        xs.unloadAll(shift_queue_command)
+        xs.unloadAll_(shift_queue_command)
     }
-    pub fn unload_all_1(&self, target: Position, shift_queue_command: bool) -> bool {
+    pub fn unload_all_(&self, target: Position, shift_queue_command: bool) -> bool {
         let xs: &ffi::Unitset = self.raw.underlying();
-        xs.unloadAll1(target, shift_queue_command)
+        xs.unloadAllP(target, shift_queue_command)
     }
     pub fn right_click(&self, target: Unit, shift_queue_command: bool) -> bool {
         let xs: &ffi::Unitset = self.raw.underlying();
-        unsafe { xs.rightClick(target.raw as *mut _, shift_queue_command) }
+        unsafe { xs.rightClickU(target.raw as *mut _, shift_queue_command) }
     }
-    pub fn right_click_1(&self, target: Position, shift_queue_command: bool) -> bool {
+    pub fn right_click_(&self, target: Position, shift_queue_command: bool) -> bool {
         let xs: &ffi::Unitset = self.raw.underlying();
-        xs.rightClick1(target, shift_queue_command)
+        xs.rightClickP(target, shift_queue_command)
     }
     pub fn halt_construction(&self) -> bool {
         let xs: &ffi::Unitset = self.raw.underlying();
@@ -217,10 +217,10 @@ impl Unitset<'_> {
     }
     pub fn use_tech(&self, tech: TechType, target: Unit) -> bool {
         let xs: &ffi::Unitset = self.raw.underlying();
-        unsafe { xs.useTech(tech, target.raw as *mut _) }
+        unsafe { xs.useTechU(tech, target.raw as *mut _) }
     }
-    pub fn use_tech_1(&self, tech: TechType, target: Position) -> bool {
+    pub fn use_tech_(&self, tech: TechType, target: Position) -> bool {
         let xs: &ffi::Unitset = self.raw.underlying();
-        xs.useTech1(tech, target)
+        xs.useTechP(tech, target)
     }
 }

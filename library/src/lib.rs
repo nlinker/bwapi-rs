@@ -126,7 +126,7 @@ pub mod ffi {
         type WalkPosition = crate::bw::position::WalkPosition;
         type WeaponType = crate::bw::weapon_type::WeaponType;
         type UnitCommandType = crate::bw::unit_command::UnitCommandType;
-        type Order = crate::bw::order;
+        type Order = crate::bw::order::Order;
 
         // type Error = BWAPI_Errors_Enum_Enum;
         // type Flag = BWAPI_Flag_Enum;
@@ -218,16 +218,18 @@ pub mod ffi {
         #[cxx_name = "setClientInfo"]
         fn setClientInfo1(self: &Unitset, client_info: i32, index: i32);
         fn issueCommand(self: &Unitset, command: UnitCommand) -> bool;
-        unsafe fn attack(self: &Unitset, target: *mut UnitInterface, shiftQueueCommand: bool) -> bool;
         #[cxx_name = "attack"]
-        fn attack1(self: &Unitset, target: Position, shiftQueueCommand: bool) -> bool;
+        fn attackP(self: &Unitset, target: Position, shiftQueueCommand: bool) -> bool;
+        #[cxx_name = "attack"]
+        unsafe fn attackU(self: &Unitset, target: *mut UnitInterface, shiftQueueCommand: bool) -> bool;
         fn build(self: &Unitset, utype: UnitType, target: TilePosition) -> bool;
         fn buildAddon(self: &Unitset, utype: UnitType) -> bool;
         fn train(self: &Unitset, utype: UnitType) -> bool;
         fn morph(self: &Unitset, utype: UnitType) -> bool;
-        // unsafe fn setRallyPoint(self: &Unitset, target: Unit) -> bool;
         #[cxx_name = "setRallyPoint"]
-        fn setRallyPoint1(self: &Unitset, target: Position) -> bool;
+        fn setRallyPointP(self: &Unitset, target: Position) -> bool;
+        #[cxx_name = "setRallyPoint"]
+        unsafe fn setRallyPointU(self: &Unitset, target: *mut UnitInterface) -> bool;
         fn _unitset_move(set: &Unitset, target: Position, shiftQueueCommand: bool) -> bool;
         fn patrol(self: &Unitset, target: Position, shiftQueueCommand: bool) -> bool;
         fn holdPosition(self: &Unitset, shiftQueueCommand: bool) -> bool;
@@ -244,12 +246,14 @@ pub mod ffi {
         fn unsiege(self: &Unitset) -> bool;
         fn lift(self: &Unitset) -> bool;
         unsafe fn load(self: &Unitset, target: *mut UnitInterface, shiftQueueCommand: bool) -> bool;
-        fn unloadAll(self: &Unitset, shiftQueueCommand: bool) -> bool;
         #[cxx_name = "unloadAll"]
-        fn unloadAll1(self: &Unitset, target: Position, shiftQueueCommand: bool) -> bool;
-        unsafe fn rightClick(self: &Unitset, target: *mut UnitInterface, shiftQueueCommand: bool) -> bool;
+        fn unloadAll_(self: &Unitset, shiftQueueCommand: bool) -> bool;
+        #[cxx_name = "unloadAll"]
+        fn unloadAllP(self: &Unitset, target: Position, shiftQueueCommand: bool) -> bool;
         #[cxx_name = "rightClick"]
-        fn rightClick1(self: &Unitset, target: Position, shiftQueueCommand: bool) -> bool;
+        fn rightClickP(self: &Unitset, target: Position, shiftQueueCommand: bool) -> bool;
+        #[cxx_name = "rightClick"]
+        unsafe fn rightClickU(self: &Unitset, target: *mut UnitInterface, shiftQueueCommand: bool) -> bool;
         fn haltConstruction(self: &Unitset) -> bool;
         fn cancelConstruction(self: &Unitset) -> bool;
         fn cancelAddon(self: &Unitset) -> bool;
@@ -257,9 +261,10 @@ pub mod ffi {
         fn cancelMorph(self: &Unitset) -> bool;
         fn cancelResearch(self: &Unitset) -> bool;
         fn cancelUpgrade(self: &Unitset) -> bool;
-        unsafe fn useTech(self: &Unitset, tech: TechType, target: *mut UnitInterface) -> bool;
         #[cxx_name = "useTech"]
-        fn useTech1(self: &Unitset, tech: TechType, target: Position) -> bool;
+        fn useTechP(self: &Unitset, tech: TechType, target: Position) -> bool;
+        #[cxx_name = "useTech"]
+        unsafe fn useTechU(self: &Unitset, tech: TechType, target: *mut UnitInterface) -> bool;
     }
     // endregion
 
@@ -487,7 +492,9 @@ pub mod ffi {
         fn _unit_getClosestUnit(unit: &UnitInterface, pred: fn(Unit) -> bool, radius: i32) -> *mut UnitInterface;
         fn getDefenseMatrixPoints(self: &UnitInterface) -> i32;
         fn getDefenseMatrixTimer(self: &UnitInterface) -> i32;
+        #[cxx_name = "getDistance"]
         fn getDistanceP(self: &UnitInterface, target: Position) -> i32;
+        #[cxx_name = "getDistance"]
         unsafe fn getDistanceU(self: &UnitInterface, target: *mut UnitInterface) -> i32;
         fn getEnergy(self: &UnitInterface) -> i32;
         fn getEnsnareTimer(self: &UnitInterface) -> i32;
@@ -501,15 +508,15 @@ pub mod ffi {
         fn getInitialTilePosition(self: &UnitInterface) -> TilePosition;
         fn getInitialType(self: &UnitInterface) -> UnitType;
         fn getInterceptorCount(self: &UnitInterface) -> i32;
-        fn getInterceptors(self: &UnitInterface) -> UniquePtr<Unitset>;
+        fn _unit_getInterceptors(unit: &UnitInterface) -> UniquePtr<Unitset>;
         fn getIrradiateTimer(self: &UnitInterface) -> i32;
         fn getKillCount(self: &UnitInterface) -> i32;
-        fn getLarva(self: &UnitInterface) -> UniquePtr<Unitset>;
+        fn _unit_getLarva(unit: &UnitInterface) -> UniquePtr<Unitset>;
         fn getLastAttackingPlayer(self: &UnitInterface) -> *mut PlayerInterface;
         fn getLastCommand(self: &UnitInterface) -> UnitCommand;
         fn getLastCommandFrame(self: &UnitInterface) -> i32;
         fn getLeft(self: &UnitInterface) -> i32;
-        fn getLoadedUnits(self: &UnitInterface) -> UniquePtr<Unitset>;
+        fn _unit_getLoadedUnits(unit: &UnitInterface) -> UniquePtr<Unitset>;
         fn getLockdownTimer(self: &UnitInterface) -> i32;
         fn getMaelstromTimer(self: &UnitInterface) -> i32;
         fn getNydusExit(self: &UnitInterface) -> *mut UnitInterface;
@@ -546,16 +553,18 @@ pub mod ffi {
         fn getTech(self: &UnitInterface) -> TechType;
         fn getTilePosition(self: &UnitInterface) -> TilePosition;
         fn getTop(self: &UnitInterface) -> i32;
-        fn getTrainingQueue(self: &UnitInterface) -> Vec<UnitType>;
+        fn _unit_getTrainingQueue(unit: &UnitInterface) -> Vec<UnitType>;
         fn getTransport(self: &UnitInterface) -> *mut UnitInterface;
         fn getType(self: &UnitInterface) -> UnitType;
-        fn getUnitsInRadius(self: &UnitInterface, radius: i32, pred: fn(Unit) -> bool) -> UniquePtr<Unitset>;
-        fn getUnitsInWeaponRange(self: &UnitInterface, weapon: WeaponType, pred: fn(Unit) -> bool) -> UniquePtr<Unitset>;
+        fn _unit_getUnitsInRadius(unit: &UnitInterface, radius: i32, pred: fn(Unit) -> bool) -> UniquePtr<Unitset>;
+        fn _unit_getUnitsInWeaponRange(unit: &UnitInterface, weapon: WeaponType, pred: fn(Unit) -> bool) -> UniquePtr<Unitset>;
         fn getUpgrade(self: &UnitInterface) -> UpgradeType;
         fn getVelocityX(self: &UnitInterface) -> f64;
         fn getVelocityY(self: &UnitInterface) -> f64;
         fn hasNuke(self: &UnitInterface) -> bool;
+        #[cxx_name = "hasPath"]
         fn hasPathP(self: &UnitInterface, target: Position) -> bool;
+        #[cxx_name = "hasPath"]
         unsafe fn hasPathU(self: &UnitInterface, target: *mut UnitInterface) -> bool;
         fn isAccelerating(self: &UnitInterface) -> bool;
         fn isAttackFrame(self: &UnitInterface) -> bool;
@@ -611,48 +620,59 @@ pub mod ffi {
         fn isUnderStorm(self: &UnitInterface) -> bool;
         fn isUpgrading(self: &UnitInterface) -> bool;
         unsafe fn isVisible(self: &UnitInterface, player: *mut PlayerInterface) -> bool;
-        fn issueCommand(self: &UnitInterface, command: UnitCommand, shiftQueueCommand: bool) -> bool;
-        fn attackP(self: &UnitInterface, target: Position, shiftQueueCommand: bool) -> bool;
-        unsafe fn attackU(self: &UnitInterface, target: *mut UnitInterface, shiftQueueCommand: bool) -> bool;
-        fn build(self: &UnitInterface, uType: UnitType, target: TilePosition) -> bool;
-        fn buildAddon(self: &UnitInterface, uType: UnitType) -> bool;
-        fn train(self: &UnitInterface, uType: UnitType) -> bool;
-        fn morph(self: &UnitInterface, uType: UnitType) -> bool;
-        fn research(self: &UnitInterface, tech: TechType) -> bool;
-        fn upgrade(self: &UnitInterface, upgrade: UpgradeType) -> bool;
-        fn setRallyPoint(self: &UnitInterface, target: Position) -> bool;
-        fn move_(self: &UnitInterface, target: Position, shiftQueueCommand: bool) -> bool;
-        fn patrol(self: &UnitInterface, target: Position, shiftQueueCommand: bool) -> bool;
-        fn holdPosition(self: &UnitInterface, shiftQueueCommand: bool) -> bool;
-        fn stop(self: &UnitInterface, shiftQueueCommand: bool) -> bool;
-        unsafe fn follow(self: &UnitInterface, target: *mut UnitInterface, shiftQueueCommand: bool) -> bool;
-        unsafe fn gather(self: &UnitInterface, target: *mut UnitInterface, shiftQueueCommand: bool) -> bool;
-        fn returnCargo(self: &UnitInterface, shiftQueueCommand: bool) -> bool;
-        unsafe fn repair(self: &UnitInterface, target: *mut UnitInterface, shiftQueueCommand: bool) -> bool;
-        fn burrow(self: &UnitInterface) -> bool;
-        fn unburrow(self: &UnitInterface) -> bool;
-        fn cloak(self: &UnitInterface) -> bool;
-        fn decloak(self: &UnitInterface) -> bool;
-        fn siege(self: &UnitInterface) -> bool;
-        fn unsiege(self: &UnitInterface) -> bool;
-        fn lift(self: &UnitInterface) -> bool;
-        fn land(self: &UnitInterface, target: TilePosition) -> bool;
-        unsafe fn load(self: &UnitInterface, target: *mut UnitInterface, shiftQueueCommand: bool) -> bool;
-        unsafe fn unload(self: &UnitInterface, target: *mut UnitInterface) -> bool;
-        fn unloadAll(self: &UnitInterface, shiftQueueCommand: bool) -> bool;
-        fn unloadAllP(self: &UnitInterface, target: Position, shiftQueueCommand: bool) -> bool;
-        fn rightClickP(self: &UnitInterface, target: Position, shiftQueueCommand: bool) -> bool;
-        unsafe fn rightClickU(self: &UnitInterface, target: *mut UnitInterface, shiftQueueCommand: bool) -> bool;
-        fn haltConstruction(self: &UnitInterface) -> bool;
-        fn cancelConstruction(self: &UnitInterface) -> bool;
-        fn cancelAddon(self: &UnitInterface) -> bool;
-        fn cancelTrain(self: &UnitInterface, slot: i32) -> bool;
-        fn cancelMorph(self: &UnitInterface) -> bool;
-        fn cancelResearch(self: &UnitInterface) -> bool;
-        fn cancelUpgrade(self: &UnitInterface) -> bool;
-        fn useTechP(self: &UnitInterface, tech: TechType, target: Position) -> bool;
-        unsafe fn useTechU(self: &UnitInterface, tech: TechType, target: *mut UnitInterface) -> bool;
-        fn placeCOP(self: &UnitInterface, target: TilePosition) -> bool;
+        fn issueCommand(self: Pin<&mut UnitInterface>, command: UnitCommand) -> bool;
+        #[cxx_name = "attack"]
+        fn attackP(self: Pin<&mut UnitInterface>, target: Position, shiftQueueCommand: bool) -> bool;
+        #[cxx_name = "attack"]
+        unsafe fn attackU(self: Pin<&mut UnitInterface>, target: *mut UnitInterface, shiftQueueCommand: bool) -> bool;
+        fn build(self: Pin<&mut UnitInterface>, uType: UnitType, target: TilePosition) -> bool;
+        fn buildAddon(self: Pin<&mut UnitInterface>, uType: UnitType) -> bool;
+        fn train(self: Pin<&mut UnitInterface>, uType: UnitType) -> bool;
+        fn morph(self: Pin<&mut UnitInterface>, uType: UnitType) -> bool;
+        fn research(self: Pin<&mut UnitInterface>, tech: TechType) -> bool;
+        fn upgrade(self: Pin<&mut UnitInterface>, upgrade: UpgradeType) -> bool;
+        #[cxx_name = "setRallyPoint"]
+        fn setRallyPointP(self: Pin<&mut UnitInterface>, target: Position) -> bool;
+        #[cxx_name = "setRallyPoint"]
+        unsafe fn setRallyPointU(self: Pin<&mut UnitInterface>, target: *mut UnitInterface) -> bool;
+        fn _unit_move(unit: &UnitInterface, target: Position, shiftQueueCommand: bool) -> bool;
+        fn patrol(self: Pin<&mut UnitInterface>, target: Position, shiftQueueCommand: bool) -> bool;
+        fn holdPosition(self: Pin<&mut UnitInterface>, shiftQueueCommand: bool) -> bool;
+        fn stop(self: Pin<&mut UnitInterface>, shiftQueueCommand: bool) -> bool;
+        unsafe fn follow(self: Pin<&mut UnitInterface>, target: *mut UnitInterface, shiftQueueCommand: bool) -> bool;
+        unsafe fn gather(self: Pin<&mut UnitInterface>, target: *mut UnitInterface, shiftQueueCommand: bool) -> bool;
+        fn returnCargo(self: Pin<&mut UnitInterface>, shiftQueueCommand: bool) -> bool;
+        unsafe fn repair(self: Pin<&mut UnitInterface>, target: *mut UnitInterface, shiftQueueCommand: bool) -> bool;
+        fn burrow(self: Pin<&mut UnitInterface>) -> bool;
+        fn unburrow(self: Pin<&mut UnitInterface>) -> bool;
+        fn cloak(self: Pin<&mut UnitInterface>) -> bool;
+        fn decloak(self: Pin<&mut UnitInterface>) -> bool;
+        fn siege(self: Pin<&mut UnitInterface>) -> bool;
+        fn unsiege(self: Pin<&mut UnitInterface>) -> bool;
+        fn lift(self: Pin<&mut UnitInterface>) -> bool;
+        fn land(self: Pin<&mut UnitInterface>, target: TilePosition) -> bool;
+        unsafe fn load(self: Pin<&mut UnitInterface>, target: *mut UnitInterface, shiftQueueCommand: bool) -> bool;
+        unsafe fn unload(self: Pin<&mut UnitInterface>, target: *mut UnitInterface) -> bool;
+        #[cxx_name = "unloadAll"]
+        fn unloadAll_(self: Pin<&mut UnitInterface>, shiftQueueCommand: bool) -> bool;
+        #[cxx_name = "unloadAll"]
+        fn unloadAllP(self: Pin<&mut UnitInterface>, target: Position, shiftQueueCommand: bool) -> bool;
+        #[cxx_name = "rightClick"]
+        fn rightClickP(self: Pin<&mut UnitInterface>, target: Position, shiftQueueCommand: bool) -> bool;
+        #[cxx_name = "rightClick"]
+        unsafe fn rightClickU(self: Pin<&mut UnitInterface>, target: *mut UnitInterface, shiftQueueCommand: bool) -> bool;
+        fn haltConstruction(self: Pin<&mut UnitInterface>) -> bool;
+        fn cancelConstruction(self: Pin<&mut UnitInterface>) -> bool;
+        fn cancelAddon(self: Pin<&mut UnitInterface>) -> bool;
+        fn cancelTrain(self: Pin<&mut UnitInterface>, slot: i32) -> bool;
+        fn cancelMorph(self: Pin<&mut UnitInterface>) -> bool;
+        fn cancelResearch(self: Pin<&mut UnitInterface>) -> bool;
+        fn cancelUpgrade(self: Pin<&mut UnitInterface>) -> bool;
+        #[cxx_name = "useTech"]
+        fn useTechP(self: Pin<&mut UnitInterface>, tech: TechType, target: Position) -> bool;
+        #[cxx_name = "useTech"]
+        unsafe fn useTechU(self: Pin<&mut UnitInterface>, tech: TechType, target: *mut UnitInterface) -> bool;
+        fn placeCOP(self: Pin<&mut UnitInterface>, target: TilePosition) -> bool;
         fn canIssueCommand(self: &UnitInterface, command: UnitCommand, checkCanUseTechPositionOnPositions: bool, checkCanUseTechUnitOnUnits: bool, checkCanBuildUnitType: bool, checkCanTargetUnit: bool, checkCanIssueCommandType: bool, checkCommandibility: bool) -> bool;
         fn canIssueCommandGrouped(self: &UnitInterface, command: UnitCommand, checkCanUseTechPositionOnPositions: bool, checkCanUseTechUnitOnUnits: bool, checkCanTargetUnit: bool, checkCanIssueCommandType: bool, checkCommandibilityGrouped: bool, checkCommandibility: bool) -> bool;
         fn canCommand(self: &UnitInterface) -> bool;
@@ -660,49 +680,83 @@ pub mod ffi {
         fn canIssueCommandType(self: &UnitInterface, ctype: UnitCommandType, checkCommandibility: bool) -> bool;
         fn canIssueCommandTypeGrouped(self: &UnitInterface, ctype: UnitCommandType, checkCommandibilityGrouped: bool, checkCommandibility: bool) -> bool;
         unsafe fn canTargetUnit(self: &UnitInterface, targetUnit: *mut UnitInterface, checkCommandibility: bool) -> bool;
-        fn canAttack(self: &UnitInterface, checkCommandibility: bool) -> bool;
+        #[cxx_name = "canAttack"]
+        fn canAttack_(self: &UnitInterface, checkCommandibility: bool) -> bool;
+        #[cxx_name = "canAttack"]
         fn canAttackP(self: &UnitInterface, target: Position, checkCanTargetUnit: bool, checkCanIssueCommandType: bool, checkCommandibility: bool) -> bool;
+        #[cxx_name = "canAttack"]
         unsafe fn canAttackU(self: &UnitInterface, target: *mut UnitInterface, checkCanTargetUnit: bool, checkCanIssueCommandType: bool, checkCommandibility: bool) -> bool;
-        fn canAttackGrouped(self: &UnitInterface, checkCommandibilityGrouped: bool, checkCommandibility: bool) -> bool;
+        #[cxx_name = "canAttackGrouped"]
+        fn canAttackGrouped_(self: &UnitInterface, checkCommandibilityGrouped: bool, checkCommandibility: bool) -> bool;
+        #[cxx_name = "canAttackGrouped"]
         fn canAttackGroupedP(self: &UnitInterface, target: Position, checkCanTargetUnit: bool, checkCanIssueCommandType: bool, checkCommandibilityGrouped: bool, checkCommandibility: bool) -> bool;
+        #[cxx_name = "canAttackGrouped"]
         unsafe fn canAttackGroupedU(self: &UnitInterface, target: *mut UnitInterface, checkCanTargetUnit: bool, checkCanIssueCommandType: bool, checkCommandibilityGrouped: bool, checkCommandibility: bool) -> bool;
         fn canAttackMove(self: &UnitInterface, checkCommandibility: bool) -> bool;
         fn canAttackMoveGrouped(self: &UnitInterface, checkCommandibilityGrouped: bool, checkCommandibility: bool) -> bool;
-        fn canAttackUnit(self: &UnitInterface, checkCommandibility: bool) -> bool;
+        #[cxx_name = "canAttackUnit"]
+        fn canAttackUnit_(self: &UnitInterface, checkCommandibility: bool) -> bool;
+        #[cxx_name = "canAttackUnit"]
         unsafe fn canAttackUnitU(self: &UnitInterface, targetUnit: *mut UnitInterface, checkCanTargetUnit: bool, checkCanIssueCommandType: bool, checkCommandibility: bool) -> bool;
-        fn canAttackUnitGrouped(self: &UnitInterface, checkCommandibilityGrouped: bool, checkCommandibility: bool) -> bool;
+        #[cxx_name = "canAttackUnitGrouped"]
+        fn canAttackUnitGrouped_(self: &UnitInterface, checkCommandibilityGrouped: bool, checkCommandibility: bool) -> bool;
+        #[cxx_name = "canAttackUnitGrouped"]
         unsafe fn canAttackUnitGroupedU(self: &UnitInterface, targetUnit: *mut UnitInterface, checkCanTargetUnit: bool, checkCanIssueCommandType: bool, checkCommandibilityGrouped: bool, checkCommandibility: bool) -> bool;
-        fn canBuild(self: &UnitInterface, checkCommandibility: bool) -> bool;
+        #[cxx_name = "canBuild"]
+        fn canBuild_(self: &UnitInterface, checkCommandibility: bool) -> bool;
+        #[cxx_name = "canBuild"]
         fn canBuildT(self: &UnitInterface, uType: UnitType, checkCanIssueCommandType: bool, checkCommandibility: bool) -> bool;
+        #[cxx_name = "canBuild"]
         fn canBuildU(self: &UnitInterface, uType: UnitType, tilePos: TilePosition, checkTargetUnitType: bool, checkCanIssueCommandType: bool, checkCommandibility: bool) -> bool;
-        fn canBuildAddon(self: &UnitInterface, checkCommandibility: bool) -> bool;
+        #[cxx_name = "canBuildAddon"]
+        fn canBuildAddon_(self: &UnitInterface, checkCommandibility: bool) -> bool;
+        #[cxx_name = "canBuildAddon"]
         fn canBuildAddonT(self: &UnitInterface, uType: UnitType, checkCanIssueCommandType: bool, checkCommandibility: bool) -> bool;
-        fn canTrain(self: &UnitInterface, checkCommandibility: bool) -> bool;
+        #[cxx_name = "canTrain"]
+        fn canTrain_(self: &UnitInterface, checkCommandibility: bool) -> bool;
+        #[cxx_name = "canTrain"]
         fn canTrainT(self: &UnitInterface, uType: UnitType, checkCanIssueCommandType: bool, checkCommandibility: bool) -> bool;
-        fn canMorph(self: &UnitInterface, checkCommandibility: bool) -> bool;
+        #[cxx_name = "canMorph"]
+        fn canMorph_(self: &UnitInterface, checkCommandibility: bool) -> bool;
+        #[cxx_name = "canMorph"]
         fn canMorphT(self: &UnitInterface, uType: UnitType, checkCanIssueCommandType: bool, checkCommandibility: bool) -> bool;
-        fn canResearch(self: &UnitInterface, checkCommandibility: bool) -> bool;
+        #[cxx_name = "canResearch"]
+        fn canResearch_(self: &UnitInterface, checkCommandibility: bool) -> bool;
+        #[cxx_name = "canResearch"]
         fn canResearchT(self: &UnitInterface, tType: TechType, checkCanIssueCommandType: bool) -> bool;
-        fn canUpgrade(self: &UnitInterface, checkCommandibility: bool) -> bool;
+        #[cxx_name = "canUpgrade"]
+        fn canUpgrade_(self: &UnitInterface, checkCommandibility: bool) -> bool;
+        #[cxx_name = "canUpgrade"]
         fn canUpgradeT(self: &UnitInterface, tType: UpgradeType, checkCanIssueCommandType: bool) -> bool;
-        fn canSetRallyPoint(self: &UnitInterface, checkCommandibility: bool) -> bool;
+        #[cxx_name = "canSetRallyPoint"]
+        fn canSetRallyPoint_(self: &UnitInterface, checkCommandibility: bool) -> bool;
+        #[cxx_name = "canSetRallyPoint"]
         fn canSetRallyPointP(self: &UnitInterface, target: Position, checkCanTargetUnit: bool, checkCanIssueCommandType: bool, checkCommandibility: bool) -> bool;
+        #[cxx_name = "canSetRallyPoint"]
         unsafe fn canSetRallyPointU(self: &UnitInterface, target: *mut UnitInterface, checkCanTargetUnit: bool, checkCanIssueCommandType: bool, checkCommandibility: bool) -> bool;
         fn canSetRallyPosition(self: &UnitInterface, checkCommandibility: bool) -> bool;
-        fn canSetRallyUnit(self: &UnitInterface, checkCommandibility: bool) -> bool;
+        #[cxx_name = "canSetRallyUnit"]
+        fn canSetRallyUnit_(self: &UnitInterface, checkCommandibility: bool) -> bool;
+        #[cxx_name = "canSetRallyUnit"]
         unsafe fn canSetRallyUnitU(self: &UnitInterface, targetUnit: *mut UnitInterface, checkCanTargetUnit: bool, checkCanIssueCommandType: bool, checkCommandibility: bool) -> bool;
         fn canMove(self: &UnitInterface, checkCommandibility: bool) -> bool;
         fn canMoveGrouped(self: &UnitInterface, checkCommandibilityGrouped: bool, checkCommandibility: bool) -> bool;
         fn canPatrol(self: &UnitInterface, checkCommandibility: bool) -> bool;
         fn canPatrolGrouped(self: &UnitInterface, checkCommandibilityGrouped: bool, checkCommandibility: bool) -> bool;
-        fn canFollow(self: &UnitInterface, checkCommandibility: bool) -> bool;
+        #[cxx_name = "canFollow"]
+        fn canFollow_(self: &UnitInterface, checkCommandibility: bool) -> bool;
+        #[cxx_name = "canFollow"]
         unsafe fn canFollowU(self: &UnitInterface, targetUnit: *mut UnitInterface, checkCanTargetUnit: bool, checkCanIssueCommandType: bool, checkCommandibility: bool) -> bool;
-        fn canGather(self: &UnitInterface, checkCommandibility: bool) -> bool;
+        #[cxx_name = "canGather"]
+        fn canGather_(self: &UnitInterface, checkCommandibility: bool) -> bool;
+        #[cxx_name = "canGather"]
         unsafe fn canGatherU(self: &UnitInterface, targetUnit: *mut UnitInterface, checkCanTargetUnit: bool, checkCanIssueCommandType: bool, checkCommandibility: bool) -> bool;
         fn canReturnCargo(self: &UnitInterface, checkCommandibility: bool) -> bool;
         fn canHoldPosition(self: &UnitInterface, checkCommandibility: bool) -> bool;
         fn canStop(self: &UnitInterface, checkCommandibility: bool) -> bool;
-        fn canRepair(self: &UnitInterface, checkCommandibility: bool) -> bool;
+        #[cxx_name = "canRepair"]
+        fn canRepair_(self: &UnitInterface, checkCommandibility: bool) -> bool;
+        #[cxx_name = "canRepair"]
         unsafe fn canRepairU(self: &UnitInterface, targetUnit: *mut UnitInterface, checkCanTargetUnit: bool, checkCanIssueCommandType: bool, checkCommandibility: bool) -> bool;
         fn canBurrow(self: &UnitInterface, checkCommandibility: bool) -> bool;
         fn canUnburrow(self: &UnitInterface, checkCommandibility: bool) -> bool;
@@ -711,48 +765,78 @@ pub mod ffi {
         fn canSiege(self: &UnitInterface, checkCommandibility: bool) -> bool;
         fn canUnsiege(self: &UnitInterface, checkCommandibility: bool) -> bool;
         fn canLift(self: &UnitInterface, checkCommandibility: bool) -> bool;
-        fn canLand(self: &UnitInterface, checkCommandibility: bool) -> bool;
+        #[cxx_name = "canLand"]
+        fn canLand_(self: &UnitInterface, checkCommandibility: bool) -> bool;
+        #[cxx_name = "canLand"]
         fn canLandP(self: &UnitInterface, target: TilePosition, checkCanIssueCommandType: bool, checkCommandibility: bool) -> bool;
-        fn canLoad(self: &UnitInterface, checkCommandibility: bool) -> bool;
+        #[cxx_name = "canLoad"]
+        fn canLoad_(self: &UnitInterface, checkCommandibility: bool) -> bool;
+        #[cxx_name = "canLoad"]
         unsafe fn canLoadU(self: &UnitInterface, targetUnit: *mut UnitInterface, checkCanTargetUnit: bool, checkCanIssueCommandType: bool, checkCommandibility: bool) -> bool;
         fn canUnloadWithOrWithoutTarget(self: &UnitInterface, checkCommandibility: bool) -> bool;
         fn canUnloadAtPosition(self: &UnitInterface, targDropPos: Position, checkCanIssueCommandType: bool, checkCommandibility: bool) -> bool;
-        fn canUnload(self: &UnitInterface, checkCommandibility: bool) -> bool;
+        #[cxx_name = "canUnload"]
+        fn canUnload_(self: &UnitInterface, checkCommandibility: bool) -> bool;
+        #[cxx_name = "canUnload"]
         unsafe fn canUnloadU(self: &UnitInterface, targetUnit: *mut UnitInterface, checkCanTargetUnit: bool, checkPosition: bool, checkCanIssueCommandType: bool, checkCommandibility: bool) -> bool;
         fn canUnloadAll(self: &UnitInterface, checkCommandibility: bool) -> bool;
-        fn canUnloadAllPosition(self: &UnitInterface, checkCommandibility: bool) -> bool;
+        #[cxx_name = "canUnloadAllPosition"]
+        fn canUnloadAllPosition_(self: &UnitInterface, checkCommandibility: bool) -> bool;
+        #[cxx_name = "canUnloadAllPosition"]
         fn canUnloadAllPositionP(self: &UnitInterface, targDropPos: Position, checkCanIssueCommandType: bool, checkCommandibility: bool) -> bool;
-        fn canRightClick(self: &UnitInterface, checkCommandibility: bool) -> bool;
+        #[cxx_name = "canRightClick"]
+        fn canRightClick_(self: &UnitInterface, checkCommandibility: bool) -> bool;
+        #[cxx_name = "canRightClick"]
         fn canRightClickP(self: &UnitInterface, target: Position, checkCanTargetUnit: bool, checkCanIssueCommandType: bool, checkCommandibility: bool) -> bool;
+        #[cxx_name = "canRightClick"]
         unsafe fn canRightClickU(self: &UnitInterface, target: *mut UnitInterface, checkCanTargetUnit: bool, checkCanIssueCommandType: bool, checkCommandibility: bool) -> bool;
-        fn canRightClickGrouped(self: &UnitInterface, checkCommandibilityGrouped: bool, checkCommandibility: bool) -> bool;
+        #[cxx_name = "canRightClickGrouped"]
+        fn canRightClickGrouped_(self: &UnitInterface, checkCommandibilityGrouped: bool, checkCommandibility: bool) -> bool;
+        #[cxx_name = "canRightClickGrouped"]
         fn canRightClickGroupedP(self: &UnitInterface, target: Position, checkCanTargetUnit: bool, checkCanIssueCommandType: bool, checkCommandibilityGrouped: bool, checkCommandibility: bool) -> bool;
+        #[cxx_name = "canRightClickGrouped"]
         unsafe fn canRightClickGroupedU(self: &UnitInterface, target: *mut UnitInterface, checkCanTargetUnit: bool, checkCanIssueCommandType: bool, checkCommandibilityGrouped: bool, checkCommandibility: bool) -> bool;
         fn canRightClickPosition(self: &UnitInterface, checkCommandibility: bool) -> bool;
         fn canRightClickPositionGrouped(self: &UnitInterface, checkCommandibilityGrouped: bool, checkCommandibility: bool) -> bool;
-        fn canRightClickUnit(self: &UnitInterface, checkCommandibility: bool) -> bool;
+        #[cxx_name = "canRightClickUnit"]
+        fn canRightClickUnit_(self: &UnitInterface, checkCommandibility: bool) -> bool;
+        #[cxx_name = "canRightClickUnit"]
         unsafe fn canRightClickUnitU(self: &UnitInterface, targetUnit: *mut UnitInterface, checkCanTargetUnit: bool, checkCanIssueCommandType: bool, checkCommandibility: bool) -> bool;
-        fn canRightClickUnitGrouped(self: &UnitInterface, checkCommandibilityGrouped: bool, checkCommandibility: bool) -> bool;
+        #[cxx_name = "canRightClickUnitGrouped"]
+        fn canRightClickUnitGrouped_(self: &UnitInterface, checkCommandibilityGrouped: bool, checkCommandibility: bool) -> bool;
+        #[cxx_name = "canRightClickUnitGrouped"]
         unsafe fn canRightClickUnitGroupedU(self: &UnitInterface, targetUnit: *mut UnitInterface, checkCanTargetUnit: bool, checkCanIssueCommandType: bool, checkCommandibilityGrouped: bool, checkCommandibility: bool) -> bool;
         fn canHaltConstruction(self: &UnitInterface, checkCommandibility: bool) -> bool;
         fn canCancelConstruction(self: &UnitInterface, checkCommandibility: bool) -> bool;
         fn canCancelAddon(self: &UnitInterface, checkCommandibility: bool) -> bool;
         fn canCancelTrain(self: &UnitInterface, checkCommandibility: bool) -> bool;
-        fn canCancelTrainSlot(self: &UnitInterface, checkCommandibility: bool) -> bool;
+        #[cxx_name = "canCancelTrainSlot"]
+        fn canCancelTrainSlot_(self: &UnitInterface, checkCommandibility: bool) -> bool;
+        #[cxx_name = "canCancelTrainSlot"]
         fn canCancelTrainSlotI(self: &UnitInterface, slot: i32, checkCanIssueCommandType: bool, checkCommandibility: bool) -> bool;
         fn canCancelMorph(self: &UnitInterface, checkCommandibility: bool) -> bool;
         fn canCancelResearch(self: &UnitInterface, checkCommandibility: bool) -> bool;
         fn canCancelUpgrade(self: &UnitInterface, checkCommandibility: bool) -> bool;
-        fn canUseTechWithOrWithoutTarget(self: &UnitInterface, checkCommandibility: bool) -> bool;
+        #[cxx_name = "canUseTechWithOrWithoutTarget"]
+        fn canUseTechWithOrWithoutTarget_(self: &UnitInterface, checkCommandibility: bool) -> bool;
+        #[cxx_name = "canUseTechWithOrWithoutTarget"]
         fn canUseTechWithOrWithoutTargetT(self: &UnitInterface, tech: TechType, checkCanIssueCommandType: bool, checkCommandibility: bool) -> bool;
+        #[cxx_name = "canUseTech"]
         fn canUseTechP(self: &UnitInterface, tech: TechType, target: Position, checkCanTargetUnit: bool, checkTargetsType: bool, checkCanIssueCommandType: bool, checkCommandibility: bool) -> bool;
+        #[cxx_name = "canUseTech"]
         unsafe fn canUseTechU(self: &UnitInterface, tech: TechType, target: *mut UnitInterface, checkCanTargetUnit: bool, checkTargetsType: bool, checkCanIssueCommandType: bool, checkCommandibility: bool) -> bool;
         fn canUseTechWithoutTarget(self: &UnitInterface, tech: TechType, checkCanIssueCommandType: bool, checkCommandibility: bool) -> bool;
-        fn canUseTechUnit(self: &UnitInterface, tech: TechType, checkCanIssueCommandType: bool, checkCommandibility: bool) -> bool;
+        #[cxx_name = "canUseTechUnit"]
+        fn canUseTechUnit_(self: &UnitInterface, tech: TechType, checkCanIssueCommandType: bool, checkCommandibility: bool) -> bool;
+        #[cxx_name = "canUseTechUnit"]
         unsafe fn canUseTechUnitT(self: &UnitInterface, tech: TechType, targetUnit: *mut UnitInterface, checkCanTargetUnit: bool, checkTargetsUnits: bool, checkCanIssueCommandType: bool, checkCommandibility: bool) -> bool;
-        fn canUseTechPosition(self: &UnitInterface, tech: TechType, checkCanIssueCommandType: bool, checkCommandibility: bool) -> bool;
+        #[cxx_name = "canUseTechPosition"]
+        fn canUseTechPosition_(self: &UnitInterface, tech: TechType, checkCanIssueCommandType: bool, checkCommandibility: bool) -> bool;
+        #[cxx_name = "canUseTechPosition"]
         fn canUseTechPositionP(self: &UnitInterface, tech: TechType, target: Position, checkTargetsPositions: bool, checkCanIssueCommandType: bool, checkCommandibility: bool) -> bool;
-        fn canPlaceCOP(self: &UnitInterface, checkCommandibility: bool) -> bool;
+        #[cxx_name = "canPlaceCOP"]
+        fn canPlaceCOP_(self: &UnitInterface, checkCommandibility: bool) -> bool;
+        #[cxx_name = "canPlaceCOP"]
         fn canPlaceCOPP(self: &UnitInterface, target: TilePosition, checkCanIssueCommandType: bool, checkCommandibility: bool) -> bool;
     }
     // endregion

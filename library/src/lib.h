@@ -98,6 +98,15 @@ BWAPI::Text::Enum _player_getTextColor(const BWAPI::PlayerInterface &player);
 
 std::unique_ptr<BWAPI::Unitset> _region_getUnits(const BWAPI::RegionInterface &region, UnitFilter pred);
 
+BWAPI::UnitInterface *_unit_getClosestUnit(const BWAPI::UnitInterface &unit, UnitFilter pred, int radius);
+std::unique_ptr<::BWAPI::Unitset> _unit_getInterceptors(const BWAPI::UnitInterface &unit);
+std::unique_ptr<::BWAPI::Unitset> _unit_getLarva(const BWAPI::UnitInterface &unit);
+std::unique_ptr<::BWAPI::Unitset> _unit_getLoadedUnits(const BWAPI::UnitInterface &unit);
+rust::Vec<::BWAPI::UnitType> _unit_getTrainingQueue(const BWAPI::UnitInterface &unit);
+std::unique_ptr<::BWAPI::Unitset> _unit_getUnitsInRadius(const BWAPI::UnitInterface &unit, int radius, UnitFilter pred);
+std::unique_ptr<::BWAPI::Unitset> _unit_getUnitsInWeaponRange(const BWAPI::UnitInterface &unit, BWAPI::WeaponType wType, UnitFilter pred);
+bool _unit_move(const ::BWAPI::UnitInterface &unit, BWAPI::Position position, bool shiftQueueCommand);
+
 int Unit_getId(const BWAPI::UnitInterface *unit);
 BWAPI::UnitType Unit_getType(const BWAPI::UnitInterface *unit);
 BWAPI::Position Unit_getPosition(const BWAPI::UnitInterface *unit);

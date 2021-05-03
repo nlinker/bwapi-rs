@@ -59,6 +59,12 @@ impl Default for UnitCommandType {
     }
 }
 
+// required for ffi layer
+unsafe impl cxx::ExternType for UnitCommandType {
+    type Id = cxx::type_id!("BWAPI::UnitCommandType");
+    type Kind = cxx::kind::Trivial;
+}
+
 #[derive(Debug, Clone)]
 pub struct UnitCommand {
     unit: Unit,
