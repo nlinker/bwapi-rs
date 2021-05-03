@@ -13,8 +13,8 @@ impl fmt::Debug for Playerset<'_> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match &self.raw {
             Handle::Owned(u) => write!(f, "Playerset(Owned({:p}))", u),
-            Handle::Borrowed(r) => write!(f, "Playerset(Owned({:p}))", r),
-            Handle::BorrowedMut(p) => write!(f, "Playerset(Owned({:p}))", p),
+            Handle::Borrowed(r) => write!(f, "Playerset(Borrowed({:p}))", r),
+            Handle::BorrowedMut(p) => write!(f, "Playerset(BorrowedMut({:p}))", p),
         }
     }
 }
