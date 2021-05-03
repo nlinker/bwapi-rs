@@ -74,7 +74,7 @@ TODO
 
 - Remove exec flag from the files, copied from Windows
   ```shell
-  find /path/to/location -type f -print0 | xargs -0 chmod 644
+  find . -type f -print0 | xargs -0 chmod 644
   ```
 
 - Clean up CMake build dir
