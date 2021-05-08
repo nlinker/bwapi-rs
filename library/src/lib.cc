@@ -49,6 +49,7 @@ std::unique_ptr <AIModuleWrapper> createAIModuleWrapper(rust::Box <BoxedAIModule
     return std::unique_ptr<AIModuleWrapper>(new AIModuleWrapper(box.into_raw()));
 }
 
+// region === === DEBUG === ===
 std::unique_ptr<BWAPI::Playerset> _game_debug(const BWAPI::Game &game) {
     using namespace BWAPI;
     BWAPI::Game &g = const_cast<BWAPI::Game&>(game);
@@ -78,6 +79,7 @@ void _game_debug_fun(const BWAPI::Game &game, UnitFilter fun) {
     //os << "sizeof(UnitCommand) = " << sizeof(BWAPI::UnitCommand);
     //g.sendText(os.str().c_str());
 }
+// endregion
 
 // region === === Iterators === ===
 std::unique_ptr<BulletsetIterator> createBulletsetIterator(const BWAPI::Bulletset &set) {
@@ -98,6 +100,22 @@ std::unique_ptr<RegionsetIterator> createRegionsetIterator(const BWAPI::Regionse
 
 std::unique_ptr<UnitsetIterator> createUnitsetIterator(const BWAPI::Unitset &set) {
     return std::unique_ptr<UnitsetIterator>(new UnitsetIteratorRef(set));
+}
+// endregion
+
+// region === === Playerset === ===
+rust::Vec<BWAPI::Race> _playerset_getRaces(const BWAPI::Playerset &set) {
+    auto races = set.getRaces();
+    rust::Vec<BWAPI::Race> xs;
+    xs.reserve(races.size());
+    for (auto &race: races) {
+        xs.push_back(race);
+    }
+    return xs;
+}
+
+std::unique_ptr<BWAPI::Unitset> _playerset_getUnits(const BWAPI::Playerset &set) {
+    return std::make_unique<BWAPI::Unitset>(set.getUnits());
 }
 // endregion
 
