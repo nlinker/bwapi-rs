@@ -6,8 +6,8 @@
 
 int cpp_test() {
     std::cout << "cpp_test started" << std::endl;
-    auto box = const_cast<BoxedAIModule &>(hack());
-    auto ai = new AIModuleWrapper(box);
+    auto &box = const_cast<BoxedAIModule &>(hack());
+    auto ai = new AIModuleWrapper(&box);
 
     BWAPI::Position target(11, 22);
     auto player = reinterpret_cast<BWAPI::Player>(0xDEADBEEF);
@@ -45,8 +45,8 @@ int cpp_test() {
     return 0;
 }
 
-std::unique_ptr <AIModuleWrapper> createAIModuleWrapper(BoxedAIModule box) {
-    return std::unique_ptr<AIModuleWrapper>(new AIModuleWrapper(box));
+std::unique_ptr <AIModuleWrapper> createAIModuleWrapper(rust::Box <BoxedAIModule> box) {
+    return std::unique_ptr<AIModuleWrapper>(new AIModuleWrapper(box.into_raw()));
 }
 
 std::unique_ptr<BWAPI::Playerset> _game_debug(const BWAPI::Game &game) {

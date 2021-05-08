@@ -40,19 +40,6 @@ pub trait FromRaw<T> {
 #[allow(non_snake_case)]
 #[cxx::bridge]
 pub mod ffi {
-    #[derive(Debug, Copy, Clone)]
-    struct PositionSyn {
-        x: i32,
-        y: i32,
-    }
-
-    // https://github.com/dtolnay/cxx/issues/855
-    #[derive(Debug, Copy, Clone)]
-    struct TilePositionSyn {
-        x: i32,
-        y: i32,
-    }
-
     #[namespace = "BWAPI"]
     unsafe extern "C++" {
         include!("library/openbw/include/BWAPI.h");
@@ -290,7 +277,7 @@ pub mod ffi {
         fn getMousePosition(self: &Game) -> Position;
         fn getMouseState(self: &Game, button: MouseButton) -> bool;
         fn getNeutralUnits(self: &Game) -> &Unitset;
-        fn _game_getNukeDots(game: &Game) -> Vec<PositionSyn>;
+        fn _game_getNukeDots(game: &Game) -> Vec<Position>;
         fn getPlayer(self: &Game, playerId: i32) -> *mut PlayerInterface;
         fn getPlayers(self: &Game) -> &Playerset;
         fn getRandomSeed(self: &Game) -> u32;
@@ -302,7 +289,7 @@ pub mod ffi {
         fn getRevision(self: &Game) -> i32;
         fn getScreenPosition(self: &Game) -> Position;
         fn getSelectedUnits(self: &Game) -> &Unitset;
-        fn _game_getStartLocations(game: &Game) -> Vec<TilePositionSyn>;
+        fn _game_getStartLocations(game: &Game) -> Vec<TilePosition>;
         fn getStaticGeysers(self: &Game) -> &Unitset;
         fn getStaticMinerals(self: &Game) -> &Unitset;
         fn getStaticNeutralUnits(self: &Game) -> &Unitset;
@@ -811,16 +798,16 @@ pub mod ffi {
     // endregion
 
     unsafe extern "C++" {
-        type BoxedAIModule<'a> = crate::bw::ai_module::BoxedAIModule<'a>;
         pub type AIModuleWrapper;
         #[cxx_name = "createAIModuleWrapper"]
-        pub fn create_ai_module_wrapper<'a>(user_ai: BoxedAIModule<'a>) -> UniquePtr<AIModuleWrapper>;
+        pub fn create_ai_module_wrapper<'a>(user_ai: Box<BoxedAIModule<'a>>) -> UniquePtr<AIModuleWrapper>;
         #[cxx_name = "getBox"]
-        fn get_box(self: Pin<&mut AIModuleWrapper>) -> BoxedAIModule;
+        fn get_box(self: Pin<&mut AIModuleWrapper>) -> &mut BoxedAIModule;
     }
 
     extern "Rust" {
         include!("library/src/aim.h");
+        type BoxedAIModule<'a>;
         // the hack is to create AimBox to create AIModuleWrapper on the C++ side
         unsafe fn hack<'a>() -> &'static BoxedAIModule<'a>;
 
@@ -844,6 +831,8 @@ pub mod ffi {
     }
 
     // https://github.com/dtolnay/cxx/issues/855
+    impl Vec<Position> {}
+    impl Vec<TilePosition> {}
     impl Vec<UnitType> {}
 
 } // pub mod ffi
