@@ -16,7 +16,7 @@ pub unsafe extern "C" fn newAIModule() -> *mut ffi::AIModuleWrapper {
         counter: 0,
     };
     let ai = BoxedAIModule::new(demo);
-    let wrapper: UniquePtr<ffi::AIModuleWrapper> = ffi::create_ai_module_wrapper(Box::new(ai));
+    let wrapper: UniquePtr<ffi::AIModuleWrapper> = ffi::create_ai_module_wrapper(ai);
     wrapper.into_raw()
 }
 

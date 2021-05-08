@@ -12,16 +12,20 @@
 
 int cpp_test();
 
+struct BoxedAIModule {
+    BWAPI::AIModule  *raw;
+};
+
 // api-specific stuff below
-std::unique_ptr<AIModuleWrapper> createAIModuleWrapper(rust::Box<BoxedAIModule> box);
+std::unique_ptr<AIModuleWrapper> createAIModuleWrapper(BoxedAIModule box);
 
 class AIModuleWrapper : public BWAPI::AIModule {
 public:
-    BoxedAIModule *moduleBox;
+    BoxedAIModule moduleBox;
 public:
-    AIModuleWrapper(BoxedAIModule *box) : moduleBox(box) {}
+    AIModuleWrapper(BoxedAIModule box) : moduleBox(box) {}
 
-    BoxedAIModule &getBox() { return *moduleBox; }
+    BoxedAIModule getBox() { return moduleBox; }
 
     void onStart() noexcept override { on_start(*this); }
 

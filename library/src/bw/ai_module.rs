@@ -34,6 +34,12 @@ pub enum Event {
 #[cfg(ignore_this)]
 pub struct BoxedAIModule<'a>(Box<dyn AIModule>);
 
+// required for ffi layer
+unsafe impl cxx::ExternType for BoxedAIModule<'_> {
+    type Id = cxx::type_id!("BoxedAIModule");
+    type Kind = cxx::kind::Trivial;
+}
+
 #[cfg(ignore_this)]
 impl<'a> BoxedAIModule<'a> {
     pub fn new<'a, T: AIModule>(t: T) -> Self {

@@ -818,16 +818,13 @@ pub mod ffi {
     }
     // endregion
 
-    extern "Rust" {
-        type BoxedAIModule<'a>;
-    }
-
     unsafe extern "C++" {
+        type BoxedAIModule<'a> = crate::bw::ai_module::BoxedAIModule<'a>;
         pub type AIModuleWrapper;
-        #[rust_name = "create_ai_module_wrapper"]
-        fn createAIModuleWrapper(user_ai: Box<BoxedAIModule>) -> UniquePtr<AIModuleWrapper>;
-        #[rust_name = "get_box"]
-        fn getBox(self: Pin<&mut AIModuleWrapper>) -> &mut BoxedAIModule;
+        #[cxx_name = "createAIModuleWrapper"]
+        pub fn create_ai_module_wrapper<'a>(user_ai: BoxedAIModule<'a>) -> UniquePtr<AIModuleWrapper>;
+        #[cxx_name = "getBox"]
+        fn get_box(self: Pin<&mut AIModuleWrapper>) -> BoxedAIModule;
     }
 
     extern "Rust" {
