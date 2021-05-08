@@ -37,7 +37,6 @@ impl AIModule for DemoAI {
                 println!("fn on_end(is_winner: {})", is_winner);
             }
             Event::OnFrame() => {
-                game.debug();
                 let colors = [
                     Color::Black,
                     Color::Brown,
@@ -65,6 +64,15 @@ impl AIModule for DemoAI {
                 // println!("fn on_frame()");
                 let fc = game.get_frame_count();
                 if fc % 20 == 0 {
+                    game.debug();
+                    let forces = game.get_forces();
+                    for force in forces.iter() {
+                        println!("force: {} {}", force.get_id(), force.get_name());
+                        // for player in force.get_players().iter() {
+                        //     println!("  player: {:?}", player);
+                        // }
+                    }
+
                     println!("game.allies = {:?}", game.allies().into_iter().next());
                     game.send_text(&format!("Unitset size: {:?}", game.get_all_units().len()));
                     let xs = game.get_nuke_dots();

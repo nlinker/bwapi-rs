@@ -9,6 +9,7 @@ use crate::ffi;
 use cxx::UniquePtr;
 use std::pin::Pin;
 use crate::bw::player::Player;
+use crate::bw::forceset::Forceset;
 
 #[derive(Debug)]
 pub struct Game {
@@ -27,13 +28,18 @@ impl Game {
     }
 
     pub fn allies(&self) -> Playerset {
-        let game: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw) };
-        let set: Pin<&mut ffi::Playerset> = game.allies();
+        let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw) };
+        let set: Pin<&mut ffi::Playerset> = g.allies();
         Playerset { raw: Handle::BorrowedMut(set) }
     }
     pub fn set_alliance(&self, player: Player, allied: bool, allied_victory: bool) -> bool {
-        let game: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw) };
-        unsafe { game.setAlliance(player.raw as *mut _, allied, allied_victory) }
+        let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw) };
+        unsafe { g.setAlliance(player.raw as *mut _, allied, allied_victory) }
+    }
+
+    pub fn get_forces(&self) -> Forceset {
+        let g: &ffi::Game = unsafe { &*self.raw };
+        Forceset { raw: Handle::Borrowed(g.getForces()) }
     }
 
     pub fn send_text(&self, text: &str) {
@@ -43,80 +49,76 @@ impl Game {
         unsafe { (*self.raw).getFrameCount() }
     }
     pub fn get_all_units(&self) -> Unitset {
-        let game: &ffi::Game = unsafe { &*self.raw };
-        let set: &ffi::Unitset = game.getAllUnits();
+        let g: &ffi::Game = unsafe { &*self.raw };
+        let set: &ffi::Unitset = g.getAllUnits();
         Unitset { raw: Handle::Borrowed(set) }
     }
     pub fn get_units_in_radius(&self, position: Position, radius: i32, pred: UnitFilter) -> Unitset {
-        let game: &ffi::Game = unsafe { &*self.raw };
-        let set: UniquePtr<ffi::Unitset> = ffi::_game_getUnitsInRadius(game, position, radius, pred);
+        let g: &ffi::Game = unsafe { &*self.raw };
+        let set: UniquePtr<ffi::Unitset> = ffi::_game_getUnitsInRadius(g, position, radius, pred);
         Unitset { raw: Handle::Owned(set) }
     }
 
     pub fn get_nuke_dots(&self) -> Vec<Position> {
-        let game: &ffi::Game = unsafe { &*self.raw };
-        let xs = ffi::_game_getNukeDots(game);
-        // https://github.com/dtolnay/cxx/issues/855
-        xs.into_iter().map(|p| Position { x: p.x, y: p.y }).collect()
+        let g: &ffi::Game = unsafe { &*self.raw };
+        ffi::_game_getNukeDots(g)
     }
 
     pub fn get_start_locations(&self) -> Vec<TilePosition> {
-        let game: &ffi::Game = unsafe { &*self.raw };
-        let xs = ffi::_game_getStartLocations(game);
-        // https://github.com/dtolnay/cxx/issues/855
-        xs.into_iter().map(|p| TilePosition { x: p.x, y: p.y }).collect()
+        let g: &ffi::Game = unsafe { &*self.raw };
+        ffi::_game_getStartLocations(g)
     }
 
     // let ctype = ctype.unwrap_or(CoordinateType::Map);
     pub fn set_text_size(&self, size: TextSize) {
-        let game: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw) };
-        game.setTextSize(size);
+        let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw) };
+        g.setTextSize(size);
     }
     pub fn draw_text(&self, ctype: CoordinateType, x: i32, y: i32, text: &str) {
-        let game: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw) };
-        ffi::_game_drawText(game, ctype, x, y, text);
+        let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw) };
+        ffi::_game_drawText(g, ctype, x, y, text);
     }
     pub fn draw_text_map(&self, x: i32, y: i32, text: &str) {
         self.draw_text(CoordinateType::Map, x, y, text);
     }
     pub fn draw_box(&self, ctype: CoordinateType, left: i32, top: i32, right: i32, bottom: i32, color: Color, is_solid: bool) {
-        let game: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw) };
-        game.drawBox(ctype, left, top, right, bottom, color, is_solid);
+        let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw) };
+        g.drawBox(ctype, left, top, right, bottom, color, is_solid);
     }
     pub fn draw_box_map(&self, left: i32, top: i32, right: i32, bottom: i32, color: Color, is_solid: bool) {
         self.draw_box(CoordinateType::Map, left, top, right, bottom, color, is_solid);
     }
     pub fn draw_triangle(&self, ctype: CoordinateType, ax: i32, ay: i32, bx: i32, by: i32, cx: i32, cy: i32, color: Color, is_solid: bool) {
-        let game: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw) };
-        game.drawTriangle(ctype, ax, ay, bx, by, cx, cy, color, is_solid);
+        let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw) };
+        g.drawTriangle(ctype, ax, ay, bx, by, cx, cy, color, is_solid);
     }
     pub fn draw_triangle_map(&self, ax: i32, ay: i32, bx: i32, by: i32, cx: i32, cy: i32, color: Color, is_solid: bool) {
         self.draw_triangle(CoordinateType::Map, ax, ay, bx, by, cx, cy, color, is_solid);
     }
     pub fn draw_circle(&self, ctype: CoordinateType, x: i32, y: i32, radius: i32, color: Color, is_solid: bool) {
-        let game: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw) };
-        game.drawCircle(ctype, x, y, radius, color, is_solid);
+        let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw) };
+        g.drawCircle(ctype, x, y, radius, color, is_solid);
     }
     pub fn draw_circle_map(&self, x: i32, y: i32, radius: i32, color: Color, is_solid: bool) {
         self.draw_circle(CoordinateType::Map, x, y, radius, color, is_solid);
     }
     pub fn draw_ellipse(&self, ctype: CoordinateType, x: i32, y: i32, xrad: i32, yrad: i32, color: Color, is_solid: bool) {
-        let game: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw) };
-        game.drawEllipse(ctype, x, y, xrad, yrad, color, is_solid);
+        let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw) };
+        g.drawEllipse(ctype, x, y, xrad, yrad, color, is_solid);
     }
     pub fn draw_ellipse_map(&self, x: i32, y: i32, xrad: i32, yrad: i32, color: Color, is_solid: bool) {
         self.draw_ellipse(CoordinateType::Map, x, y, xrad, yrad, color, is_solid);
     }
     pub fn draw_dot(&self, ctype: CoordinateType, x: i32, y: i32, color: Color) {
-        let game: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw) };
-        game.drawDot(ctype, x, y, color);
+        let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw) };
+        g.drawDot(ctype, x, y, color);
     }
     pub fn draw_dot_map(&self, x: i32, y: i32, color: Color) {
         self.draw_dot(CoordinateType::Map, x, y, color);
     }
     pub fn draw_line(&self, ctype: CoordinateType, x1: i32, y1: i32, x2: i32, y2: i32, color: Color) {
-        let game: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw) };
-        game.drawLine(ctype, x1, y1, x2, y2, color);
+        let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw) };
+        g.drawLine(ctype, x1, y1, x2, y2, color);
     }
     pub fn draw_line_map(&self, x1: i32, y1: i32, x2: i32, y2: i32, color: Color) {
         self.draw_line(CoordinateType::Map, x1, y1, x2, y2, color);

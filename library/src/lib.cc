@@ -50,16 +50,15 @@ std::unique_ptr <AIModuleWrapper> createAIModuleWrapper(rust::Box <BoxedAIModule
 }
 
 // region === === DEBUG === ===
-std::unique_ptr<BWAPI::Playerset> _game_debug(const BWAPI::Game &game) {
+void _game_debug(const BWAPI::Game &game) {
     using namespace BWAPI;
-    BWAPI::Game &g = const_cast<BWAPI::Game&>(game);
-    Text::Size::Enum sizes[] = {Text::Size::Enum::Huge, Text::Size::Enum::Large, Text::Size::Enum::Small, Text::Size::Enum::Default};
-    int size = sizeof(sizes)/sizeof(sizes[0]);
-    for (int i = 0; i < size; i++) {
-        g.setTextSize(sizes[i]);
-        g.drawText(CoordinateType::Enum::Map, 1800, 1800 + (i * 50), "Hello, SSCAIT from c++!");
+    Game &g = const_cast<Game&>(game);
+    auto forces = g.getForces();
+    for (auto& force: forces) {
+        std::ostringstream os;
+        os << "force: " << force->getID() << ", " << force->getName();
+        g.sendText(os.str().c_str());
     }
-    return std::unique_ptr<BWAPI::Playerset>();
 }
 
 void _game_debug_fun(const BWAPI::Game &game, UnitFilter fun) {
@@ -102,6 +101,10 @@ std::unique_ptr<UnitsetIterator> createUnitsetIterator(const BWAPI::Unitset &set
     return std::unique_ptr<UnitsetIterator>(new UnitsetIterator(set));
 }
 // endregion
+
+std::unique_ptr<BWAPI::Forceset> _forceset_dummy(const ::BWAPI::Forceset &) {
+    return std::make_unique<BWAPI::Forceset>(BWAPI::Forceset());
+}
 
 std::unique_ptr<BWAPI::Playerset> _forceset_getPlayers(const BWAPI::Forceset &set) {
     return std::make_unique<BWAPI::Playerset>(set.getPlayers());

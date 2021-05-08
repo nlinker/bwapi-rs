@@ -61,6 +61,7 @@ public:
 using UnitFilter = rust::Fn<bool(BWAPI::Unit)>;
 using BestUnitFilter = rust::Fn<BWAPI::Unit(BWAPI::Unit, BWAPI::Unit)>;
 
+std::unique_ptr<BWAPI::Forceset> _forceset_dummy(const ::BWAPI::Forceset &);
 std::unique_ptr<BWAPI::Playerset> _forceset_getPlayers(const BWAPI::Forceset &set);
 
 std::unique_ptr<BWAPI::Unitset> _regionset_getUnits(const BWAPI::Regionset &set, UnitFilter pred);
@@ -78,7 +79,7 @@ bool _unitset_move(const BWAPI::Unitset &set, BWAPI::Position target, bool shift
 std::unique_ptr<std::string> _force_getName(const BWAPI::ForceInterface& force);
 std::unique_ptr<BWAPI::Playerset> _force_getPlayers(const BWAPI::ForceInterface& force);
 
-std::unique_ptr<BWAPI::Playerset> _game_debug(const BWAPI::Game &game);
+void _game_debug(const BWAPI::Game &game);
 void _game_debug_fun(const BWAPI::Game &game, UnitFilter fun);
 BWAPI::UnitInterface *_game_getBestUnit(const BWAPI::Game &game, BestUnitFilter best, UnitFilter pred, BWAPI::Position center, int radius);
 BWAPI::UnitInterface *_game_getClosestUnit(const BWAPI::Game &game, BWAPI::Position center, UnitFilter pred, int radius);

@@ -39,3 +39,16 @@ impl<'a> IntoIterator for &'a Playerset<'a> {
         ForeignIter { iter, marker: PhantomData }
     }
 }
+
+impl Playerset<'_> {
+    pub fn iter(&self) -> ForeignIter<'_, ffi::PlayersetIterator> {
+        self.into_iter()
+    }
+    pub fn len(&self) -> usize {
+        self.iter().size_hint().0
+    }
+
+    // Race::set 	getRaces () const
+    // Unitset 	getUnits () const
+    // void 	setAlliance (bool allies=true, bool alliedVictory=true)
+}

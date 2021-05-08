@@ -139,6 +139,8 @@ pub mod ffi {
 
     // region BWAPI::Forceset
     unsafe extern "C++" {
+        // otherwise the trait `UniquePtrTarget` is not implemented for `ffi::Forceset`
+        fn _forceset_dummy(set: &Forceset) -> UniquePtr<Forceset>;
         fn _forceset_getPlayers(set: &Forceset) -> UniquePtr<Playerset>;
     }
     // endregion
@@ -255,7 +257,7 @@ pub mod ffi {
         #[cxx_name = "TilePosition"]
         type TilePositionSyn;
 
-        fn _game_debug(game: &Game) -> UniquePtr<Playerset>;
+        fn _game_debug(game: &Game);
         fn _game_debug_fun(game: &Game, fun: fn(Unit) -> bool);
         // fn getLastError(self: &Game) -> Error;
 
