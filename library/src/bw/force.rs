@@ -1,7 +1,7 @@
-use crate::{ffi, FromRaw};
 use crate::bw::playerset::Playerset;
-use cxx::UniquePtr;
 use crate::bw::Handle;
+use crate::{ffi, FromRaw};
+use cxx::UniquePtr;
 
 #[derive(Debug)]
 pub struct Force {
@@ -26,6 +26,8 @@ impl Force {
     pub fn get_players(&self) -> Playerset {
         let f: &ffi::ForceInterface = unsafe { &*self.raw };
         let set: UniquePtr<ffi::Playerset> = ffi::_force_getPlayers(f);
-        Playerset { raw: Handle::Owned(set) }
+        Playerset {
+            raw: Handle::Owned(set),
+        }
     }
 }

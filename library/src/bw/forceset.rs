@@ -1,10 +1,10 @@
 use crate::bw::force::Force;
+use crate::bw::playerset::Playerset;
 use crate::bw::{ForeignIter, ForeignIterator, Handle};
 use crate::ffi;
+use std::fmt;
 use std::marker::PhantomData;
 use std::pin::Pin;
-use std::fmt;
-use crate::bw::playerset::Playerset;
 
 pub struct Forceset<'a> {
     pub(crate) raw: Handle<'a, ffi::Forceset>,
@@ -36,7 +36,10 @@ impl<'a> IntoIterator for &'a Forceset<'a> {
     type IntoIter = ForeignIter<'a, Self::Item, ffi::ForcesetIterator>;
     fn into_iter(self) -> Self::IntoIter {
         let iter = ffi::createForcesetIterator(self.raw.underlying());
-        ForeignIter { iter, marker: PhantomData }
+        ForeignIter {
+            iter,
+            marker: PhantomData,
+        }
     }
 }
 
@@ -50,6 +53,8 @@ impl Forceset<'_> {
 
     pub fn get_players(&self) -> Playerset {
         let xs: &ffi::Forceset = self.raw.underlying();
-        Playerset { raw: Handle::Owned(ffi::_forceset_getPlayers(xs)) }
+        Playerset {
+            raw: Handle::Owned(ffi::_forceset_getPlayers(xs)),
+        }
     }
 }

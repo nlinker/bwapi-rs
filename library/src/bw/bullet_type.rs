@@ -46,7 +46,7 @@ pub enum BulletType {
 
     None = 209,
     Unknown,
-    MAX
+    MAX,
 }
 
 // required for ffi layer

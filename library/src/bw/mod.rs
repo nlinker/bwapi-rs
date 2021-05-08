@@ -14,6 +14,7 @@ pub mod client;
 pub mod ai_module;
 pub mod bullet;
 pub mod bullet_type;
+pub mod bulletset;
 pub mod color;
 pub mod coordinate_type;
 pub mod damage_type;
@@ -31,6 +32,8 @@ pub mod player_type;
 pub mod playerset;
 pub mod position;
 pub mod race;
+pub mod region;
+pub mod regionset;
 pub mod tech_type;
 pub mod unit;
 pub mod unit_command;
@@ -69,12 +72,20 @@ pub trait ForeignIterator {
 }
 
 /// `FI` - foreign iterator
-pub struct ForeignIter<'a, T, FI> where T: FromRaw<FI::ForeignItem>, FI: ForeignIterator + UniquePtrTarget {
+pub struct ForeignIter<'a, T, FI>
+where
+    T: FromRaw<FI::ForeignItem>,
+    FI: ForeignIterator + UniquePtrTarget,
+{
     pub(crate) iter: UniquePtr<FI>,
     marker: PhantomData<&'a T>,
 }
 
-impl<'a, T, FI> Iterator for ForeignIter<'a, T, FI> where T: FromRaw<FI::ForeignItem>, FI: ForeignIterator + UniquePtrTarget {
+impl<'a, T, FI> Iterator for ForeignIter<'a, T, FI>
+where
+    T: FromRaw<FI::ForeignItem>,
+    FI: ForeignIterator + UniquePtrTarget,
+{
     type Item = T;
     fn next(&mut self) -> Option<Self::Item> {
         let raw = self.iter.pin_mut().next();

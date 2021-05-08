@@ -102,7 +102,11 @@ std::unique_ptr<UnitsetIterator> createUnitsetIterator(const BWAPI::Unitset &set
 }
 // endregion
 
-std::unique_ptr<BWAPI::Forceset> _forceset_dummy(const ::BWAPI::Forceset &) {
+std::unique_ptr<BWAPI::Bulletset> _bulletset_dummy(const BWAPI::Bulletset &) {
+    return std::make_unique<BWAPI::Bulletset>(BWAPI::Bulletset());
+}
+
+std::unique_ptr<BWAPI::Forceset> _forceset_dummy(const BWAPI::Forceset &) {
     return std::make_unique<BWAPI::Forceset>(BWAPI::Forceset());
 }
 
@@ -110,6 +114,9 @@ std::unique_ptr<BWAPI::Playerset> _forceset_getPlayers(const BWAPI::Forceset &se
     return std::make_unique<BWAPI::Playerset>(set.getPlayers());
 }
 
+std::unique_ptr<BWAPI::Regionset> _regionset_dummy(const BWAPI::Regionset &) {
+    return std::make_unique<BWAPI::Regionset>(BWAPI::Regionset());
+}
 std::unique_ptr<BWAPI::Unitset> _regionset_getUnits(const BWAPI::Regionset &set, UnitFilter pred) {
     return std::make_unique<BWAPI::Unitset>(set.getUnits(nullptr /*todo*/));
 }

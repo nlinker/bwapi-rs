@@ -193,7 +193,7 @@ pub enum Order {
     Fatal,
     None,
     Unknown,
-    MAX
+    MAX,
 }
 
 // required for ffi layer

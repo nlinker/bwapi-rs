@@ -9,7 +9,7 @@ pub enum DamageType {
     Ignore_Armor,
     None,
     Unknown,
-    MAX
+    MAX,
 }
 
 // required for ffi layer

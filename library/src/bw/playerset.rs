@@ -1,9 +1,9 @@
 use crate::bw::player::Player;
 use crate::bw::{ForeignIter, ForeignIterator, Handle};
 use crate::ffi;
+use std::fmt;
 use std::marker::PhantomData;
 use std::pin::Pin;
-use std::fmt;
 
 pub struct Playerset<'a> {
     pub(crate) raw: Handle<'a, ffi::Playerset>,
@@ -35,7 +35,10 @@ impl<'a> IntoIterator for &'a Playerset<'a> {
     type IntoIter = ForeignIter<'a, Self::Item, ffi::PlayersetIterator>;
     fn into_iter(self) -> Self::IntoIter {
         let iter = ffi::createPlayersetIterator(self.raw.underlying());
-        ForeignIter { iter, marker: PhantomData }
+        ForeignIter {
+            iter,
+            marker: PhantomData,
+        }
     }
 }
 

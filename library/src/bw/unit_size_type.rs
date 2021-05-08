@@ -8,7 +8,7 @@ pub enum UnitSizeType {
     Large,
     None,
     Unknown,
-    MAX
+    MAX,
 }
 
 // required for ffi layer

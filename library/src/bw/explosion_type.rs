@@ -28,7 +28,7 @@ pub enum ExplosionType {
     Unused,
     Air_Splash,
     Unknown,
-    MAX
+    MAX,
 }
 
 // required for ffi layer

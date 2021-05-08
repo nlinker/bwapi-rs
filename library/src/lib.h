@@ -61,9 +61,12 @@ public:
 using UnitFilter = rust::Fn<bool(BWAPI::Unit)>;
 using BestUnitFilter = rust::Fn<BWAPI::Unit(BWAPI::Unit, BWAPI::Unit)>;
 
-std::unique_ptr<BWAPI::Forceset> _forceset_dummy(const ::BWAPI::Forceset &);
+std::unique_ptr<BWAPI::Bulletset> _bulletset_dummy(const BWAPI::Bulletset &);
+
+std::unique_ptr<BWAPI::Forceset> _forceset_dummy(const BWAPI::Forceset &);
 std::unique_ptr<BWAPI::Playerset> _forceset_getPlayers(const BWAPI::Forceset &set);
 
+std::unique_ptr<BWAPI::Regionset> _regionset_dummy(const BWAPI::Regionset &);
 std::unique_ptr<BWAPI::Unitset> _regionset_getUnits(const BWAPI::Regionset &set, UnitFilter pred);
 
 rust::Vec<BWAPI::Race> _playerset_getRaces(const BWAPI::Playerset &set);

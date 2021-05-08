@@ -1,10 +1,12 @@
 use crate::bw::{ForeignIter, ForeignIterator, Handle};
 use crate::ffi::c_void;
-use crate::{bw::position::Position, bw::position::TilePosition, bw::tech_type::TechType, bw::unit::Unit, bw::unit_command::UnitCommand, bw::unit_filter::UnitFilter, bw::unit_type::UnitType};
+use crate::{
+    bw::position::Position, bw::position::TilePosition, bw::tech_type::TechType, bw::unit::Unit,
+    bw::unit_command::UnitCommand, bw::unit_filter::UnitFilter, bw::unit_type::UnitType,
+};
 use crate::{ffi, FromRaw};
 use std::marker::PhantomData;
 use std::pin::Pin;
-
 
 pub struct Unitset<'a> {
     pub(crate) raw: Handle<'a, ffi::Unitset>,
@@ -26,7 +28,10 @@ impl<'a> IntoIterator for &'a Unitset<'a> {
     type IntoIter = ForeignIter<'a, Self::Item, ffi::UnitsetIterator>;
     fn into_iter(self) -> Self::IntoIter {
         let iter = ffi::createUnitsetIterator(self.raw.underlying());
-        ForeignIter { iter, marker: PhantomData }
+        ForeignIter {
+            iter,
+            marker: PhantomData,
+        }
     }
 }
 
@@ -44,15 +49,21 @@ impl Unitset<'_> {
     }
     pub fn get_interceptors(&self) -> Unitset {
         let xs: &ffi::Unitset = self.raw.underlying();
-        Unitset { raw: Handle::Owned(ffi::_unitset_getInterceptors(xs)) }
+        Unitset {
+            raw: Handle::Owned(ffi::_unitset_getInterceptors(xs)),
+        }
     }
     pub fn get_larva(&self) -> Unitset {
         let xs: &ffi::Unitset = self.raw.underlying();
-        Unitset { raw: Handle::Owned(ffi::_unitset_getLarva(xs)) }
+        Unitset {
+            raw: Handle::Owned(ffi::_unitset_getLarva(xs)),
+        }
     }
     pub fn get_loaded_units(&self) -> Unitset {
         let xs: &ffi::Unitset = self.raw.underlying();
-        Unitset { raw: Handle::Owned(ffi::_unitset_getLoadedUnits(xs)) }
+        Unitset {
+            raw: Handle::Owned(ffi::_unitset_getLoadedUnits(xs)),
+        }
     }
     pub fn get_position(&self) -> Position {
         let xs: &ffi::Unitset = self.raw.underlying();
@@ -60,7 +71,9 @@ impl Unitset<'_> {
     }
     pub fn get_units_in_radius(&self, radius: i32, pred: UnitFilter) -> Unitset {
         let xs: &ffi::Unitset = self.raw.underlying();
-        Unitset { raw: Handle::Owned(ffi::_unitset_getUnitsInRadius(xs, radius, pred)) }
+        Unitset {
+            raw: Handle::Owned(ffi::_unitset_getUnitsInRadius(xs, radius, pred)),
+        }
     }
     pub fn set_client_info(&self, client_info: *mut c_void, index: i32) {
         let xs: &ffi::Unitset = self.raw.underlying();

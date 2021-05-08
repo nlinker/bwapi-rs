@@ -44,8 +44,8 @@ pub mod ffi {
     #[namespace = "BWAPI"]
     unsafe extern "C++" {
         include!("library/openbw/include/BWAPI.h");
-        pub fn BWAPI_getRevision() -> i32;
-        pub fn BWAPI_isDebug() -> bool;
+        fn BWAPI_getRevision() -> i32;
+        fn BWAPI_isDebug() -> bool;
 
         pub type BulletInterface;
         pub type ForceInterface;
@@ -56,18 +56,18 @@ pub mod ffi {
         pub type UnitInterface;
 
         #[namespace = ""]
-        pub type EventList;
+        type EventList;
 
         pub type Error;
 
         type Unit;
         type UnitFilter;
 
-        pub type Bulletset;
-        pub type Forceset;
-        pub type Playerset;
-        pub type Regionset;
-        pub type Unitset;
+        type Bulletset;
+        type Forceset;
+        type Playerset;
+        type Regionset;
+        type Unitset;
 
         #[namespace = "BWAPI::CoordinateType"]
         #[cxx_name = "Enum"]
@@ -111,31 +111,37 @@ pub mod ffi {
         // unfortunately we have to create our type: https://github.com/dtolnay/cxx/issues/796
         pub type c_void;
 
-        pub type BulletsetIterator;
-        pub fn next(self: Pin<&mut BulletsetIterator>) -> *const BulletInterface;
-        pub fn sizeHint(self: &BulletsetIterator) -> usize;
-        pub fn createBulletsetIterator(set: &Bulletset) -> UniquePtr<BulletsetIterator>;
+        type BulletsetIterator;
+        fn next(self: Pin<&mut BulletsetIterator>) -> *const BulletInterface;
+        fn sizeHint(self: &BulletsetIterator) -> usize;
+        fn createBulletsetIterator(set: &Bulletset) -> UniquePtr<BulletsetIterator>;
 
-        pub type ForcesetIterator;
-        pub fn next(self: Pin<&mut ForcesetIterator>) -> *const ForceInterface;
-        pub fn sizeHint(self: &ForcesetIterator) -> usize;
-        pub fn createForcesetIterator(set: &Forceset) -> UniquePtr<ForcesetIterator>;
+        type ForcesetIterator;
+        fn next(self: Pin<&mut ForcesetIterator>) -> *const ForceInterface;
+        fn sizeHint(self: &ForcesetIterator) -> usize;
+        fn createForcesetIterator(set: &Forceset) -> UniquePtr<ForcesetIterator>;
 
-        pub type PlayersetIterator;
-        pub fn next(self: Pin<&mut PlayersetIterator>) -> *const PlayerInterface;
-        pub fn sizeHint(self: &PlayersetIterator) -> usize;
-        pub fn createPlayersetIterator(set: &Playerset) -> UniquePtr<PlayersetIterator>;
+        type PlayersetIterator;
+        fn next(self: Pin<&mut PlayersetIterator>) -> *const PlayerInterface;
+        fn sizeHint(self: &PlayersetIterator) -> usize;
+        fn createPlayersetIterator(set: &Playerset) -> UniquePtr<PlayersetIterator>;
 
-        pub type UnitsetIterator;
-        pub fn next(self: Pin<&mut UnitsetIterator>) -> *const UnitInterface;
-        pub fn sizeHint(self: &UnitsetIterator) -> usize;
-        pub fn createRegionsetIterator(set: &Regionset) -> UniquePtr<RegionsetIterator>;
+        type UnitsetIterator;
+        fn next(self: Pin<&mut UnitsetIterator>) -> *const UnitInterface;
+        fn sizeHint(self: &UnitsetIterator) -> usize;
+        fn createRegionsetIterator(set: &Regionset) -> UniquePtr<RegionsetIterator>;
 
-        pub type RegionsetIterator;
-        pub fn next(self: Pin<&mut RegionsetIterator>) -> *const RegionInterface;
-        pub fn sizeHint(self: &RegionsetIterator) -> usize;
-        pub fn createUnitsetIterator(set: &Unitset) -> UniquePtr<UnitsetIterator>;
+        type RegionsetIterator;
+        fn next(self: Pin<&mut RegionsetIterator>) -> *const RegionInterface;
+        fn sizeHint(self: &RegionsetIterator) -> usize;
+        fn createUnitsetIterator(set: &Unitset) -> UniquePtr<UnitsetIterator>;
     }
+
+    // region BWAPI::Bulletset
+    unsafe extern "C++" {
+        fn _bulletset_dummy(set: &Bulletset) -> UniquePtr<Bulletset>;
+    }
+    // endregion
 
     // region BWAPI::Forceset
     unsafe extern "C++" {
@@ -155,6 +161,7 @@ pub mod ffi {
 
     // region BWAPI::Regionset
     unsafe extern "C++" {
+        fn _regionset_dummy(set: &Regionset) -> UniquePtr<Regionset>;
         fn getCenter (self: &Regionset) -> Position;
         fn _regionset_getUnits(set: &Regionset, pred: fn(Unit) -> bool) -> UniquePtr<Unitset>;
     }
@@ -859,7 +866,6 @@ pub mod ffi {
     impl Vec<TilePosition> {}
     impl Vec<UnitType> {}
     impl Vec<Race> {}
-
 } // pub mod ffi
 
 //region ----------- Shims to the bw::ai_module::AIModule trait ------------
