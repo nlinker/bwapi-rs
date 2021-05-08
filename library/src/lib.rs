@@ -136,6 +136,12 @@ pub mod ffi {
         pub fn createUnitsetIterator(set: &Unitset) -> UniquePtr<UnitsetIterator>;
     }
 
+    // region BWAPI::Forceset
+    unsafe extern "C++" {
+        fn _forceset_getPlayers(set: &Forceset) -> UniquePtr<Playerset>;
+    }
+    // endregion
+
     // region BWAPI::Playerset
     unsafe extern "C++" {
         fn _playerset_getRaces(set: &Playerset) -> Vec<Race>;

@@ -103,6 +103,10 @@ std::unique_ptr<UnitsetIterator> createUnitsetIterator(const BWAPI::Unitset &set
 }
 // endregion
 
+std::unique_ptr<BWAPI::Playerset> _forceset_getPlayers(const BWAPI::Forceset &set) {
+    return std::make_unique<BWAPI::Playerset>(set.getPlayers());
+}
+
 // region === === Playerset === ===
 rust::Vec<BWAPI::Race> _playerset_getRaces(const BWAPI::Playerset &set) {
     auto races = set.getRaces();
