@@ -246,6 +246,7 @@ unsafe impl cxx::ExternType for UnitType {
     type Kind = cxx::kind::Trivial;
 }
 
+// todo
 // const UnitType::set & 	allMacroTypes ()
 // const UnitType::set & 	allUnitTypes ()
 // int 	maxUnitHeight ()

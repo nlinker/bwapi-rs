@@ -12,6 +12,7 @@ use std::sync::{Arc, Mutex};
 pub mod client;
 
 pub mod ai_module;
+pub mod bullet;
 pub mod bullet_type;
 pub mod color;
 pub mod coordinate_type;

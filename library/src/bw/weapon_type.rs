@@ -124,6 +124,7 @@ unsafe impl cxx::ExternType for WeaponType {
     type Kind = cxx::kind::Trivial;
 }
 
+// todo
 // const WeaponType::set & 	allWeaponTypes ()
 // const WeaponType::set & 	normalWeaponTypes ()
 // const WeaponType::set & 	specialWeaponTypes ()
