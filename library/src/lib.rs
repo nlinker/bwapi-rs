@@ -40,8 +40,6 @@ pub trait FromRaw<T> {
 #[allow(non_snake_case)]
 #[cxx::bridge]
 pub mod ffi {
-
-    // https://github.com/dtolnay/cxx/issues/855
     #[derive(Debug, Copy, Clone)]
     struct PositionSyn {
         x: i32,
@@ -149,12 +147,6 @@ pub mod ffi {
         pub fn next(self: Pin<&mut RegionsetIterator>) -> *const RegionInterface;
         pub fn sizeHint(self: &RegionsetIterator) -> usize;
         pub fn createUnitsetIterator(set: &Unitset) -> UniquePtr<UnitsetIterator>;
-
-        // helpers so far, unit api is coming
-        pub unsafe fn Unit_getId(unit: *const UnitInterface) -> i32;
-        pub unsafe fn Unit_getType(unit: *const UnitInterface) -> UnitType;
-        pub unsafe fn Unit_getPosition(unit: *const UnitInterface) -> Position;
-
     }
 
     // region BWAPI::BulletInterface
@@ -612,7 +604,7 @@ pub mod ffi {
         fn setRallyPointP(self: Pin<&mut UnitInterface>, target: Position) -> bool;
         #[cxx_name = "setRallyPoint"]
         unsafe fn setRallyPointU(self: Pin<&mut UnitInterface>, target: *mut UnitInterface) -> bool;
-        fn _unit_move(unit: &UnitInterface, target: Position, shiftQueueCommand: bool) -> bool;
+        fn _unit_move(unit: Pin<&mut UnitInterface>, target: Position, shiftQueueCommand: bool) -> bool;
         fn patrol(self: Pin<&mut UnitInterface>, target: Position, shiftQueueCommand: bool) -> bool;
         fn holdPosition(self: Pin<&mut UnitInterface>, shiftQueueCommand: bool) -> bool;
         fn stop(self: Pin<&mut UnitInterface>, shiftQueueCommand: bool) -> bool;
@@ -850,6 +842,10 @@ pub mod ffi {
         unsafe fn on_save_game(wrapper: Pin<&mut AIModuleWrapper>, game_name: &CxxString);
         unsafe fn on_unit_complete(wrapper: Pin<&mut AIModuleWrapper>, unit: *const UnitInterface);
     }
+
+    // https://github.com/dtolnay/cxx/issues/855
+    impl Vec<UnitType> {}
+
 } // pub mod ffi
 
 //region ----------- Shims to the bw::ai_module::AIModule trait ------------

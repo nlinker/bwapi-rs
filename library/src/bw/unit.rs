@@ -16,12 +16,12 @@ impl FromRaw<ffi::UnitInterface> for Unit {
 
 impl Unit {
     pub fn get_id(&self) -> i32 {
-        unsafe { ffi::Unit_getId(self.raw) }
+        unsafe { (*self.raw).getID() }
     }
     pub fn get_type(&self) -> UnitType {
-        unsafe { ffi::Unit_getType(self.raw) }
+        unsafe { (*self.raw).getType() }
     }
     pub fn get_position(&self) -> Position {
-        unsafe { ffi::Unit_getPosition(self.raw) }
+        unsafe { (*self.raw).getPosition() }
     }
 }
