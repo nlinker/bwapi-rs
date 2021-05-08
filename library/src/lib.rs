@@ -3,6 +3,7 @@
 pub mod bw;
 pub mod prelude;
 mod sys;
+mod bwlib;
 
 use crate::prelude::{AIModule, BoxedAIModule, Event, Game, GAME};
 use cxx::CxxString;
@@ -855,6 +856,7 @@ pub mod ffi {
     impl Vec<Position> {}
     impl Vec<TilePosition> {}
     impl Vec<UnitType> {}
+    impl Vec<Race> {}
 
 } // pub mod ffi
 

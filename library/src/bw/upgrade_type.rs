@@ -59,8 +59,8 @@ pub enum UpgradeType {
 
     Upgrade_60 = 60,
     None = 61,
-    Unknown,
-    MAX,
+    Unknown = 62,
+    MAX = 63,
 }
 
 // required for ffi layer
