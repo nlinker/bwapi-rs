@@ -123,3 +123,7 @@ unsafe impl cxx::ExternType for WeaponType {
     type Id = cxx::type_id!("BWAPI::WeaponType");
     type Kind = cxx::kind::Trivial;
 }
+
+// const WeaponType::set & 	allWeaponTypes ()
+// const WeaponType::set & 	normalWeaponTypes ()
+// const WeaponType::set & 	specialWeaponTypes ()

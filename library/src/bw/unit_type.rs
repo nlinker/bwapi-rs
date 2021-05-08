@@ -245,3 +245,8 @@ unsafe impl cxx::ExternType for UnitType {
     type Id = cxx::type_id!("BWAPI::UnitType");
     type Kind = cxx::kind::Trivial;
 }
+
+// const UnitType::set & 	allMacroTypes ()
+// const UnitType::set & 	allUnitTypes ()
+// int 	maxUnitHeight ()
+// int 	maxUnitWidth ()

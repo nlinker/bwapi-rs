@@ -83,23 +83,23 @@ void _game_debug_fun(const BWAPI::Game &game, UnitFilter fun) {
 
 // region === === Iterators === ===
 std::unique_ptr<BulletsetIterator> createBulletsetIterator(const BWAPI::Bulletset &set) {
-    return std::unique_ptr<BulletsetIterator>(new BulletsetIteratorRef(set));
+    return std::unique_ptr<BulletsetIterator>(new BulletsetIterator(set));
 }
 
 std::unique_ptr<ForcesetIterator> createForcesetIterator(const BWAPI::Forceset &set) {
-    return std::unique_ptr<ForcesetIterator>(new ForcesetIteratorRef(set));
+    return std::unique_ptr<ForcesetIterator>(new ForcesetIterator(set));
 }
 
 std::unique_ptr<PlayersetIterator> createPlayersetIterator(const BWAPI::Playerset &set) {
-    return std::unique_ptr<PlayersetIterator>(new PlayersetIteratorRef(set));
+    return std::unique_ptr<PlayersetIterator>(new PlayersetIterator(set));
 }
 
 std::unique_ptr<RegionsetIterator> createRegionsetIterator(const BWAPI::Regionset &set) {
-    return std::unique_ptr<RegionsetIterator>(new RegionsetIteratorRef(set));
+    return std::unique_ptr<RegionsetIterator>(new RegionsetIterator(set));
 }
 
 std::unique_ptr<UnitsetIterator> createUnitsetIterator(const BWAPI::Unitset &set) {
-    return std::unique_ptr<UnitsetIterator>(new UnitsetIteratorRef(set));
+    return std::unique_ptr<UnitsetIterator>(new UnitsetIterator(set));
 }
 // endregion
 
