@@ -64,19 +64,18 @@ impl<'a, FC: UniquePtrTarget> Handle<'a, FC> {
 
 pub trait ForeignIterator {
     type ForeignItem;
-    type TargetItem: FromRaw<Self::ForeignItem>;
     fn next(self: Pin<&mut Self>) -> *const Self::ForeignItem;
     fn size_hint(&self) -> (usize, Option<usize>);
 }
 
 /// `FI` - foreign iterator
-pub struct ForeignIter<'a, FI: ForeignIterator + UniquePtrTarget> {
+pub struct ForeignIter<'a, T, FI> where T: FromRaw<FI::ForeignItem>, FI: ForeignIterator + UniquePtrTarget {
     pub(crate) iter: UniquePtr<FI>,
-    marker: PhantomData<&'a FI>,
+    marker: PhantomData<&'a T>,
 }
 
-impl<'a, FI: ForeignIterator + UniquePtrTarget> Iterator for ForeignIter<'a, FI> {
-    type Item = FI::TargetItem;
+impl<'a, T, FI> Iterator for ForeignIter<'a, T, FI> where T: FromRaw<FI::ForeignItem>, FI: ForeignIterator + UniquePtrTarget {
+    type Item = T;
     fn next(&mut self) -> Option<Self::Item> {
         let raw = self.iter.pin_mut().next();
         if raw != null() {

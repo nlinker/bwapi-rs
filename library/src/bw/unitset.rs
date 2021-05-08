@@ -12,7 +12,6 @@ pub struct Unitset<'a> {
 
 impl ForeignIterator for ffi::UnitsetIterator {
     type ForeignItem = ffi::UnitInterface;
-    type TargetItem = Unit;
     fn next(self: Pin<&mut Self>) -> *const Self::ForeignItem {
         self.next() // ffi call
     }
@@ -24,7 +23,7 @@ impl ForeignIterator for ffi::UnitsetIterator {
 
 impl<'a> IntoIterator for &'a Unitset<'a> {
     type Item = Unit;
-    type IntoIter = ForeignIter<'a, ffi::UnitsetIterator>;
+    type IntoIter = ForeignIter<'a, Self::Item, ffi::UnitsetIterator>;
     fn into_iter(self) -> Self::IntoIter {
         let iter = ffi::createUnitsetIterator(self.raw.underlying());
         ForeignIter { iter, marker: PhantomData }
@@ -32,7 +31,7 @@ impl<'a> IntoIterator for &'a Unitset<'a> {
 }
 
 impl Unitset<'_> {
-    pub fn iter(&self) -> ForeignIter<'_, ffi::UnitsetIterator> {
+    pub fn iter(&self) -> ForeignIter<'_, Unit, ffi::UnitsetIterator> {
         self.into_iter()
     }
     pub fn len(&self) -> usize {

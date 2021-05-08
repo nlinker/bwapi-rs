@@ -22,7 +22,6 @@ impl fmt::Debug for Forceset<'_> {
 
 impl ForeignIterator for ffi::ForcesetIterator {
     type ForeignItem = ffi::ForceInterface;
-    type TargetItem = Force;
     fn next(self: Pin<&mut Self>) -> *const Self::ForeignItem {
         self.next() // ffi call
     }
@@ -34,7 +33,7 @@ impl ForeignIterator for ffi::ForcesetIterator {
 
 impl<'a> IntoIterator for &'a Forceset<'a> {
     type Item = Force;
-    type IntoIter = ForeignIter<'a, ffi::ForcesetIterator>;
+    type IntoIter = ForeignIter<'a, Self::Item, ffi::ForcesetIterator>;
     fn into_iter(self) -> Self::IntoIter {
         let iter = ffi::createForcesetIterator(self.raw.underlying());
         ForeignIter { iter, marker: PhantomData }
@@ -42,7 +41,7 @@ impl<'a> IntoIterator for &'a Forceset<'a> {
 }
 
 impl Forceset<'_> {
-    pub fn iter(&self) -> ForeignIter<'_, ffi::ForcesetIterator> {
+    pub fn iter(&self) -> ForeignIter<'_, Force, ffi::ForcesetIterator> {
         self.into_iter()
     }
     pub fn len(&self) -> usize {

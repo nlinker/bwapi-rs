@@ -21,7 +21,6 @@ impl fmt::Debug for Playerset<'_> {
 
 impl ForeignIterator for ffi::PlayersetIterator {
     type ForeignItem = ffi::PlayerInterface;
-    type TargetItem = Player;
     fn next(self: Pin<&mut Self>) -> *const Self::ForeignItem {
         self.next() // ffi call
     }
@@ -33,7 +32,7 @@ impl ForeignIterator for ffi::PlayersetIterator {
 
 impl<'a> IntoIterator for &'a Playerset<'a> {
     type Item = Player;
-    type IntoIter = ForeignIter<'a, ffi::PlayersetIterator>;
+    type IntoIter = ForeignIter<'a, Self::Item, ffi::PlayersetIterator>;
     fn into_iter(self) -> Self::IntoIter {
         let iter = ffi::createPlayersetIterator(self.raw.underlying());
         ForeignIter { iter, marker: PhantomData }
@@ -41,7 +40,7 @@ impl<'a> IntoIterator for &'a Playerset<'a> {
 }
 
 impl Playerset<'_> {
-    pub fn iter(&self) -> ForeignIter<'_, ffi::PlayersetIterator> {
+    pub fn iter(&self) -> ForeignIter<'_, Player, ffi::PlayersetIterator> {
         self.into_iter()
     }
     pub fn len(&self) -> usize {
