@@ -107,6 +107,10 @@ std::unique_ptr<BWAPI::Playerset> _forceset_getPlayers(const BWAPI::Forceset &se
     return std::make_unique<BWAPI::Playerset>(set.getPlayers());
 }
 
+std::unique_ptr<BWAPI::Unitset> _regionset_getUnits(const BWAPI::Regionset &set, UnitFilter pred) {
+    return std::make_unique<BWAPI::Unitset>(set.getUnits(nullptr /*todo*/));
+}
+
 // region === === Playerset === ===
 rust::Vec<BWAPI::Race> _playerset_getRaces(const BWAPI::Playerset &set) {
     auto races = set.getRaces();

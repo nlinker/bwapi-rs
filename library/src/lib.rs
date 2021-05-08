@@ -150,6 +150,13 @@ pub mod ffi {
     }
     // endregion
 
+    // region BWAPI::Regionset
+    unsafe extern "C++" {
+        fn getCenter (self: &Regionset) -> Position;
+        fn _regionset_getUnits(set: &Regionset, pred: fn(Unit) -> bool) -> UniquePtr<Unitset>;
+    }
+    // endregion
+
     // region BWAPI::Unitset
     unsafe extern "C++" {
     fn _unitset_getClosestUnit(set: &Unitset, pred: fn(Unit) -> bool, radius: i32) -> *const UnitInterface;
