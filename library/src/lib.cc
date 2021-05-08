@@ -49,8 +49,7 @@ std::unique_ptr <AIModuleWrapper> createAIModuleWrapper(rust::Box <BoxedAIModule
     return std::unique_ptr<AIModuleWrapper>(new AIModuleWrapper(box.into_raw()));
 }
 
-// region === === DEBUG === ===
-void _game_debug(const BWAPI::Game &game) {
+void _game_debug(const BWAPI::Game &game, UnitFilter fun) {
     using namespace BWAPI;
     Game &g = const_cast<Game&>(game);
     auto forces = g.getForces();
@@ -60,25 +59,6 @@ void _game_debug(const BWAPI::Game &game) {
         g.sendText(os.str().c_str());
     }
 }
-
-void _game_debug_fun(const BWAPI::Game &game, UnitFilter fun) {
-    BWAPI::Game &g = const_cast<BWAPI::Game&>(game);
-    const BWAPI::UnitFilter &pred = nullptr;
-    auto left = 100;
-    auto right = 1000;
-    auto top = 100;
-    auto bottom = 1000;
-    BWAPI::Unitset set = g.getUnitsInRectangle(left, top, right, bottom, pred);
-    //for (auto &p : set) {
-    //    std::ostringstream os;
-    //    os << "raw: " << p << "id:" << p->getID() << " type:" << p->getType() << " position:" << p->getPosition();
-    //    g.sendText(os.str().c_str());
-    //}
-    //std::ostringstream os;
-    //os << "sizeof(UnitCommand) = " << sizeof(BWAPI::UnitCommand);
-    //g.sendText(os.str().c_str());
-}
-// endregion
 
 // region === === Iterators === ===
 std::unique_ptr<BulletsetIterator> createBulletsetIterator(const BWAPI::Bulletset &set) {

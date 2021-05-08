@@ -16,6 +16,7 @@ use crate::bw::Handle;
 use crate::{ffi, FromRaw};
 use cxx::UniquePtr;
 use std::pin::Pin;
+use crate::ffi::UnitInterface;
 
 #[derive(Debug)]
 pub struct Game {
@@ -29,8 +30,55 @@ impl Unpin for Game {}
 unsafe impl Send for Game {}
 
 impl Game {
-    pub fn debug(&self) {
-        unsafe { ffi::_game_debug(&*self.raw) };
+    /// ```rust
+    ///    use library::bw::game::Game;
+    ///    use library::ffi::UnitInterface;
+    ///    pub fn _game_debug(game: &Game, fun: fn(arg0: *mut UnitInterface) -> bool) {
+    ///        extern "C" {
+    ///            #[link_name = "cxxbridge1$_game_debug"]
+    ///            fn ___game_debug(game: &Game, fun: ::cxx::private::FatFunction);
+    ///        }
+    ///        let fun = ::cxx::private::FatFunction {
+    ///            trampoline: {
+    ///                extern "C" {
+    ///                    #[link_name = "cxxbridge1$_game_debug$fun$0"]
+    ///                    fn trampoline();
+    ///                }
+    ///                #[doc(hidden)]
+    ///                #[export_name = "cxxbridge1$_game_debug$fun$1"]
+    ///                unsafe extern "C" fn __(arg0: *mut UnitInterface, __extern: *const ()) -> bool {
+    ///                    let __fn = "library::ffi::_game_debug::fun";
+    ///                    ::cxx::private::catch_unwind(__fn, move || {
+    ///                        ::std::mem::transmute::<*const (), fn(arg0: *mut UnitInterface) -> bool>(
+    ///                            __extern,
+    ///                        )(arg0)
+    ///                    })
+    ///                }
+    ///                trampoline as usize as *const ()
+    ///            },
+    ///            ptr: fun as usize as *const (),
+    ///        };
+    ///        unsafe { ___game_debug(game, fun) }
+    ///    }
+    /// ```
+    pub fn debug(&self, f: fn(Unit) -> bool) {
+        let g: &ffi::Game = unsafe { &*self.raw };
+
+        // let f_untyped = &f as *const _ as *mut ffi::c_void;
+        // let f_plus: fn(*mut UnitInterface) -> bool = |u| f(unsafe { Unit::from_raw(u) });
+        // unsafe {
+        //     ffi::_game_debug(g, f_plus);
+        // }
+        //
+        // // Shim interface function
+        // fn do_thing_wrapper<F>(unit: *mut ffi::UnitInterface) -> bool
+        //     where F: Fn(*mut ffi::UnitInterface) -> bool {
+        //     let opt_closure = closure as *mut Option<F>;
+        //     unsafe {
+        //         let res = (*opt_closure).take().unwrap()(unit);
+        //         return res as bool;
+        //     }
+        // }
     }
 
     pub fn allies(&self) -> Playerset {
@@ -98,7 +146,11 @@ impl Game {
         let g: &ffi::Game = unsafe { &*self.raw };
         g.getAverageFPS()
     }
-    // pub fn get_best_unit(&self) { let g: &ffi::Game = unsafe { &*self.raw }; ffi::_game_getBestUnit(g) }                                                           //                    (game: &Game, best: fn(Unit, Unit) -> Unit, pred: fn(Unit) -> bool, center: Position, radius: i32) -> *mut UnitInterface; /
+    // pub fn get_best_unit(&self, best_fn: fn(Unit, Unit) -> Unit, predicate_fn: fn(Unit) -> bool, center: Position, radius: i32) -> Unit {
+    //     let g: &ffi::Game = unsafe { &*self.raw };
+    //     unsafe { Unit::from_raw(ffi::_game_getBestUnit(g, best_fn, predicate_fn, center, radius)) }
+    // }
+
     // pub fn get_build_location(&self) let g: &ffi::Game = unsafe { &*self.raw };  { g.getBuildLocation() }                                                          //            (self: &Game, unitType: UnitType, desiredPosition: TilePosition, maxRange: i32, creep: bool) -> TilePosition
     // pub fn get_bullets(&self) { let g: &ffi::Game = unsafe { &*self.raw }; g.getBullets()  }                                                                       //                    (self: &Game) -> &Bulletset
     // pub fn get_client_version(&self) let g: &ffi::Game = unsafe { &*self.raw };  { g.getClientVersion() }                                                          //            (self: &Game) -> i32
@@ -210,7 +262,7 @@ impl Game {
     }
     pub fn get_units_in_radius(&self, position: Position, radius: i32, pred: UnitFilter) -> Unitset {
         let g: &ffi::Game = unsafe { &*self.raw };
-        let set: UniquePtr<ffi::Unitset> = ffi::_game_getUnitsInRadius(g, position, radius, pred);
+        let set: UniquePtr<ffi::Unitset> = ffi::_game_getUnitsInRadius(g, position, radius, |_| true); // todo
         Unitset {
             raw: Handle::Owned(set),
         }

@@ -62,9 +62,13 @@ TODO
    The same is for `move_`.
 2. Many overloaded methods "compressed" to one the most general method, since Rust 
    has the only overloading on traits. Others has suffixes.
+3. `Bulletset`, `Forceset`, `Playerset`, `Regionset` and `Unitset` are not sets themselves, but
+   have instead `iter()` method, that return standard Rust iterator.
 
 
 ## Development small tasks
+
+- Quick convert C++ code snippets into Rust: https://c2rust.com/
 
 - Remove CRLFs from BWAPI include header files
   ```shell
@@ -83,18 +87,11 @@ TODO
   cmake --build . --target clean
   ```
 
-- Regex to swap C++ arguments to Rusty style
-  1. `(\w+)\s+(\w+)\s+\(\)` => `fn $2() -> $1;`
-  2. `(\w+)\s+(\w+)\s+\((\w+) (\w+)\)` => `fn $2($4: $3) -> $1;` 
-  3. `(\w+)\s+(\w+)\s+\((\w+) (\w+), (\w+) (\w+)\)` => `fn $2($4: $3, $6: $5) -> $1;` 
-  and so on. As an example, it replaces
-  - `bool hasUnitTypeRequirement (UnitType unit, int amount)`
-  - to `fn getBestUnit(best: const BestUnitFilter, pred: const UnitFilter, center: Position, radius: int) -> Unit`
-  
-
 ### Useful links
 
 - Pretty complex `build.rs` to learn from: https://github.com/alexcrichton/curl-rust/blob/master/curl-sys/build.rs
+- Excellently described question and answers on passing Rust closures into C, useful for `UnitFilter`s: 
+  [Stateful closure as FFI callback](https://users.rust-lang.org/t/stateful-closure-for-ffi-callback/29339)
 
 ### Thanks
 

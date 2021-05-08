@@ -1,4 +1,3 @@
-use crate::bw::playerset::Playerset;
 use crate::bw::region::Region;
 use crate::bw::{ForeignIter, ForeignIterator, Handle};
 use crate::ffi;

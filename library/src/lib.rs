@@ -47,6 +47,8 @@ pub mod ffi {
         fn BWAPI_getRevision() -> i32;
         fn BWAPI_isDebug() -> bool;
 
+        pub type Unit;
+
         pub type BulletInterface;
         pub type ForceInterface;
         pub type Game;
@@ -59,9 +61,6 @@ pub mod ffi {
         type EventList;
 
         pub type Error;
-
-        type Unit;
-        type UnitFilter;
 
         type Bulletset;
         type Forceset;
@@ -163,70 +162,70 @@ pub mod ffi {
     unsafe extern "C++" {
         fn _regionset_dummy(set: &Regionset) -> UniquePtr<Regionset>;
         fn getCenter (self: &Regionset) -> Position;
-        fn _regionset_getUnits(set: &Regionset, pred: fn(Unit) -> bool) -> UniquePtr<Unitset>;
+        fn _regionset_getUnits(set: &Regionset, pred: unsafe fn(*mut UnitInterface) -> bool) -> UniquePtr<Unitset>;
     }
     // endregion
 
     // region BWAPI::Unitset
     unsafe extern "C++" {
-    fn _unitset_getClosestUnit(set: &Unitset, pred: fn(Unit) -> bool, radius: i32) -> *const UnitInterface;
-    fn _unitset_getInterceptors(set: &Unitset) -> UniquePtr<Unitset>;
-    fn _unitset_getLarva(set: &Unitset) -> UniquePtr<Unitset>;
-    fn _unitset_getLoadedUnits(set: &Unitset) -> UniquePtr<Unitset>;
-    fn getPosition(self: &Unitset) -> Position;
-    fn _unitset_getUnitsInRadius(set: &Unitset, radius: i32, pred: fn(Unit) -> bool) -> UniquePtr<Unitset>;
-    unsafe fn setClientInfo(self: &Unitset, clientInfo: *mut c_void, index: i32);
-    #[cxx_name = "setClientInfo"]
-    fn setClientInfo1(self: &Unitset, client_info: i32, index: i32);
-    fn issueCommand(self: &Unitset, command: UnitCommand) -> bool;
-    #[cxx_name = "attack"]
-    fn attackP(self: &Unitset, target: Position, shiftQueueCommand: bool) -> bool;
-    #[cxx_name = "attack"]
-    unsafe fn attackU(self: &Unitset, target: *mut UnitInterface, shiftQueueCommand: bool) -> bool;
-    fn build(self: &Unitset, utype: UnitType, target: TilePosition) -> bool;
-    fn buildAddon(self: &Unitset, utype: UnitType) -> bool;
-    fn train(self: &Unitset, utype: UnitType) -> bool;
-    fn morph(self: &Unitset, utype: UnitType) -> bool;
-    #[cxx_name = "setRallyPoint"]
-    fn setRallyPointP(self: &Unitset, target: Position) -> bool;
-    #[cxx_name = "setRallyPoint"]
-    unsafe fn setRallyPointU(self: &Unitset, target: *mut UnitInterface) -> bool;
-    fn _unitset_move(set: &Unitset, target: Position, shiftQueueCommand: bool) -> bool;
-    fn patrol(self: &Unitset, target: Position, shiftQueueCommand: bool) -> bool;
-    fn holdPosition(self: &Unitset, shiftQueueCommand: bool) -> bool;
-    fn stop(self: &Unitset, shiftQueueCommand: bool) -> bool;
-    unsafe fn follow(self: &Unitset, target: *mut UnitInterface, shiftQueueCommand: bool) -> bool;
-    unsafe fn gather(self: &Unitset, target: *mut UnitInterface, shiftQueueCommand: bool) -> bool;
-    fn returnCargo(self: &Unitset, shiftQueueCommand: bool) -> bool;
-    unsafe fn repair(self: &Unitset, target: *mut UnitInterface, shiftQueueCommand: bool) -> bool;
-    fn burrow(self: &Unitset) -> bool;
-    fn unburrow(self: &Unitset) -> bool;
-    fn cloak(self: &Unitset) -> bool;
-    fn decloak(self: &Unitset) -> bool;
-    fn siege(self: &Unitset) -> bool;
-    fn unsiege(self: &Unitset) -> bool;
-    fn lift(self: &Unitset) -> bool;
-    unsafe fn load(self: &Unitset, target: *mut UnitInterface, shiftQueueCommand: bool) -> bool;
-    #[cxx_name = "unloadAll"]
-    fn unloadAll_(self: &Unitset, shiftQueueCommand: bool) -> bool;
-    #[cxx_name = "unloadAll"]
-    fn unloadAllP(self: &Unitset, target: Position, shiftQueueCommand: bool) -> bool;
-    #[cxx_name = "rightClick"]
-    fn rightClickP(self: &Unitset, target: Position, shiftQueueCommand: bool) -> bool;
-    #[cxx_name = "rightClick"]
-    unsafe fn rightClickU(self: &Unitset, target: *mut UnitInterface, shiftQueueCommand: bool) -> bool;
-    fn haltConstruction(self: &Unitset) -> bool;
-    fn cancelConstruction(self: &Unitset) -> bool;
-    fn cancelAddon(self: &Unitset) -> bool;
-    fn cancelTrain(self: &Unitset, slot: i32) -> bool;
-    fn cancelMorph(self: &Unitset) -> bool;
-    fn cancelResearch(self: &Unitset) -> bool;
-    fn cancelUpgrade(self: &Unitset) -> bool;
-    #[cxx_name = "useTech"]
-    fn useTechP(self: &Unitset, tech: TechType, target: Position) -> bool;
-    #[cxx_name = "useTech"]
-    unsafe fn useTechU(self: &Unitset, tech: TechType, target: *mut UnitInterface) -> bool;
-}
+        fn _unitset_getClosestUnit(set: &Unitset, pred: unsafe fn(*mut UnitInterface) -> bool, radius: i32) -> *const UnitInterface;
+        fn _unitset_getInterceptors(set: &Unitset) -> UniquePtr<Unitset>;
+        fn _unitset_getLarva(set: &Unitset) -> UniquePtr<Unitset>;
+        fn _unitset_getLoadedUnits(set: &Unitset) -> UniquePtr<Unitset>;
+        fn getPosition(self: &Unitset) -> Position;
+        fn _unitset_getUnitsInRadius(set: &Unitset, radius: i32, pred: unsafe fn(*mut UnitInterface) -> bool) -> UniquePtr<Unitset>;
+        unsafe fn setClientInfo(self: &Unitset, clientInfo: *mut c_void, index: i32);
+        #[cxx_name = "setClientInfo"]
+        fn setClientInfo1(self: &Unitset, client_info: i32, index: i32);
+        fn issueCommand(self: &Unitset, command: UnitCommand) -> bool;
+        #[cxx_name = "attack"]
+        fn attackP(self: &Unitset, target: Position, shiftQueueCommand: bool) -> bool;
+        #[cxx_name = "attack"]
+        unsafe fn attackU(self: &Unitset, target: *mut UnitInterface, shiftQueueCommand: bool) -> bool;
+        fn build(self: &Unitset, utype: UnitType, target: TilePosition) -> bool;
+        fn buildAddon(self: &Unitset, utype: UnitType) -> bool;
+        fn train(self: &Unitset, utype: UnitType) -> bool;
+        fn morph(self: &Unitset, utype: UnitType) -> bool;
+        #[cxx_name = "setRallyPoint"]
+        fn setRallyPointP(self: &Unitset, target: Position) -> bool;
+        #[cxx_name = "setRallyPoint"]
+        unsafe fn setRallyPointU(self: &Unitset, target: *mut UnitInterface) -> bool;
+        fn _unitset_move(set: &Unitset, target: Position, shiftQueueCommand: bool) -> bool;
+        fn patrol(self: &Unitset, target: Position, shiftQueueCommand: bool) -> bool;
+        fn holdPosition(self: &Unitset, shiftQueueCommand: bool) -> bool;
+        fn stop(self: &Unitset, shiftQueueCommand: bool) -> bool;
+        unsafe fn follow(self: &Unitset, target: *mut UnitInterface, shiftQueueCommand: bool) -> bool;
+        unsafe fn gather(self: &Unitset, target: *mut UnitInterface, shiftQueueCommand: bool) -> bool;
+        fn returnCargo(self: &Unitset, shiftQueueCommand: bool) -> bool;
+        unsafe fn repair(self: &Unitset, target: *mut UnitInterface, shiftQueueCommand: bool) -> bool;
+        fn burrow(self: &Unitset) -> bool;
+        fn unburrow(self: &Unitset) -> bool;
+        fn cloak(self: &Unitset) -> bool;
+        fn decloak(self: &Unitset) -> bool;
+        fn siege(self: &Unitset) -> bool;
+        fn unsiege(self: &Unitset) -> bool;
+        fn lift(self: &Unitset) -> bool;
+        unsafe fn load(self: &Unitset, target: *mut UnitInterface, shiftQueueCommand: bool) -> bool;
+        #[cxx_name = "unloadAll"]
+        fn unloadAll_(self: &Unitset, shiftQueueCommand: bool) -> bool;
+        #[cxx_name = "unloadAll"]
+        fn unloadAllP(self: &Unitset, target: Position, shiftQueueCommand: bool) -> bool;
+        #[cxx_name = "rightClick"]
+        fn rightClickP(self: &Unitset, target: Position, shiftQueueCommand: bool) -> bool;
+        #[cxx_name = "rightClick"]
+        unsafe fn rightClickU(self: &Unitset, target: *mut UnitInterface, shiftQueueCommand: bool) -> bool;
+        fn haltConstruction(self: &Unitset) -> bool;
+        fn cancelConstruction(self: &Unitset) -> bool;
+        fn cancelAddon(self: &Unitset) -> bool;
+        fn cancelTrain(self: &Unitset, slot: i32) -> bool;
+        fn cancelMorph(self: &Unitset) -> bool;
+        fn cancelResearch(self: &Unitset) -> bool;
+        fn cancelUpgrade(self: &Unitset) -> bool;
+        #[cxx_name = "useTech"]
+        fn useTechP(self: &Unitset, tech: TechType, target: Position) -> bool;
+        #[cxx_name = "useTech"]
+        unsafe fn useTechU(self: &Unitset, tech: TechType, target: *mut UnitInterface) -> bool;
+    }
     // endregion
 
     // region BWAPI::BulletInterface
@@ -264,8 +263,7 @@ pub mod ffi {
         #[cxx_name = "TilePosition"]
         type TilePositionSyn;
 
-        fn _game_debug(game: &Game);
-        fn _game_debug_fun(game: &Game, fun: fn(Unit) -> bool);
+        fn _game_debug(game: &Game, fun: unsafe fn(*mut UnitInterface) -> bool);
         // fn getLastError(self: &Game) -> Error;
 
         fn allies(self: Pin<&mut Game>) -> Pin<&mut Playerset>;
@@ -282,12 +280,12 @@ pub mod ffi {
         fn getAllUnits(self: &Game) -> &Unitset;
         fn getAPM(self: &Game, includeSelects: bool) -> i32;
         fn getAverageFPS(self: &Game) -> f64;
-        fn _game_getBestUnit(game: &Game, best: fn(Unit, Unit) -> Unit, pred: fn(Unit) -> bool, center: Position, radius: i32) -> *mut UnitInterface;
+        fn _game_getBestUnit(game: &Game, best: unsafe fn(*mut UnitInterface, *mut UnitInterface) -> *mut UnitInterface, pred: unsafe fn(*mut UnitInterface) -> bool, center: Position, radius: i32) -> *mut UnitInterface;
         fn getBuildLocation(self: &Game, unitType: UnitType, desiredPosition: TilePosition, maxRange: i32, creep: bool) -> TilePosition;
         fn getBullets(self: &Game) -> &Bulletset;
         fn getClientVersion(self: &Game) -> i32;
-        fn _game_getClosestUnit(game: &Game, center: Position, pred: fn(Unit) -> bool, radius: i32) -> *mut UnitInterface;
-        fn _game_getClosestUnitInRectangle(game: &Game, center: Position, pred: fn(Unit) -> bool, left: i32, top: i32, right: i32, bottom: i32) -> *mut UnitInterface;
+        fn _game_getClosestUnit(game: &Game, center: Position, pred: unsafe fn(*mut UnitInterface) -> bool, radius: i32) -> *mut UnitInterface;
+        fn _game_getClosestUnitInRectangle(game: &Game, center: Position, pred: unsafe fn(*mut UnitInterface) -> bool, left: i32, top: i32, right: i32, bottom: i32) -> *mut UnitInterface;
         unsafe fn getDamageFrom(self: &Game, fromType: UnitType, toType: UnitType, fromPlayer: *mut PlayerInterface, toPlayer: *mut PlayerInterface) -> i32;
         unsafe fn getDamageTo(self: &Game, toType: UnitType, fromType: UnitType, toPlayer: *mut PlayerInterface, fromPlayer: *mut PlayerInterface) -> i32;
         fn _game_getEvents(game: &Game) -> &EventList;
@@ -325,9 +323,9 @@ pub mod ffi {
         fn getStaticMinerals(self: &Game) -> &Unitset;
         fn getStaticNeutralUnits(self: &Game) -> &Unitset;
         fn getUnit(self: &Game, unitID: i32) -> *mut UnitInterface;
-        fn _game_getUnitsInRadius(game: &Game, position: Position, radius: i32, pred: fn(Unit) -> bool) -> UniquePtr<Unitset>;
-        fn _game_getUnitsInRectangle(game: &Game, topLeft: Position, bottomRight: Position, pred: fn(Unit) -> bool) -> UniquePtr<Unitset>;
-        fn _game_getUnitsOnTile(game: &Game, tile: TilePosition, pred: fn(Unit) -> bool) -> UniquePtr<Unitset>;
+        fn _game_getUnitsInRadius(game: &Game, position: Position, radius: i32, pred: unsafe fn(*mut UnitInterface) -> bool) -> UniquePtr<Unitset>;
+        fn _game_getUnitsInRectangle(game: &Game, topLeft: Position, bottomRight: Position, pred: unsafe fn(*mut UnitInterface) -> bool) -> UniquePtr<Unitset>;
+        fn _game_getUnitsOnTile(game: &Game, tile: TilePosition, pred: unsafe fn(*mut UnitInterface) -> bool) -> UniquePtr<Unitset>;
         fn hasCreep(self: &Game, position: TilePosition) -> bool;
         fn hasPath(self: &Game, source: Position, destination: Position) -> bool;
         fn hasPower(self: &Game, position: TilePosition, unitType: UnitType) -> bool;
@@ -459,7 +457,7 @@ pub mod ffi {
         fn getID(self: &RegionInterface) -> i32;
         fn getNeighbors(self: &RegionInterface) -> &Regionset;
         fn getRegionGroupID(self: &RegionInterface) -> i32;
-        fn _region_getUnits(region: &RegionInterface, pred: fn(Unit) -> bool) -> UniquePtr<Unitset>;
+        fn _region_getUnits(region: &RegionInterface, pred: unsafe fn(*mut UnitInterface) -> bool) -> UniquePtr<Unitset>;
         fn isAccessible(self: &RegionInterface) -> bool;
         fn isHigherGround(self: &RegionInterface) -> bool;
     }
@@ -476,7 +474,7 @@ pub mod ffi {
         fn getBuildType(self: &UnitInterface) -> UnitType;
         fn getBuildUnit(self: &UnitInterface) -> *mut UnitInterface;
         fn getCarrier(self: &UnitInterface) -> *mut UnitInterface;
-        fn _unit_getClosestUnit(unit: &UnitInterface, pred: fn(Unit) -> bool, radius: i32) -> *mut UnitInterface;
+        fn _unit_getClosestUnit(unit: &UnitInterface, pred: unsafe fn(*mut UnitInterface) -> bool, radius: i32) -> *mut UnitInterface;
         fn getDefenseMatrixPoints(self: &UnitInterface) -> i32;
         fn getDefenseMatrixTimer(self: &UnitInterface) -> i32;
         #[cxx_name = "getDistance"]
@@ -543,8 +541,8 @@ pub mod ffi {
         fn _unit_getTrainingQueue(unit: &UnitInterface) -> Vec<UnitType>;
         fn getTransport(self: &UnitInterface) -> *mut UnitInterface;
         fn getType(self: &UnitInterface) -> UnitType;
-        fn _unit_getUnitsInRadius(unit: &UnitInterface, radius: i32, pred: fn(Unit) -> bool) -> UniquePtr<Unitset>;
-        fn _unit_getUnitsInWeaponRange(unit: &UnitInterface, weapon: WeaponType, pred: fn(Unit) -> bool) -> UniquePtr<Unitset>;
+        fn _unit_getUnitsInRadius(unit: &UnitInterface, radius: i32, pred: unsafe fn(*mut UnitInterface) -> bool) -> UniquePtr<Unitset>;
+        fn _unit_getUnitsInWeaponRange(unit: &UnitInterface, weapon: WeaponType, pred: unsafe fn(*mut UnitInterface) -> bool) -> UniquePtr<Unitset>;
         fn getUpgrade(self: &UnitInterface) -> UpgradeType;
         fn getVelocityX(self: &UnitInterface) -> f64;
         fn getVelocityY(self: &UnitInterface) -> f64;
