@@ -17,6 +17,10 @@ use crate::{ffi, FromRaw};
 use cxx::UniquePtr;
 use std::pin::Pin;
 use crate::ffi::UnitInterface;
+use once_cell::sync::Lazy;
+use std::collections::HashMap;
+use std::any::TypeId;
+use std::sync::Mutex;
 
 #[derive(Debug)]
 pub struct Game {
@@ -30,54 +34,41 @@ impl Unpin for Game {}
 unsafe impl Send for Game {}
 
 impl Game {
-    /// ```rust
-    ///    use library::bw::game::Game;
-    ///    use library::ffi::UnitInterface;
-    ///    pub fn _game_debug(game: &Game, fun: fn(arg0: *mut UnitInterface) -> bool) {
-    ///        extern "C" {
-    ///            #[link_name = "cxxbridge1$_game_debug"]
-    ///            fn ___game_debug(game: &Game, fun: ::cxx::private::FatFunction);
-    ///        }
-    ///        let fun = ::cxx::private::FatFunction {
-    ///            trampoline: {
-    ///                extern "C" {
-    ///                    #[link_name = "cxxbridge1$_game_debug$fun$0"]
-    ///                    fn trampoline();
-    ///                }
-    ///                #[doc(hidden)]
-    ///                #[export_name = "cxxbridge1$_game_debug$fun$1"]
-    ///                unsafe extern "C" fn __(arg0: *mut UnitInterface, __extern: *const ()) -> bool {
-    ///                    let __fn = "library::ffi::_game_debug::fun";
-    ///                    ::cxx::private::catch_unwind(__fn, move || {
-    ///                        ::std::mem::transmute::<*const (), fn(arg0: *mut UnitInterface) -> bool>(
-    ///                            __extern,
-    ///                        )(arg0)
-    ///                    })
-    ///                }
-    ///                trampoline as usize as *const ()
-    ///            },
-    ///            ptr: fun as usize as *const (),
-    ///        };
-    ///        unsafe { ___game_debug(game, fun) }
-    ///    }
-    /// ```
-    pub fn debug(&self, f: fn(Unit) -> bool) {
+    pub fn build_callback<F>(f: F) -> *const ()
+        where F: Fn(Unit) -> bool + 'static
+    {
+        // fn(*mut UnitInterface) -> bool
+        let tid = TypeId::of::<F>();
+        unsafe { std::mem::transmute(tid) }
+    }
+
+    pub fn debug(&self, f: impl Fn(Unit) -> bool) {
         let g: &ffi::Game = unsafe { &*self.raw };
+        let f_box = Box::new(f);
+        // unsafe fn cb(x: *mut UnitInterface) -> bool {
+        //     f_box(Unit::from_raw(x))
+        // }
 
         // let f_untyped = &f as *const _ as *mut ffi::c_void;
-        // let f_plus: fn(*mut UnitInterface) -> bool = |u| f(unsafe { Unit::from_raw(u) });
+        // let f_plus: fn(*mut UnitInterface) -> bool = |u| do_thing_wrapper(u);
         // unsafe {
         //     ffi::_game_debug(g, f_plus);
         // }
         //
         // // Shim interface function
         // fn do_thing_wrapper<F>(unit: *mut ffi::UnitInterface) -> bool
-        //     where F: Fn(*mut ffi::UnitInterface) -> bool {
+        //     where F: Fn(Unit) -> bool {
         //     let opt_closure = closure as *mut Option<F>;
         //     unsafe {
-        //         let res = (*opt_closure).take().unwrap()(unit);
+        //         let res = (*opt_closure).take().unwrap()(Unit::from_raw(unit));
         //         return res as bool;
         //     }
+        // }
+        // pub fn get_trampoline<F>(_closure: &F) -> AddCallback
+        //     where
+        //         F: FnMut(Unit),
+        // {
+        //     trampoline::<F>
         // }
     }
 
@@ -370,5 +361,64 @@ impl Game {
     }
     pub fn draw_line_map(&self, x1: i32, y1: i32, x2: i32, y2: i32, color: Color) {
         self.draw_line(CoordinateType::Map, x1, y1, x2, y2, color);
+    }
+}
+
+// struct X {
+//     closure: *const (),
+// }
+// unsafe impl Send for X {}
+//
+// static FS: Lazy<Mutex<HashMap<TypeId, X>>> = Lazy::new(|| {
+//     Mutex::new(HashMap::new())
+// });
+
+#[cfg(test)]
+mod tests {
+    use crate::{ffi, FromRaw};
+    use crate::bw::game::Game;
+    use crate::bw::unit::Unit;
+    use std::thread;
+    use std::borrow::{Borrow, BorrowMut};
+    use std::cell::RefCell;
+
+    thread_local! {
+        static FOO: RefCell<u32> = RefCell::new(1);
+    }
+
+    #[test]
+    fn function_wrap_test() {
+        let game: *mut ffi::Game = unsafe { std::mem::transmute(0xCCCC0000CCCC_u64) };
+        let ui: *mut ffi::UnitInterface = unsafe { std::mem::transmute(0xDEAD0000DEAD_u64) };
+        let game = Game { raw: game };
+        let unit = unsafe { Unit::from_raw(ui) };
+        let p1 = Game::build_callback(move |unit: Unit| unit.raw == ui); // 11113166405748136904
+        let p2 = Game::build_callback(move |unit: Unit| unit.raw == ui); // 8655477979401146412
+        println!("p1 = {:?}", p1);
+        println!("p2 = {:?}", p2);
+    }
+
+    #[test]
+    fn thread_local_test() {
+        FOO.with(|f| {
+            assert_eq!(*f.borrow(), 1);
+            *f.borrow_mut() = 2;
+        });
+
+        // each thread starts out with the initial value of 1
+        let t = thread::spawn(move || {
+            FOO.with(|f| {
+                assert_eq!(*f.borrow(), 1);
+                *f.borrow_mut() = 3;
+            });
+        });
+
+        // wait for the thread to complete and bail out on panic
+        t.join().unwrap();
+
+        // we retain our original value of 2 despite the child thread
+        FOO.with(|f| {
+            assert_eq!(*f.borrow(), 2);
+        });
     }
 }
