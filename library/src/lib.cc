@@ -2,7 +2,7 @@
 #include <BWAPI/Unit.h>
 #include "lib.h"
 #include "library/src/lib.rs.h"
-#include "../../target/debug/build/library-10a440775d1794e8/out/cxxbridge/include/library/src/lib.rs.h"
+//#include "../../target/debug/build/library-10a440775d1794e8/out/cxxbridge/include/library/src/lib.rs.h"
 
 int cpp_test() {
     std::cout << "cpp_test started" << std::endl;
