@@ -2,7 +2,7 @@
 #include <BWAPI/Unit.h>
 #include "lib.h"
 #include "library/src/lib.rs.h"
-//#include "../../target/debug/build/library-10a440775d1794e8/out/cxxbridge/include/library/src/lib.rs.h"
+#include "../../target/debug/build/library-10a440775d1794e8/out/cxxbridge/include/library/src/lib.rs.h"
 
 int cpp_test() {
     std::cout << "cpp_test started" << std::endl;
@@ -49,13 +49,14 @@ std::unique_ptr <AIModuleWrapper> createAIModuleWrapper(rust::Box <BoxedAIModule
     return std::unique_ptr<AIModuleWrapper>(new AIModuleWrapper(box.into_raw()));
 }
 
-void _game_debug(const BWAPI::Game &game, UnitFilter fun) {
+void _game_debug(const BWAPI::Game &game, rust::Fn<bool(BWAPI::UnitInterface*)> fun) {
     using namespace BWAPI;
     Game &g = const_cast<Game&>(game);
-    auto forces = g.getForces();
-    for (auto& force: forces) {
+    Position c(250, 3160);
+    auto units = g.getUnitsInRadius(c, 100, *fun);
+    for (auto& unit: units) {
         std::ostringstream os;
-        os << "force: " << force->getID() << ", " << force->getName();
+        os << "in radius unit: " << unit->getID() << ", " << unit->getType();
         g.sendText(os.str().c_str());
     }
 }

@@ -6,6 +6,7 @@ use library::prelude::*;
 use std::sync::MutexGuard;
 use std::thread::sleep;
 use std::time::Duration;
+use library::bw::unit_type::UnitType;
 
 #[no_mangle]
 #[allow(non_snake_case)]
@@ -64,14 +65,14 @@ impl AIModule for DemoAI {
                 // println!("fn on_frame()");
                 let fc = game.get_frame_count();
                 if fc % 20 == 0 {
-                    game.debug();
-                    let forces = game.get_forces();
-                    for force in forces.iter() {
-                        println!("force: {} {}", force.get_id(), force.get_name());
+                    game.debug(|u| u.get_type() == UnitType::Zerg_Drone);
+                    // let forces = game.get_forces();
+                    // for force in forces.iter() {
+                    //     println!("force: {} {}", force.get_id(), force.get_name());
                         // for player in force.get_players().iter() {
                         //     println!("  player: {:?}", player);
                         // }
-                    }
+                    // }
 
                     println!("game.allies = {:?}", game.allies().into_iter().next());
                     game.send_text(&format!("Unitset size: {:?}", game.get_all_units().len()));
@@ -82,16 +83,16 @@ impl AIModule for DemoAI {
                     // for u in game.get_all_units().iter() {
                     // println!("All list: unit = {:?} with id {}, type: {:?}, pos: {:?}", u, u.get_id(), u.get_type(), u.get_position());
                     // }
-                    let c = Position { x: 250, y: 3160 };
-                    let inr = game.get_units_in_radius(c, 100, |_| true).iter().collect::<Vec<_>>();
                     // if let Some(h) = inr.iter().find(|u| u.get_type() == UnitType::Zerg_Hatchery) {
                     //     let drones = inr.iter().filter(|u| u.get_type() == UnitType::Zerg_Drone).collect::<Vec<_>>();
                     // }
-                    game.send_text(&format!("In radius size_hint: {:?}", inr.len()));
-                    for u in inr {
-                        println!("In radius: unit with id {:0>3}, type: {:?}, pos: {:?}", u.get_id(), u.get_type(), u.get_position());
-                    }
-                    // game.debug();
+
+                    // let c = Position { x: 250, y: 3160 };
+                    // let inr = game.get_units_in_radius(c, 100, |_| true).iter().collect::<Vec<_>>();
+                    // game.send_text(&format!("In radius size_hint: {:?}", inr.len()));
+                    // for u in inr {
+                    //     println!("In radius: unit with id {:0>3}, type: {:?}, pos: {:?}", u.get_id(), u.get_type(), u.get_position());
+                    // }
                     game.send_text(&format!("Hello, SSCAIT!, frame count = {}", fc));
                     sleep(Duration::from_millis(100));
                 }

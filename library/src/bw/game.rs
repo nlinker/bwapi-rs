@@ -21,6 +21,9 @@ use once_cell::sync::Lazy;
 use std::collections::HashMap;
 use std::any::TypeId;
 use std::sync::Mutex;
+use std::borrow::BorrowMut;
+use std::cell::RefCell;
+use std::ops::Deref;
 
 #[derive(Debug)]
 pub struct Game {
@@ -33,43 +36,56 @@ impl Unpin for Game {}
 /// Safety: https://stackoverflow.com/a/60295465/5066426
 unsafe impl Send for Game {}
 
-impl Game {
-    pub fn build_callback<F>(f: F) -> *const ()
-        where F: Fn(Unit) -> bool + 'static
-    {
-        // fn(*mut UnitInterface) -> bool
-        let tid = TypeId::of::<F>();
-        unsafe { std::mem::transmute(tid) }
+thread_local! {
+    static FUNCS: RefCell<HashMap<TypeId, Box<dyn Fn(Unit) -> bool>>> = RefCell::new(HashMap::new());
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::{ffi, FromRaw};
+    use crate::bw::game::Game;
+    use crate::bw::unit::Unit;
+    use std::thread;
+    use std::borrow::{Borrow, BorrowMut};
+    use std::cell::RefCell;
+
+    #[test]
+    fn function_wrap_test() {
+        let game: *mut ffi::Game = unsafe { std::mem::transmute(0xCCCC0000CCCC_u64) };
+        let ui: *mut ffi::UnitInterface = unsafe { std::mem::transmute(0xDEAD0000DEAD_u64) };
+        let game = Game { raw: game };
+        let unit = unsafe { Unit::from_raw(ui) };
+        let p1 = game.debug(move |unit: Unit| unit.raw == ui); // 11113166405748136904
+        let p2 = game.debug(move |unit: Unit| unit.raw == ui); // 8655477979401146412
+        println!("p1 = {:?}", p1);
+        println!("p2 = {:?}", p2);
     }
+}
 
-    pub fn debug(&self, f: impl Fn(Unit) -> bool) {
+fn unit_filter<F: Fn(Unit) -> bool + 'static>(x: *mut UnitInterface) -> bool {
+    let tid = TypeId::of::<F>();
+    FUNCS.with(|hm| {
+        let f = &hm.borrow()[&tid];
+        let unit = unsafe { Unit::from_raw(x) };
+        f(unit)
+    })
+}
+
+impl Game {
+    pub fn debug<F: Fn(Unit) -> bool + 'static>(&self, f: F) {
         let g: &ffi::Game = unsafe { &*self.raw };
-        let f_box = Box::new(f);
-        // unsafe fn cb(x: *mut UnitInterface) -> bool {
-        //     f_box(Unit::from_raw(x))
-        // }
 
-        // let f_untyped = &f as *const _ as *mut ffi::c_void;
-        // let f_plus: fn(*mut UnitInterface) -> bool = |u| do_thing_wrapper(u);
-        // unsafe {
-        //     ffi::_game_debug(g, f_plus);
-        // }
-        //
-        // // Shim interface function
-        // fn do_thing_wrapper<F>(unit: *mut ffi::UnitInterface) -> bool
-        //     where F: Fn(Unit) -> bool {
-        //     let opt_closure = closure as *mut Option<F>;
-        //     unsafe {
-        //         let res = (*opt_closure).take().unwrap()(Unit::from_raw(unit));
-        //         return res as bool;
-        //     }
-        // }
-        // pub fn get_trampoline<F>(_closure: &F) -> AddCallback
-        //     where
-        //         F: FnMut(Unit),
-        // {
-        //     trampoline::<F>
-        // }
+        let tid = TypeId::of::<F>();
+        FUNCS.with(|mut hm| {
+            hm.borrow_mut().insert(tid, Box::new(f));
+        });
+        unsafe {
+            ffi::_game_debug(g, unit_filter::<F>);
+        }
+        FUNCS.with(|mut hm| {
+            hm.borrow_mut().remove(&tid)
+        });
+
     }
 
     pub fn allies(&self) -> Playerset {
@@ -372,53 +388,3 @@ impl Game {
 // static FS: Lazy<Mutex<HashMap<TypeId, X>>> = Lazy::new(|| {
 //     Mutex::new(HashMap::new())
 // });
-
-#[cfg(test)]
-mod tests {
-    use crate::{ffi, FromRaw};
-    use crate::bw::game::Game;
-    use crate::bw::unit::Unit;
-    use std::thread;
-    use std::borrow::{Borrow, BorrowMut};
-    use std::cell::RefCell;
-
-    thread_local! {
-        static FOO: RefCell<u32> = RefCell::new(1);
-    }
-
-    #[test]
-    fn function_wrap_test() {
-        let game: *mut ffi::Game = unsafe { std::mem::transmute(0xCCCC0000CCCC_u64) };
-        let ui: *mut ffi::UnitInterface = unsafe { std::mem::transmute(0xDEAD0000DEAD_u64) };
-        let game = Game { raw: game };
-        let unit = unsafe { Unit::from_raw(ui) };
-        let p1 = Game::build_callback(move |unit: Unit| unit.raw == ui); // 11113166405748136904
-        let p2 = Game::build_callback(move |unit: Unit| unit.raw == ui); // 8655477979401146412
-        println!("p1 = {:?}", p1);
-        println!("p2 = {:?}", p2);
-    }
-
-    #[test]
-    fn thread_local_test() {
-        FOO.with(|f| {
-            assert_eq!(*f.borrow(), 1);
-            *f.borrow_mut() = 2;
-        });
-
-        // each thread starts out with the initial value of 1
-        let t = thread::spawn(move || {
-            FOO.with(|f| {
-                assert_eq!(*f.borrow(), 1);
-                *f.borrow_mut() = 3;
-            });
-        });
-
-        // wait for the thread to complete and bail out on panic
-        t.join().unwrap();
-
-        // we retain our original value of 2 despite the child thread
-        FOO.with(|f| {
-            assert_eq!(*f.borrow(), 2);
-        });
-    }
-}
