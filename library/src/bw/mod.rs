@@ -109,10 +109,10 @@ where
     }
 }
 
-pub fn with_unit_filter<F, FFI>(f: F, ffi_call: FFI)
+pub fn with_unit_filter<F, R, FFI>(f: F, ffi_call: FFI) -> R
 where
     F: Fn(Unit) -> bool + 'static,
-    FFI: FnOnce(fn(x: *mut ffi::UnitInterface) -> bool),
+    FFI: FnOnce(fn(x: *mut ffi::UnitInterface) -> bool) -> R,
 {
     UNIT_FILTERS.with(|ufs| {
         ufs.borrow_mut().push_back(Box::new(f));

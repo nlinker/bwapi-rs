@@ -1,20 +1,23 @@
+use crate::bw::bulletset::Bulletset;
 use crate::bw::color::{Color, TextSize};
 use crate::bw::coordinate_type::CoordinateType;
 use crate::bw::flag::Flag;
+use crate::bw::force::Force;
 use crate::bw::forceset::Forceset;
+use crate::bw::game_type::GameType;
+use crate::bw::input::{KeyButton, MouseButton};
 use crate::bw::player::Player;
 use crate::bw::playerset::Playerset;
 use crate::bw::position::{Position, TilePosition};
+use crate::bw::region::Region;
 use crate::bw::regionset::Regionset;
 use crate::bw::tech_type::TechType;
 use crate::bw::unit::Unit;
-use crate::bw::unit_filter::UnitFilter;
 use crate::bw::unit_type::UnitType;
 use crate::bw::unitset::Unitset;
 use crate::bw::upgrade_type::UpgradeType;
-use crate::bw::{with_unit_and_best_filter, Handle};
+use crate::bw::{with_unit_and_best_filter, with_unit_filter, Handle};
 use crate::{ffi, FromRaw};
-use cxx::UniquePtr;
 use std::pin::Pin;
 use std::ptr::NonNull;
 
@@ -111,8 +114,8 @@ impl Game {
     }
     pub fn get_best_unit(
         &self,
-        best_fn: fn(Unit, Unit) -> Unit,
-        unit_fn: fn(Unit) -> bool,
+        best_fn: impl Fn(Unit, Unit) -> Unit + 'static,
+        unit_fn: impl Fn(Unit) -> bool + 'static,
         center: Position,
         radius: i32,
     ) -> Option<Unit> {
@@ -121,52 +124,256 @@ impl Game {
             Unit::option(ffi::_game_getBestUnit(g, bf, uf, center, radius))
         })
     }
+    pub fn get_build_location(
+        &self,
+        utype: UnitType,
+        desired_position: TilePosition,
+        max_range: i32,
+        creep: bool,
+    ) -> TilePosition {
+        let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
+        g.getBuildLocation(utype, desired_position, max_range, creep)
+    }
+    pub fn get_bullets(&self) -> Bulletset {
+        let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
+        Bulletset {
+            raw: Handle::Borrowed(g.getBullets()),
+        }
+    }
+    pub fn get_client_version(&self) -> i32 {
+        let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
+        g.getClientVersion()
+    }
+    pub fn get_closest_unit(
+        &self,
+        center: Position,
+        unit_fn: impl Fn(Unit) -> bool + 'static,
+        radius: i32,
+    ) -> Option<Unit> {
+        let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
+        with_unit_filter(unit_fn, |uf| {
+            Unit::option(ffi::_game_getClosestUnit(g, center, uf, radius))
+        })
+    }
+    pub fn get_closest_unit_in_rectangle(
+        &self,
+        center: Position,
+        unit_fn: impl Fn(Unit) -> bool + 'static,
+        left: i32,
+        top: i32,
+        right: i32,
+        bottom: i32,
+    ) -> Option<Unit> {
+        let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
+        with_unit_filter(unit_fn, |uf| {
+            Unit::option(ffi::_game_getClosestUnitInRectangle(
+                g, center, uf, left, top, right, bottom,
+            ))
+        })
+    }
+    pub fn get_damage_from(
+        &self,
+        from_type: UnitType,
+        to_type: UnitType,
+        from_player: Player,
+        to_player: Player,
+    ) -> i32 {
+        let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
+        unsafe { g.getDamageFrom(from_type, to_type, from_player.raw.as_ptr(), to_player.raw.as_ptr()) }
+    }
+    pub fn get_damage_to(&self, to_type: UnitType, from_type: UnitType, to_player: Player, from_player: Player) -> i32 {
+        let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
+        unsafe { g.getDamageTo(from_type, to_type, from_player.raw.as_ptr(), to_player.raw.as_ptr()) }
+    }
+    // pub fn get_events(&self) -> &EventList { let g: &ffi::Game = unsafe { &*self.raw }; ffi::_game_getEvents(g) }
+    pub fn get_force(&self, force_id: i32) -> Option<Force> {
+        let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
+        Force::option(g.getForce(force_id))
+    }
+    pub fn get_forces(&self) -> Forceset {
+        let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
+        Forceset {
+            raw: Handle::Borrowed(g.getForces()),
+        }
+    }
+    pub fn get_fps(&self) -> i32 {
+        let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
+        g.getFPS()
+    }
+    pub fn get_frame_count(&self) -> i32 {
+        let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
+        g.getFrameCount()
+    }
+    pub fn get_game_type(&self) -> GameType {
+        let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
+        g.getGameType()
+    }
+    pub fn get_geysers(&self) -> Unitset {
+        let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
+        Unitset {
+            raw: Handle::Borrowed(g.getGeysers()),
+        }
+    }
+    pub fn get_ground_height(&self, position: TilePosition) -> i32 {
+        let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
+        g.getGroundHeight(position)
+    }
+    pub fn get_instance_number(&self) -> i32 {
+        let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
+        g.getInstanceNumber()
+    }
+    pub fn get_key_state(&self, key: KeyButton) -> bool {
+        let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
+        g.getKeyState(key)
+    }
+    pub fn get_last_event_time(&self) -> i32 {
+        let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
+        g.getLastEventTime()
+    }
+    pub fn get_latency(&self) -> i32 {
+        let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
+        g.getLatency()
+    }
+    pub fn get_latency_frames(&self) -> i32 {
+        let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
+        g.getLatencyFrames()
+    }
+    pub fn get_latency_time(&self) -> i32 {
+        let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
+        g.getLatencyTime()
+    }
+    pub fn get_minerals(&self) -> Unitset {
+        let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
+        Unitset {
+            raw: Handle::Borrowed(g.getMinerals()),
+        }
+    }
+    pub fn get_mouse_position(&self) -> Position {
+        let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
+        g.getMousePosition()
+    }
+    pub fn get_mouse_state(&self, button: MouseButton) -> bool {
+        let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
+        g.getMouseState(button)
+    }
+    pub fn get_neutral_units(&self) -> Unitset {
+        let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
+        Unitset {
+            raw: Handle::Borrowed(g.getNeutralUnits()),
+        }
+    }
+    pub fn get_nuke_dots(&self) -> Vec<Position> {
+        let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
+        ffi::_game_getNukeDots(g)
+    }
+    pub fn get_player(&self, player_id: i32) -> Option<Player> {
+        let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
+        Player::option(g.getPlayer(player_id))
+    }
+    pub fn get_players(&self) -> Playerset {
+        let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
+        Playerset {
+            raw: Handle::Borrowed(g.getPlayers()),
+        }
+    }
+    pub fn get_random_seed(&self) -> u32 {
+        let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
+        g.getRandomSeed()
+    }
+    pub fn get_region(&self, region_id: i32) -> Option<Region> {
+        let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
+        Region::option(g.getRegion(region_id))
+    }
+    pub fn get_region_at(&self, position: Position) -> Option<Region> {
+        let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
+        Region::option(g.getRegionAt(position))
+    }
+    pub fn get_remaining_latency_frames(&self) -> i32 {
+        let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
+        g.getRemainingLatencyFrames()
+    }
+    pub fn get_remaining_latency_time(&self) -> i32 {
+        let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
+        g.getRemainingLatencyTime()
+    }
+    pub fn get_replay_frame_count(&self) -> i32 {
+        let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
+        g.getReplayFrameCount()
+    }
+    pub fn get_revision(&self) -> i32 {
+        let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
+        g.getRevision()
+    }
+    pub fn get_screen_position(&self) -> Position {
+        let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
+        g.getScreenPosition()
+    }
+    pub fn get_selected_units(&self) -> Unitset {
+        let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
+        Unitset {
+            raw: Handle::Borrowed(g.getSelectedUnits()),
+        }
+    }
+    pub fn get_start_locations(&self) -> Vec<TilePosition> {
+        let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
+        ffi::_game_getStartLocations(g)
+    }
+    pub fn get_static_geysers(&self) -> Unitset {
+        let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
+        Unitset {
+            raw: Handle::Borrowed(g.getStaticGeysers()),
+        }
+    }
+    pub fn get_static_minerals(&self) -> Unitset {
+        let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
+        Unitset {
+            raw: Handle::Borrowed(g.getStaticMinerals()),
+        }
+    }
+    pub fn get_static_neutral_units(&self) -> Unitset {
+        let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
+        Unitset {
+            raw: Handle::Borrowed(g.getStaticNeutralUnits()),
+        }
+    }
+    pub fn get_unit(&self, unit_id: i32) -> Option<Unit> {
+        let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
+        Unit::option(g.getUnit(unit_id))
+    }
+    pub fn get_units_in_radius(
+        &self,
+        position: Position,
+        radius: i32,
+        unit_fn: impl Fn(Unit) -> bool + 'static,
+    ) -> Unitset {
+        let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
+        let set = with_unit_filter(unit_fn, |uf| ffi::_game_getUnitsInRadius(g, position, radius, uf));
+        Unitset {
+            raw: Handle::Owned(set),
+        }
+    }
+    pub fn get_units_in_rectangle(
+        &self,
+        top_left: Position,
+        bottom_right: Position,
+        unit_fn: impl Fn(Unit) -> bool + 'static,
+    ) -> Unitset {
+        let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
+        let set = with_unit_filter(unit_fn, |uf| {
+            ffi::_game_getUnitsInRectangle(g, top_left, bottom_right, uf)
+        });
+        Unitset {
+            raw: Handle::Owned(set),
+        }
+    }
+    pub fn get_units_on_tile(&self, tile: TilePosition, unit_fn: impl Fn(Unit) -> bool + 'static) -> Unitset {
+        let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
+        let set = with_unit_filter(unit_fn, |uf| ffi::_game_getUnitsOnTile(g, tile, uf));
+        Unitset {
+            raw: Handle::Owned(set),
+        }
+    }
 
-    // pub fn get_build_location(&self) let g: &ffi::Game = unsafe { &*self.raw };  { g.getBuildLocation() }                                                          //            (self: &Game, unitType: UnitType, desiredPosition: TilePosition, maxRange: i32, creep: bool) -> TilePosition
-    // pub fn get_bullets(&self) { let g: &ffi::Game = unsafe { &*self.raw }; g.getBullets()  }                                                                       //                    (self: &Game) -> &Bulletset
-    // pub fn get_client_version(&self) let g: &ffi::Game = unsafe { &*self.raw };  { g.getClientVersion() }                                                          //            (self: &Game) -> i32
-    // pub fn get_closest_unit(&self) { let g: &ffi::Game = unsafe { &*self.raw }; ffi::_game_getClosestUnit(g) }                                                     //                 (game: &Game, center: Position, pred: fn(Unit) -> bool, radius: i32) -> *mut UnitInterface; /
-    // pub fn get_closest_unit_in_rectangle(&self) { let g: &ffi::Game = unsafe { &*self.raw }; ffi::_game_getClosestUnitInRectangle(g) }                             //    (game: &Game, center: Position, pred: fn(Unit) -> bool, left: i32, top: i32, right: i32, bottom: i32) -> *mut UnitInterface; /
-    // pub fn get_damage_from(&self) { let g: &ffi::Game = unsafe { &*self.raw }; g.getDamageFrom()  }                                                                //                (self: &Game, fromType: UnitType, toType: UnitType, fromPlayer: *mut PlayerInterface, toPlayer: *mut PlayerInterface) -> i32
-    // pub fn get_damage_to(&self) { let g: &ffi::Game = unsafe { &*self.raw }; g.getDamageTo()  }                                                                    //                  (self: &Game, toType: UnitType, fromType: UnitType, toPlayer: *mut PlayerInterface, fromPlayer: *mut PlayerInterface) -> i32
-    // pub fn get_events(&self) { let g: &ffi::Game = unsafe { &*self.raw }; ffi::_game_getEvents(g) }                                                                //                       (game: &Game) -> &EventList; /
-    // pub fn get_force(&self) { let g: &ffi::Game = unsafe { &*self.raw }; g.getForce()  }                                                                           //                      (self: &Game, forceId: i32) -> *mut ForceInterface
-    // pub fn get_forces(&self) { let g: &ffi::Game = unsafe { &*self.raw }; g.getForces()  }                                                                         //                     (self: &Game) -> &Forceset
-    // pub fn get_fps(&self) { let g: &ffi::Game = unsafe { &*self.raw }; g.getFPS()  }                                                                               //                        (self: &Game) -> i32
-    // pub fn get_frame_count(&self) { let g: &ffi::Game = unsafe { &*self.raw }; g.getFrameCount()  }                                                                //                (self: &Game) -> i32
-    // pub fn get_game_type(&self) { let g: &ffi::Game = unsafe { &*self.raw }; g.getGameType()  }                                                                    //                  (self: &Game) -> GameType
-    // pub fn get_geysers(&self) { let g: &ffi::Game = unsafe { &*self.raw }; g.getGeysers()  }                                                                       //                    (self: &Game) -> &Unitset
-    // pub fn get_ground_height(&self) { let g: &ffi::Game = unsafe { &*self.raw }; g.getGroundHeight()  }                                                            //              (self: &Game, position: TilePosition) -> i32
-    // pub fn get_instance_number(&self) let g: &ffi::Game = unsafe { &*self.raw };  { g.getInstanceNumber() }                                                        //           (self: &Game) -> i32
-    // pub fn get_key_state(&self) { let g: &ffi::Game = unsafe { &*self.raw }; g.getKeyState()  }                                                                    //                  (self: &Game, key: Key) -> bool
-    // pub fn get_last_event_time(&self) let g: &ffi::Game = unsafe { &*self.raw };  { g.getLastEventTime() }                                                         //           (self: &Game) -> i32
-    // pub fn get_latency(&self) { let g: &ffi::Game = unsafe { &*self.raw }; g.getLatency()  }                                                                       //                    (self: &Game) -> i32
-    // pub fn get_latency_frames(&self) let g: &ffi::Game = unsafe { &*self.raw };  { g.getLatencyFrames() }                                                          //            (self: &Game) -> i32
-    // pub fn get_latency_time(&self) { let g: &ffi::Game = unsafe { &*self.raw }; g.getLatencyTime()  }                                                              //               (self: &Game) -> i32
-    // pub fn get_minerals(&self) { let g: &ffi::Game = unsafe { &*self.raw }; g.getMinerals()  }                                                                     //                   (self: &Game) -> &Unitset
-    // pub fn get_mouse_position(&self) let g: &ffi::Game = unsafe { &*self.raw };  { g.getMousePosition() }                                                          //            (self: &Game) -> Position
-    // pub fn get_mouse_state(&self) { let g: &ffi::Game = unsafe { &*self.raw }; g.getMouseState()  }                                                                //                (self: &Game, button: MouseButton) -> bool
-    // pub fn get_neutral_units(&self) { let g: &ffi::Game = unsafe { &*self.raw }; g.getNeutralUnits()  }                                                            //              (self: &Game) -> &Unitset
-    // pub fn get_nuke_dots(&self) { let g: &ffi::Game = unsafe { &*self.raw }; ffi::_game_getNukeDots(g) }                                                           //                    (game: &Game) -> Vec<Position>; /
-    // pub fn get_player(&self) { let g: &ffi::Game = unsafe { &*self.raw }; g.getPlayer()  }                                                                         //                     (self: &Game, playerId: i32) -> *mut PlayerInterface
-    // pub fn get_players(&self) { let g: &ffi::Game = unsafe { &*self.raw }; g.getPlayers()  }                                                                       //                    (self: &Game) -> &Playerset
-    // pub fn get_random_seed(&self) { let g: &ffi::Game = unsafe { &*self.raw }; g.getRandomSeed()  }                                                                //                (self: &Game) -> u32
-    // pub fn get_region(&self) { let g: &ffi::Game = unsafe { &*self.raw }; g.getRegion()  }                                                                         //                     (self: &Game, regionID: i32) -> *mut RegionInterface
-    // pub fn get_region_at(&self) { let g: &ffi::Game = unsafe { &*self.raw }; g.getRegionAt()  }                                                                    //                  (self: &Game, position: Position) -> *mut RegionInterface
-    // pub fn get_remaining_latency_frames(&self) { let g: &ffi::Game = unsafe { &*self.raw }; g.getRemainingLatencyFrames() }                                        //  (self: &Game) -> i32
-    // pub fn get_remaining_latency_time let g: &ffi::Game = unsafe { &*self.raw }; (&self) { g.getRemainingLatencyTime() }                                           //    (self: &Game) -> i32
-    // pub fn get_replay_frame_count(& let g: &ffi::Game = unsafe { &*self.raw }; self) { g.getReplayFrameCount() }                                                   //        (self: &Game) -> i32
-    // pub fn get_revision(&self) { let g: &ffi::Game = unsafe { &*self.raw }; g.getRevision()  }                                                                     //                   (self: &Game) -> i32
-    // pub fn get_screen_position(&self) let g: &ffi::Game = unsafe { &*self.raw };  { g.getScreenPosition() }                                                        //           (self: &Game) -> Position
-    // pub fn get_selected_units(&self) let g: &ffi::Game = unsafe { &*self.raw };  { g.getSelectedUnits() }                                                          //            (self: &Game) -> &Unitset
-    // pub fn get_start_locations(&self) { let g: &ffi::Game = unsafe { &*self.raw }; ffi::_game_getStartLocations(g) }                                               //              (game: &Game) -> Vec<TilePosition>; /
-    // pub fn get_static_geysers(&self) let g: &ffi::Game = unsafe { &*self.raw };  { g.getStaticGeysers() }                                                          //            (self: &Game) -> &Unitset
-    // pub fn get_static_minerals(&self) let g: &ffi::Game = unsafe { &*self.raw };  { g.getStaticMinerals() }                                                        //           (self: &Game) -> &Unitset
-    // pub fn get_static_neutral_units(& let g: &ffi::Game = unsafe { &*self.raw }; self) { g.getStaticNeutralUnits() }                                               //      (self: &Game) -> &Unitset
-    // pub fn get_unit(&self) { let g: &ffi::Game = unsafe { &*self.raw }; g.getUnit()  }                                                                             //                       (self: &Game, unitID: i32) -> *mut UnitInterface
-    // pub fn get_units_in_radius(&self) { let g: &ffi::Game = unsafe { &*self.raw }; ffi::_game_getUnitsInRadius(g) }                                                //              (game: &Game, position: Position, radius: i32, pred: fn(Unit) -> bool) -> UniquePtr<Unitset>; /
-    // pub fn get_units_in_rectangle(&self) { let g: &ffi::Game = unsafe { &*self.raw }; ffi::_game_getUnitsInRectangle(g) }                                          //           (game: &Game, topLeft: Position, bottomRight: Position, pred: fn(Unit) -> bool) -> UniquePtr<Unitset>; /
-    // pub fn get_units_on_tile(&self) { let g: &ffi::Game = unsafe { &*self.raw }; ffi::_game_getUnitsOnTile(g) }                                                    //                (game: &Game, tile: TilePosition, pred: fn(Unit) -> bool) -> UniquePtr<Unitset>; /
     // pub fn has_creep(&self) { let g: &ffi::Game = unsafe { &*self.raw }; g.hasCreep()  }                                                                           //                      (self: &Game, position: TilePosition) -> bool
     // pub fn has_path(&self) { let g: &ffi::Game = unsafe { &*self.raw }; g.hasPath()  }                                                                             //                       (self: &Game, source: Position, destination: Position) -> bool
     // pub fn has_power(&self) { let g: &ffi::Game = unsafe { &*self.raw }; g.hasPower()  }                                                                           //                      (self: &Game, position: TilePosition, unitType: UnitType) -> bool
@@ -202,7 +409,10 @@ impl Game {
     // pub fn resume_game(&self) { let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw) }; g.resumeGame()  }                                      //                      (self: Pin<&mut Game>)
     // pub fn self_(&self) -> Player { let g: &ffi::Game = unsafe { &*self.raw }; ffi::_game_self    // pub fn send_text(&self) { let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw) }; g._game_sendText()  }                                    //                          (game: Pin<&mut Game>, text: &str)
     // pub fn send_text_ex(&self) { let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw) }; g._game_sendTextEx()  }                               //                            (game: Pin<&mut Game>, toAllies: bool, text: &str)
-    // pub fn set_alliance(&self) { let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw) }; g.setAlliance()  }                                    //                       (self: Pin<&mut Game>, player: *mut PlayerInterface, allied: bool, alliedVictory: bool) -> bool
+    pub fn set_alliance(&self, player: Player, allied: bool, allied_victory: bool) -> bool {
+        let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw.unwrap().as_ptr()) };
+        unsafe { g.setAlliance(player.raw.as_ptr(), allied, allied_victory) }
+    }
     // pub fn set_command_optimization_level(&self) { let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw) }; g.setCommandOptimizationLevel()  }  //                     (self: Pin<&mut                                       Game>, level: i32)
     // pub fn set_frame_skip(&self) { let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw) }; g.setFrameSkip()  }                                 //                        (self: Pin<&mut Game>, frameSkip: i32)
     // pub fn set_gui(&self) { let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw) }; g.setGUI()  }                                              //                  (self: Pin<&mut Game>, enabled: bool)
@@ -213,40 +423,8 @@ impl Game {
     // pub fn set_screen_position(&self) { let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw) }; g.setScreenPosition()  }                       //                         (self: Pin<&mut Game>, p: Position)
     // pub fn set_vision(&self) { let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw) }; g.setVision()  }                                        //                     (self: Pin<&mut Game>, player: *mut PlayerInterface, enabled: bool) -> bool
 
-    pub fn set_alliance(&self, player: Player, allied: bool, allied_victory: bool) -> bool {
-        let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw.unwrap().as_ptr()) };
-        unsafe { g.setAlliance(player.raw.as_ptr(), allied, allied_victory) }
-    }
-
-    pub fn get_forces(&self) -> Forceset {
-        let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
-        Forceset {
-            raw: Handle::Borrowed(g.getForces()),
-        }
-    }
-
     pub fn send_text(&self, text: &str) {
         ffi::_game_sendText(unsafe { Pin::new_unchecked(&mut *self.raw.unwrap().as_ptr()) }, text)
-    }
-    pub fn get_frame_count(&self) -> i32 {
-        unsafe { self.raw.unwrap().as_ref().getFrameCount() }
-    }
-    pub fn get_units_in_radius(&self, position: Position, radius: i32, _pred: UnitFilter) -> Unitset {
-        let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
-        let set: UniquePtr<ffi::Unitset> = ffi::_game_getUnitsInRadius(g, position, radius, |_| true); // todo
-        Unitset {
-            raw: Handle::Owned(set),
-        }
-    }
-
-    pub fn get_nuke_dots(&self) -> Vec<Position> {
-        let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
-        ffi::_game_getNukeDots(g)
-    }
-
-    pub fn get_start_locations(&self) -> Vec<TilePosition> {
-        let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
-        ffi::_game_getStartLocations(g)
     }
 
     // let ctype = ctype.unwrap_or(CoordinateType::Map);

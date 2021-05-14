@@ -176,6 +176,8 @@ pub mod ffi {
 
     // region BWAPI::Unitset
     unsafe extern "C++" {
+        // this is to workaround error: the trait `UniquePtrTarget` is not implemented for `unitset::Unitset<'_>`
+        fn _unitset_dummy(set: &Unitset) -> UniquePtr<Unitset>;
         fn _unitset_getClosestUnit(set: &Unitset, pred: unsafe fn(*mut UnitInterface) -> bool, radius: i32) -> *mut UnitInterface;
         fn _unitset_getInterceptors(set: &Unitset) -> UniquePtr<Unitset>;
         fn _unitset_getLarva(set: &Unitset) -> UniquePtr<Unitset>;
