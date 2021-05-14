@@ -8,11 +8,12 @@ use crate::bw::game_type::GameType;
 use crate::bw::input::{KeyButton, MouseButton};
 use crate::bw::player::Player;
 use crate::bw::playerset::Playerset;
-use crate::bw::position::{Position, TilePosition};
+use crate::bw::position::{Position, TilePosition, WalkPosition};
 use crate::bw::region::Region;
 use crate::bw::regionset::Regionset;
 use crate::bw::tech_type::TechType;
 use crate::bw::unit::Unit;
+use crate::bw::unit_command::UnitCommand;
 use crate::bw::unit_type::UnitType;
 use crate::bw::unitset::Unitset;
 use crate::bw::upgrade_type::UpgradeType;
@@ -373,67 +374,177 @@ impl Game {
             raw: Handle::Owned(set),
         }
     }
-
-    // pub fn has_creep(&self) { let g: &ffi::Game = unsafe { &*self.raw }; g.hasCreep()  }                                                                           //                      (self: &Game, position: TilePosition) -> bool
-    // pub fn has_path(&self) { let g: &ffi::Game = unsafe { &*self.raw }; g.hasPath()  }                                                                             //                       (self: &Game, source: Position, destination: Position) -> bool
-    // pub fn has_power(&self) { let g: &ffi::Game = unsafe { &*self.raw }; g.hasPower()  }                                                                           //                      (self: &Game, position: TilePosition, unitType: UnitType) -> bool
-    // pub fn has_power_precise(&self) { let g: &ffi::Game = unsafe { &*self.raw }; g.hasPowerPrecise()  }                                                            //              (self: &Game, position: Position, unitType: UnitType) -> bool
-    // pub fn index_to_unit(&self) { let g: &ffi::Game = unsafe { &*self.raw }; g.indexToUnit()  }                                                                    //                  (self: &Game, unitIndex: i32) -> *mut UnitInterface
-    // pub fn is_battle_net(&self) { let g: &ffi::Game = unsafe { &*self.raw }; g.isBattleNet()  }                                                                    //                  (self: &Game) -> bool
-    // pub fn is_buildable(&self) { let g: &ffi::Game = unsafe { &*self.raw }; g.isBuildable()  }                                                                     //                   (self: &Game, position: TilePosition, includeBuildings: bool) -> bool
-    // pub fn is_debug(&self) { let g: &ffi::Game = unsafe { &*self.raw }; g.isDebug()  }                                                                             //                       (self: &Game) -> bool
-    // pub fn is_explored(&self) { let g: &ffi::Game = unsafe { &*self.raw }; g.isExplored()  }                                                                       //                    (self: &Game, position: TilePosition) -> bool
-    // pub fn is_flag_enabled(&self) { let g: &ffi::Game = unsafe { &*self.raw }; ffi::_game_isFlagEnabled(g) }                                                       //                  (game: &Game, flag: Flag) -> bool; /
-    // pub fn is_guienabled(&self) { let g: &ffi::Game = unsafe { &*self.raw }; g.isGUIEnabled()  }                                                                   //                  (self: &Game) -> bool
-    // pub fn is_in_game(&self) { let g: &ffi::Game = unsafe { &*self.raw }; g.isInGame()  }                                                                          //                     (self: &Game) -> bool
-    // pub fn is_lat_com_enabled(&self) let g: &ffi::Game = unsafe { &*self.raw };  { g.isLatComEnabled() }                                                           //            (self: &Game) -> bool
-    // pub fn is_multiplayer(&self) { let g: &ffi::Game = unsafe { &*self.raw }; g.isMultiplayer()  }                                                                 //                 (self: &Game) -> bool
-    // pub fn is_paused(&self) { let g: &ffi::Game = unsafe { &*self.raw }; g.isPaused()  }                                                                           //                      (self: &Game) -> bool
-    // pub fn is_replay(&self) { let g: &ffi::Game = unsafe { &*self.raw }; g.isReplay()  }                                                                           //                      (self: &Game) -> bool
-    // pub fn issue_command(&self) { let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw) }; g.issueCommand()  }                                  //                        (self: Pin<&mut Game>, units: &Unitset, command: UnitCommand) -> bool
-    // pub fn is_visible(&self) { let g: &ffi::Game = unsafe { &*self.raw }; g.isVisible()  }                                                                         //                     (self: &Game, position: TilePosition) -> bool
-    // pub fn is_walkable(&self) { let g: &ffi::Game = unsafe { &*self.raw }; g.isWalkable()  }                                                                       //                    (self: &Game, position: WalkPosition) -> bool
-    // pub fn leave_game(&self) { let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw) }; g.leaveGame()  }                                        //                     (self: Pin<&mut Game>)
-    // pub fn map_file_name(&self) { let g: &ffi::Game = unsafe { &*self.raw }; ffi::_game_mapFileName(g) }                                                           //                    (game: &Game) -> UniquePtr<CxxString>; /
-    // pub fn map_hash(&self) { let g: &ffi::Game = unsafe { &*self.raw }; ffi::_game_mapHash(g) }                                                                    //                         (game: &Game) -> UniquePtr<CxxString>; /
-    // pub fn map_height(&self) { let g: &ffi::Game = unsafe { &*self.raw }; g.mapHeight()  }                                                                         //                     (self: &Game) -> i32
-    // pub fn map_name(&self) { let g: &ffi::Game = unsafe { &*self.raw }; ffi::_game_mapName(g) }                                                                    //                         (game: &Game) -> UniquePtr<CxxString>; /
-    // pub fn map_path_name(&self) { let g: &ffi::Game = unsafe { &*self.raw }; ffi::_game_mapPathName(g) }                                                           //                    (game: &Game) -> UniquePtr<CxxString>; /
-    // pub fn map_width(&self) { let g: &ffi::Game = unsafe { &*self.raw }; g.mapWidth()  }                                                                           //                      (self: &Game) -> i32
-    // pub fn neutral(&self) { let g: &ffi::Game = unsafe { &*self.raw }; g.neutral()  }                                                                              //                        (self: &Game) -> *mut PlayerInterface
-    // pub fn observers(&self) { let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw) }; g.observers()  }                                         //                     (self: Pin<&mut Game>) -> Pin<&mut Playerset>
-    // pub fn pause_game(&self) { let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw) }; g.pauseGame()  }                                        //                     (self: Pin<&mut Game>)
-    // pub fn ping_minimap(&self) { let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw) }; g.pingMinimap()  }                                    //                       (self: Pin<&mut Game>, p: Position)
-    // pub fn printf(&self) { let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw) }; g._game_printf()  }                                         //                        (game: Pin<&mut Game>, text: &str)
-    // pub fn restart_game(&self) { let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw) }; g.restartGame()  }                                    //                       (self: Pin<&mut Game>)
-    // pub fn resume_game(&self) { let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw) }; g.resumeGame()  }                                      //                      (self: Pin<&mut Game>)
-    // pub fn self_(&self) -> Player { let g: &ffi::Game = unsafe { &*self.raw }; ffi::_game_self    // pub fn send_text(&self) { let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw) }; g._game_sendText()  }                                    //                          (game: Pin<&mut Game>, text: &str)
-    // pub fn send_text_ex(&self) { let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw) }; g._game_sendTextEx()  }                               //                            (game: Pin<&mut Game>, toAllies: bool, text: &str)
+    pub fn has_creep(&self, position: TilePosition) -> bool {
+        let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
+        g.hasCreep(position)
+    }
+    pub fn has_path(&self, source: Position, destination: Position) -> bool {
+        let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
+        g.hasPath(source, destination)
+    }
+    pub fn has_power(&self, position: TilePosition, u_type: UnitType) -> bool {
+        let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
+        g.hasPower(position, u_type)
+    }
+    pub fn has_power_precise(&self, position: Position, u_type: UnitType) -> bool {
+        let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
+        g.hasPowerPrecise(position, u_type)
+    }
+    pub fn index_to_unit(&self, unit_index: i32) -> Option<Unit> {
+        let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
+        Unit::option(g.indexToUnit(unit_index))
+    }
+    pub fn is_battle_net(&self) -> bool {
+        let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
+        g.isBattleNet()
+    }
+    pub fn is_buildable(&self, position: TilePosition, include_buildings: bool) -> bool {
+        let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
+        g.isBuildable(position, include_buildings)
+    }
+    pub fn is_debug(&self) -> bool {
+        let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
+        g.isDebug()
+    }
+    pub fn is_explored(&self, position: TilePosition) -> bool {
+        let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
+        g.isExplored(position)
+    }
+    pub fn is_flag_enabled(&self, flag: Flag) -> bool {
+        let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
+        ffi::_game_isFlagEnabled(g, flag)
+    }
+    pub fn is_guienabled(&self) -> bool {
+        let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
+        g.isGUIEnabled()
+    }
+    pub fn is_in_game(&self) -> bool {
+        let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
+        g.isInGame()
+    }
+    pub fn is_lat_com_enabled(&self) -> bool {
+        let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
+        g.isLatComEnabled()
+    }
+    pub fn is_multiplayer(&self) -> bool {
+        let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
+        g.isMultiplayer()
+    }
+    pub fn is_paused(&self) -> bool {
+        let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
+        g.isPaused()
+    }
+    pub fn is_replay(&self) -> bool {
+        let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
+        g.isReplay()
+    }
+    pub fn issue_command(&self, units: &Unitset, command: UnitCommand) -> bool {
+        let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw.unwrap().as_mut()) };
+        g.issueCommand(units.raw.underlying(), command)
+    }
+    pub fn is_visible(&self, position: TilePosition) -> bool {
+        let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
+        g.isVisible(position)
+    }
+    pub fn is_walkable(&self, position: WalkPosition) -> bool {
+        let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
+        g.isWalkable(position)
+    }
+    pub fn leave_game(&self) {
+        let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw.unwrap().as_mut()) };
+        g.leaveGame()
+    }
+    pub fn map_file_name(&self) -> String {
+        let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
+        ffi::_game_mapFileName(g).to_string()
+    }
+    pub fn map_hash(&self) -> String {
+        let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
+        ffi::_game_mapHash(g).to_string()
+    }
+    pub fn map_height(&self) -> i32 {
+        let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
+        g.mapHeight()
+    }
+    pub fn map_name(&self) -> String {
+        let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
+        ffi::_game_mapName(g).to_string()
+    }
+    pub fn map_path_name(&self) -> String {
+        let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
+        ffi::_game_mapPathName(g).to_string()
+    }
+    pub fn map_width(&self) -> i32 {
+        let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
+        g.mapWidth()
+    }
+    pub fn neutral(&self) -> Player {
+        let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
+        unsafe { Player::from_raw(g.neutral()) }
+    }
+    pub fn observers(&self) -> Playerset {
+        let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw.unwrap().as_mut()) };
+        Playerset {
+            raw: Handle::BorrowedMut(g.observers()),
+        }
+    }
+    pub fn pause_game(&self) {
+        let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw.unwrap().as_mut()) };
+        g.pauseGame()
+    }
+    pub fn ping_minimap(&self, p: Position) {
+        let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw.unwrap().as_mut()) };
+        g.pingMinimap(p)
+    }
+    pub fn printf(&self, text: &str) {
+        let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw.unwrap().as_mut()) };
+        ffi::_game_printf(g, text)
+    }
+    pub fn restart_game(&self) {
+        let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw.unwrap().as_mut()) };
+        g.restartGame()
+    }
+    pub fn resume_game(&self) {
+        let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw.unwrap().as_mut()) };
+        g.resumeGame()
+    }
+    pub fn self_(&self) -> Player {
+        let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
+        unsafe { Player::from_raw(ffi::_game_self(g)) }
+    }
+    pub fn send_text(&self, text: &str) {
+        let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw.unwrap().as_mut()) };
+        ffi::_game_sendText(g, text)
+    }
+    pub fn send_text_ex(&self, to_allies: bool, text: &str) {
+        let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw.unwrap().as_mut()) };
+        ffi::_game_sendTextEx(g, to_allies, text)
+    }
     pub fn set_alliance(&self, player: Player, allied: bool, allied_victory: bool) -> bool {
-        let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw.unwrap().as_ptr()) };
+        let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw.unwrap().as_mut()) };
         unsafe { g.setAlliance(player.raw.as_ptr(), allied, allied_victory) }
     }
-    // pub fn set_command_optimization_level(&self) { let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw) }; g.setCommandOptimizationLevel()  }  //                     (self: Pin<&mut                                       Game>, level: i32)
-    // pub fn set_frame_skip(&self) { let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw) }; g.setFrameSkip()  }                                 //                        (self: Pin<&mut Game>, frameSkip: i32)
-    // pub fn set_gui(&self) { let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw) }; g.setGUI()  }                                              //                  (self: Pin<&mut Game>, enabled: bool)
-    // pub fn set_lat_com(&self) { let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw) }; g.setLatCom()  }                                       //                     (self: Pin<&mut Game>, isEnabled: bool)
-    // pub fn set_local_speed(&self) { let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw) }; g.setLocalSpeed()  }                               //                         (self: Pin<&mut Game>, speed: i32)
-    // pub fn set_map(&self) { let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw) }; g._game_setMap()  }                                        //                        (game: Pin<&mut Game>, text: &str) -> bool
-    // pub fn set_reveal_all(&self) { let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw) }; g.setRevealAll()  }                                 //                        (self: Pin<&mut Game>, reveal: bool) -> bool
-    // pub fn set_screen_position(&self) { let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw) }; g.setScreenPosition()  }                       //                         (self: Pin<&mut Game>, p: Position)
-    // pub fn set_vision(&self) { let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw) }; g.setVision()  }                                        //                     (self: Pin<&mut Game>, player: *mut PlayerInterface, enabled: bool) -> bool
+    pub fn set_command_optimization_level(&self, level: i32) {
+        let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw.unwrap().as_mut()) };
+        g.setCommandOptimizationLevel(level)
+    }
+    // pub fn set_frame_skip(&self, frameSkip: i32) { let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw) }; g.setFrameSkip()  }
+    // pub fn set_gui(&self, enabled: bool) { let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw) }; g.setGUI()  }
+    // pub fn set_lat_com(&self, isEnabled: bool) { let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw) }; g.setLatCom()  }
+    // pub fn set_local_speed(&self, speed: i32) { let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw) }; g.setLocalSpeed()  }
+    // pub fn set_map(&self, text: &str) -> bool { let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw) }; g._game_setMap()  }
+    // pub fn set_reveal_all(&self, reveal: bool) -> bool { let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw) }; g.setRevealAll()  }
+    // pub fn set_screen_position(&self, p: Position) { let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw) }; g.setScreenPosition()  }
+    // pub fn set_vision(&self, player: Player, enabled: bool) -> bool { let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw) }; g.setVision()  }
 
-    pub fn send_text(&self, text: &str) {
-        ffi::_game_sendText(unsafe { Pin::new_unchecked(&mut *self.raw.unwrap().as_ptr()) }, text)
+    pub fn set_text_size(&self, size: TextSize) {
+        let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw.unwrap().as_mut()) };
+        g.setTextSize(size);
     }
 
     // let ctype = ctype.unwrap_or(CoordinateType::Map);
-    pub fn set_text_size(&self, size: TextSize) {
-        let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw.unwrap().as_ptr()) };
-        g.setTextSize(size);
-    }
     pub fn draw_text(&self, ctype: CoordinateType, x: i32, y: i32, text: &str) {
-        let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw.unwrap().as_ptr()) };
+        let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw.unwrap().as_mut()) };
         ffi::_game_drawText(g, ctype, x, y, text);
     }
     pub fn draw_text_map(&self, x: i32, y: i32, text: &str) {
