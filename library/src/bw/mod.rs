@@ -48,7 +48,7 @@ pub mod upgrade_type;
 pub mod weapon_type;
 
 /// Updated on gameInit call
-pub static GAME: Lazy<Arc<Mutex<Game>>> = Lazy::new(|| Arc::new(Mutex::new(Game { raw: null_mut() })));
+pub static GAME: Lazy<Arc<Mutex<Game>>> = Lazy::new(|| Arc::new(Mutex::new(Game { raw: None })));
 
 thread_local! {
     static UNIT_FILTERS: RefCell<VecDeque<Box<dyn Fn(Unit) -> bool>>> = RefCell::new(VecDeque::new());

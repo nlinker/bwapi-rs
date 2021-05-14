@@ -16,10 +16,11 @@ use crate::bw::{with_unit_and_best_filter, with_unit_filter, Handle};
 use crate::{ffi, FromRaw};
 use cxx::UniquePtr;
 use std::pin::Pin;
+use std::ptr::NonNull;
 
 #[derive(Debug)]
 pub struct Game {
-    pub(crate) raw: *mut ffi::Game,
+    pub(crate) raw: Option<NonNull<ffi::Game>>,
 }
 
 /// Game object doesn't contain any self-references
@@ -28,75 +29,84 @@ impl Unpin for Game {}
 /// Safety: https://stackoverflow.com/a/60295465/5066426
 unsafe impl Send for Game {}
 
+impl FromRaw<ffi::Game> for Game {
+    unsafe fn from_raw(raw: *mut ffi::Game) -> Self {
+        assert!(!raw.is_null());
+        Self {
+            raw: Some(NonNull::new_unchecked(raw)),
+        }
+    }
+}
+
 impl Game {
     pub fn debug<F: Fn(Unit) -> bool + 'static>(&self, f: F) {
-        let g: &ffi::Game = unsafe { &*self.raw };
+        let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
         with_unit_filter(f, |uf| ffi::_game_debug(g, uf));
     }
 
     pub fn allies(&self) -> Playerset {
-        let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw) };
+        let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw.unwrap().as_ptr()) };
         let set: Pin<&mut ffi::Playerset> = g.allies();
         Playerset {
             raw: Handle::BorrowedMut(set),
         }
     }
     pub fn can_build_here(&self, position: TilePosition, utype: UnitType, builder: Unit, check_explored: bool) -> bool {
-        let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw) };
+        let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw.unwrap().as_ptr()) };
         unsafe { g.canBuildHere(position, utype, builder.raw.as_ptr(), check_explored) }
     }
     pub fn can_make(&self, utype: UnitType, builder: Unit) -> bool {
-        let g: &ffi::Game = unsafe { &*self.raw };
+        let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
         unsafe { g.canMake(utype, builder.raw.as_ptr()) }
     }
     pub fn can_research(&self, ttype: TechType, unit: Unit, check_can_issue_command_type: bool) -> bool {
-        let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw) };
+        let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw.unwrap().as_ptr()) };
         unsafe { g.canResearch(ttype, unit.raw.as_ptr(), check_can_issue_command_type) }
     }
     pub fn can_upgrade(&self, utype: UpgradeType, unit: Unit, check_can_issue_command_type: bool) -> bool {
-        let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw) };
+        let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw.unwrap().as_ptr()) };
         unsafe { g.canUpgrade(utype, unit.raw.as_ptr(), check_can_issue_command_type) }
     }
     pub fn countdown_timer(&self) -> i32 {
-        let g: &ffi::Game = unsafe { &*self.raw };
+        let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
         g.countdownTimer()
     }
     pub fn elapsed_time(&self) -> i32 {
-        let g: &ffi::Game = unsafe { &*self.raw };
+        let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
         g.elapsedTime()
     }
     pub fn enable_flag(&self, flag: Flag) {
-        let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw) };
+        let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw.unwrap().as_ptr()) };
         ffi::_game_enableFlag(g, flag)
     }
     pub fn enemies(&self) -> Playerset {
-        let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw) };
+        let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw.unwrap().as_ptr()) };
         Playerset {
             raw: Handle::BorrowedMut(g.enemies()),
         }
     }
     pub fn enemy(&self) -> Player {
-        let g: &ffi::Game = unsafe { &*self.raw };
+        let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
         unsafe { Player::from_raw(g.enemy()) }
     }
     pub fn get_all_regions(&self) -> Regionset {
-        let g: &ffi::Game = unsafe { &*self.raw };
+        let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
         Regionset {
             raw: Handle::Borrowed(g.getAllRegions()),
         }
     }
     pub fn get_all_units(&self) -> Unitset {
-        let g: &ffi::Game = unsafe { &*self.raw };
+        let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
         Unitset {
             raw: Handle::Borrowed(g.getAllUnits()),
         }
     }
     pub fn get_apm(&self, include_selects: bool) -> i32 {
-        let g: &ffi::Game = unsafe { &*self.raw };
+        let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
         g.getAPM(include_selects)
     }
     pub fn get_average_fps(&self) -> f64 {
-        let g: &ffi::Game = unsafe { &*self.raw };
+        let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
         g.getAverageFPS()
     }
     pub fn get_best_unit(
@@ -106,7 +116,7 @@ impl Game {
         center: Position,
         radius: i32,
     ) -> Option<Unit> {
-        let g: &ffi::Game = unsafe { &*self.raw };
+        let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
         with_unit_and_best_filter(unit_fn, best_fn, |uf, bf| {
             Unit::option(ffi::_game_getBestUnit(g, bf, uf, center, radius))
         })
@@ -204,25 +214,25 @@ impl Game {
     // pub fn set_vision(&self) { let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw) }; g.setVision()  }                                        //                     (self: Pin<&mut Game>, player: *mut PlayerInterface, enabled: bool) -> bool
 
     pub fn set_alliance(&self, player: Player, allied: bool, allied_victory: bool) -> bool {
-        let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw) };
+        let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw.unwrap().as_ptr()) };
         unsafe { g.setAlliance(player.raw.as_ptr(), allied, allied_victory) }
     }
 
     pub fn get_forces(&self) -> Forceset {
-        let g: &ffi::Game = unsafe { &*self.raw };
+        let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
         Forceset {
             raw: Handle::Borrowed(g.getForces()),
         }
     }
 
     pub fn send_text(&self, text: &str) {
-        ffi::_game_sendText(unsafe { Pin::new_unchecked(&mut *self.raw) }, text)
+        ffi::_game_sendText(unsafe { Pin::new_unchecked(&mut *self.raw.unwrap().as_ptr()) }, text)
     }
     pub fn get_frame_count(&self) -> i32 {
-        unsafe { (*self.raw).getFrameCount() }
+        unsafe { self.raw.unwrap().as_ref().getFrameCount() }
     }
     pub fn get_units_in_radius(&self, position: Position, radius: i32, _pred: UnitFilter) -> Unitset {
-        let g: &ffi::Game = unsafe { &*self.raw };
+        let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
         let set: UniquePtr<ffi::Unitset> = ffi::_game_getUnitsInRadius(g, position, radius, |_| true); // todo
         Unitset {
             raw: Handle::Owned(set),
@@ -230,22 +240,22 @@ impl Game {
     }
 
     pub fn get_nuke_dots(&self) -> Vec<Position> {
-        let g: &ffi::Game = unsafe { &*self.raw };
+        let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
         ffi::_game_getNukeDots(g)
     }
 
     pub fn get_start_locations(&self) -> Vec<TilePosition> {
-        let g: &ffi::Game = unsafe { &*self.raw };
+        let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
         ffi::_game_getStartLocations(g)
     }
 
     // let ctype = ctype.unwrap_or(CoordinateType::Map);
     pub fn set_text_size(&self, size: TextSize) {
-        let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw) };
+        let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw.unwrap().as_ptr()) };
         g.setTextSize(size);
     }
     pub fn draw_text(&self, ctype: CoordinateType, x: i32, y: i32, text: &str) {
-        let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw) };
+        let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw.unwrap().as_ptr()) };
         ffi::_game_drawText(g, ctype, x, y, text);
     }
     pub fn draw_text_map(&self, x: i32, y: i32, text: &str) {
@@ -261,7 +271,7 @@ impl Game {
         color: Color,
         is_solid: bool,
     ) {
-        let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw) };
+        let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw.unwrap().as_ptr()) };
         g.drawBox(ctype, left, top, right, bottom, color, is_solid);
     }
     pub fn draw_box_map(&self, left: i32, top: i32, right: i32, bottom: i32, color: Color, is_solid: bool) {
@@ -279,7 +289,7 @@ impl Game {
         color: Color,
         is_solid: bool,
     ) {
-        let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw) };
+        let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw.unwrap().as_ptr()) };
         g.drawTriangle(ctype, ax, ay, bx, by, cx, cy, color, is_solid);
     }
     pub fn draw_triangle_map(
@@ -296,7 +306,7 @@ impl Game {
         self.draw_triangle(CoordinateType::Map, ax, ay, bx, by, cx, cy, color, is_solid);
     }
     pub fn draw_circle(&self, ctype: CoordinateType, x: i32, y: i32, radius: i32, color: Color, is_solid: bool) {
-        let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw) };
+        let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw.unwrap().as_ptr()) };
         g.drawCircle(ctype, x, y, radius, color, is_solid);
     }
     pub fn draw_circle_map(&self, x: i32, y: i32, radius: i32, color: Color, is_solid: bool) {
@@ -312,21 +322,21 @@ impl Game {
         color: Color,
         is_solid: bool,
     ) {
-        let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw) };
+        let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw.unwrap().as_ptr()) };
         g.drawEllipse(ctype, x, y, xrad, yrad, color, is_solid);
     }
     pub fn draw_ellipse_map(&self, x: i32, y: i32, xrad: i32, yrad: i32, color: Color, is_solid: bool) {
         self.draw_ellipse(CoordinateType::Map, x, y, xrad, yrad, color, is_solid);
     }
     pub fn draw_dot(&self, ctype: CoordinateType, x: i32, y: i32, color: Color) {
-        let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw) };
+        let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw.unwrap().as_ptr()) };
         g.drawDot(ctype, x, y, color);
     }
     pub fn draw_dot_map(&self, x: i32, y: i32, color: Color) {
         self.draw_dot(CoordinateType::Map, x, y, color);
     }
     pub fn draw_line(&self, ctype: CoordinateType, x1: i32, y1: i32, x2: i32, y2: i32, color: Color) {
-        let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw) };
+        let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw.unwrap().as_ptr()) };
         g.drawLine(ctype, x1, y1, x2, y2, color);
     }
     pub fn draw_line_map(&self, x1: i32, y1: i32, x2: i32, y2: i32, color: Color) {

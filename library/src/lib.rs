@@ -11,6 +11,7 @@ use once_cell::sync::OnceCell;
 use std::fmt;
 use std::fmt::{Debug, Formatter};
 use std::pin::Pin;
+use std::ptr::NonNull;
 
 #[cfg(windows)]
 #[no_mangle]
@@ -27,9 +28,9 @@ pub extern "C" fn _Unwind_RaiseException() -> ! {
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn gameInit(game: *const std::ffi::c_void) {
-    println!("gameInit called: game = {:?}", game);
-    *GAME.lock().unwrap() = Game { raw: game as *mut ffi::Game };
+pub unsafe extern "C" fn gameInit(raw: *const std::ffi::c_void) {
+    println!("gameInit called: game = {:?}", raw);
+    *GAME.lock().unwrap() = Game { raw: Some(NonNull::new_unchecked(raw as *mut ffi::Game)) };
 }
 
 /// `FromRaw` is a trait for entities that

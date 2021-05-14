@@ -109,7 +109,7 @@ impl AIModule for DemoAI {
                     // }
 
                     println!("game.allies = {:?}", game.allies().into_iter().next());
-                    game.send_text(&format!("Unitset size: {:?}", game.get_all_units().len()));
+                    // game.send_text(&format!("Unitset size: {:?}", game.get_all_units().len()));
                     let xs = game.get_nuke_dots();
                     println!("get_nuke_dots = {:?}", xs);
                     let xs = game.get_start_locations();
@@ -120,8 +120,7 @@ impl AIModule for DemoAI {
                     // if let Some(h) = inr.iter().find(|u| u.get_type() == UnitType::Zerg_Hatchery) {
                     //     let drones = inr.iter().filter(|u| u.get_type() == UnitType::Zerg_Drone).collect::<Vec<_>>();
                     // }
-
-                    game.send_text(&format!("Hello, SSCAIT!, frame count = {}", fc));
+                    // game.send_text(&format!("Hello, SSCAIT!, frame count = {}", fc));
                     sleep(Duration::from_millis(100));
                 }
             }
