@@ -86,9 +86,16 @@ impl AIModule for DemoAI {
                     let unit_opt = game.get_best_unit(
                         |u1, u2| if u1.get_id() < u2.get_id() { u1 } else { u2 },
                         |u| u.get_type() == UnitType::Zerg_Drone,
-                        c, 100);
+                        c,
+                        100,
+                    );
                     if let Some(unit) = unit_opt {
-                        game.send_text(&format!("The best unit: {:?} {:?} {:?}", unit.get_id(), unit.get_type(), unit.get_position()));
+                        game.send_text(&format!(
+                            "The best unit: {:?} {:?} {:?}",
+                            unit.get_id(),
+                            unit.get_type(),
+                            unit.get_position()
+                        ));
                     } else {
                         game.send_text("The best unit not found");
                     }

@@ -107,13 +107,8 @@ impl Game {
         radius: i32,
     ) -> Option<Unit> {
         let g: &ffi::Game = unsafe { &*self.raw };
-        with_unit_and_best_filter(unit_fn, best_fn, |uf, bf| unsafe {
-            let raw = ffi::_game_getBestUnit(g, bf, uf, center, radius);
-            if !raw.is_null() {
-                Some(Unit::from_raw(raw))
-            } else {
-                None
-            }
+        with_unit_and_best_filter(unit_fn, best_fn, |uf, bf| {
+            Unit::option(ffi::_game_getBestUnit(g, bf, uf, center, radius))
         })
     }
 

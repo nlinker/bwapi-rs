@@ -9,7 +9,7 @@ use std::collections::VecDeque;
 use std::marker::PhantomData;
 use std::ops::Deref;
 use std::pin::Pin;
-use std::ptr::{null, null_mut};
+use std::ptr::null_mut;
 use std::sync::{Arc, Mutex};
 
 pub mod client;

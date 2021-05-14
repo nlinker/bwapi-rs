@@ -36,6 +36,13 @@ pub unsafe extern "C" fn gameInit(game: *const std::ffi::c_void) {
 /// are typically created outside of Rust code.
 pub trait FromRaw<T> {
     unsafe fn from_raw(raw: *mut T) -> Self;
+    fn option(raw: *mut T) -> Option<Self> where Self: Sized {
+        if raw.is_null() {
+           None
+        } else {
+            unsafe { Some(Self::from_raw(raw)) }
+        }
+    }
 }
 
 #[allow(non_snake_case)]

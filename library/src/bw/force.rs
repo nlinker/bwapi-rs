@@ -12,7 +12,9 @@ pub struct Force {
 impl FromRaw<ffi::ForceInterface> for Force {
     unsafe fn from_raw(raw: *mut ffi::ForceInterface) -> Self {
         assert!(!raw.is_null());
-        Self { raw: NonNull::new_unchecked(raw) }
+        Self {
+            raw: NonNull::new_unchecked(raw),
+        }
     }
 }
 

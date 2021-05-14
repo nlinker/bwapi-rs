@@ -12,7 +12,9 @@ pub struct Bullet {
 impl FromRaw<ffi::BulletInterface> for Bullet {
     unsafe fn from_raw(raw: *mut ffi::BulletInterface) -> Self {
         assert!(!raw.is_null());
-        Self { raw: NonNull::new_unchecked(raw) }
+        Self {
+            raw: NonNull::new_unchecked(raw),
+        }
     }
 }
 
