@@ -1,7 +1,7 @@
-use library::prelude::{AIModule, BoxedAIModule, Event};
-use library::{HACK_BOX, FromRaw, ffi};
-use library::bw::unit::Unit;
 use library::bw::game::Game;
+use library::bw::unit::Unit;
+use library::prelude::{AIModule, BoxedAIModule, Event};
+use library::{ffi, FromRaw, HACK_BOX};
 
 struct TestAI;
 impl AIModule for TestAI {

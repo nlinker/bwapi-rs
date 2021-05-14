@@ -12,18 +12,11 @@ use crate::bw::unit_filter::UnitFilter;
 use crate::bw::unit_type::UnitType;
 use crate::bw::unitset::Unitset;
 use crate::bw::upgrade_type::UpgradeType;
-use crate::bw::Handle;
+use crate::bw::{with_unit_and_best_filter, with_unit_filter, Handle};
 use crate::{ffi, FromRaw};
 use cxx::UniquePtr;
 use std::pin::Pin;
-use crate::ffi::UnitInterface;
-use once_cell::sync::Lazy;
-use std::collections::HashMap;
-use std::any::TypeId;
-use std::sync::Mutex;
-use std::borrow::BorrowMut;
-use std::cell::RefCell;
-use std::ops::Deref;
+use std::ptr::{null, null_mut};
 
 #[derive(Debug)]
 pub struct Game {
@@ -36,25 +29,18 @@ impl Unpin for Game {}
 /// Safety: https://stackoverflow.com/a/60295465/5066426
 unsafe impl Send for Game {}
 
-thread_local! {
-    static FUNCS: RefCell<HashMap<TypeId, Box<dyn Fn(Unit) -> bool>>> = RefCell::new(HashMap::new());
-}
-
 #[cfg(test)]
 mod tests {
-    use crate::{ffi, FromRaw};
     use crate::bw::game::Game;
     use crate::bw::unit::Unit;
-    use std::thread;
-    use std::borrow::{Borrow, BorrowMut};
-    use std::cell::RefCell;
+    use crate::{ffi, FromRaw};
 
     #[test]
     fn function_wrap_test() {
         let game: *mut ffi::Game = unsafe { std::mem::transmute(0xCCCC0000CCCC_u64) };
         let ui: *mut ffi::UnitInterface = unsafe { std::mem::transmute(0xDEAD0000DEAD_u64) };
         let game = Game { raw: game };
-        let unit = unsafe { Unit::from_raw(ui) };
+        let _unit = unsafe { Unit::from_raw(ui) };
         let p1 = game.debug(move |unit: Unit| unit.raw == ui); // 11113166405748136904
         let p2 = game.debug(move |unit: Unit| unit.raw == ui); // 8655477979401146412
         println!("p1 = {:?}", p1);
@@ -62,30 +48,10 @@ mod tests {
     }
 }
 
-fn unit_filter<F: Fn(Unit) -> bool + 'static>(x: *mut UnitInterface) -> bool {
-    let tid = TypeId::of::<F>();
-    FUNCS.with(|hm| {
-        let f = &hm.borrow()[&tid];
-        let unit = unsafe { Unit::from_raw(x) };
-        f(unit)
-    })
-}
-
 impl Game {
     pub fn debug<F: Fn(Unit) -> bool + 'static>(&self, f: F) {
         let g: &ffi::Game = unsafe { &*self.raw };
-
-        let tid = TypeId::of::<F>();
-        FUNCS.with(|mut hm| {
-            hm.borrow_mut().insert(tid, Box::new(f));
-        });
-        unsafe {
-            ffi::_game_debug(g, unit_filter::<F>);
-        }
-        FUNCS.with(|mut hm| {
-            hm.borrow_mut().remove(&tid)
-        });
-
+        with_unit_filter(f, |uf| ffi::_game_debug(g, uf));
     }
 
     pub fn allies(&self) -> Playerset {
@@ -153,10 +119,19 @@ impl Game {
         let g: &ffi::Game = unsafe { &*self.raw };
         g.getAverageFPS()
     }
-    // pub fn get_best_unit(&self, best_fn: fn(Unit, Unit) -> Unit, predicate_fn: fn(Unit) -> bool, center: Position, radius: i32) -> Unit {
-    //     let g: &ffi::Game = unsafe { &*self.raw };
-    //     unsafe { Unit::from_raw(ffi::_game_getBestUnit(g, best_fn, predicate_fn, center, radius)) }
-    // }
+    pub fn get_best_unit(
+        &self,
+        best_fn: fn(Unit, Unit) -> Unit,
+        unit_fn: fn(Unit) -> bool,
+        center: Position,
+        radius: i32,
+    ) -> Option<Unit> {
+        let g: &ffi::Game = unsafe { &*self.raw };
+        with_unit_and_best_filter(unit_fn, best_fn, |uf, bf| unsafe {
+            let raw = ffi::_game_getBestUnit(g, bf, uf, center, radius);
+            raw.as_ref().map(|raw| Unit::from_raw(raw))
+        })
+    }
 
     // pub fn get_build_location(&self) let g: &ffi::Game = unsafe { &*self.raw };  { g.getBuildLocation() }                                                          //            (self: &Game, unitType: UnitType, desiredPosition: TilePosition, maxRange: i32, creep: bool) -> TilePosition
     // pub fn get_bullets(&self) { let g: &ffi::Game = unsafe { &*self.raw }; g.getBullets()  }                                                                       //                    (self: &Game) -> &Bulletset
@@ -267,7 +242,7 @@ impl Game {
     pub fn get_frame_count(&self) -> i32 {
         unsafe { (*self.raw).getFrameCount() }
     }
-    pub fn get_units_in_radius(&self, position: Position, radius: i32, pred: UnitFilter) -> Unitset {
+    pub fn get_units_in_radius(&self, position: Position, radius: i32, _pred: UnitFilter) -> Unitset {
         let g: &ffi::Game = unsafe { &*self.raw };
         let set: UniquePtr<ffi::Unitset> = ffi::_game_getUnitsInRadius(g, position, radius, |_| true); // todo
         Unitset {

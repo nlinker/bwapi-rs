@@ -49,7 +49,8 @@ std::unique_ptr <AIModuleWrapper> createAIModuleWrapper(rust::Box <BoxedAIModule
     return std::unique_ptr<AIModuleWrapper>(new AIModuleWrapper(box.into_raw()));
 }
 
-void _game_debug(const BWAPI::Game &game, rust::Fn<bool(BWAPI::UnitInterface*)> fun) {
+void _game_debug(const BWAPI::Game &game, UnitFilter fun) {
+    // rust::Fn<bool(BWAPI::UnitInterface*)> fun
     using namespace BWAPI;
     Game &g = const_cast<Game&>(game);
     Position c(250, 3160);
@@ -156,7 +157,7 @@ std::unique_ptr<BWAPI::Playerset> _force_getPlayers(const BWAPI::ForceInterface&
 
 // region === === Game === ===
 BWAPI::UnitInterface *_game_getBestUnit(const BWAPI::Game &game, BestUnitFilter best, UnitFilter pred, BWAPI::Position center, int radius) {
-    return game.getBestUnit(nullptr /*todo*/, nullptr /*todo*/, center, radius);
+    return game.getBestUnit(best, pred, center, radius);
 }
 
 BWAPI::UnitInterface *_game_getClosestUnit(const BWAPI::Game &game, BWAPI::Position center, UnitFilter pred, int radius) {

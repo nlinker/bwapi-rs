@@ -43,9 +43,10 @@ impl Unitset<'_> {
         self.iter().size_hint().0
     }
 
-    pub fn get_closest_unit(&self, pred: UnitFilter, radius: i32) -> Unit {
+    pub fn get_closest_unit(&self, _pred: UnitFilter, radius: i32) -> Unit {
         let xs: &ffi::Unitset = self.raw.underlying();
-        unsafe { Unit::from_raw(ffi::_unitset_getClosestUnit(xs, |_| true, radius)) } // todo
+        unsafe { Unit::from_raw(ffi::_unitset_getClosestUnit(xs, |_| true, radius)) }
+        // todo
     }
     pub fn get_interceptors(&self) -> Unitset {
         let xs: &ffi::Unitset = self.raw.underlying();
@@ -69,7 +70,7 @@ impl Unitset<'_> {
         let xs: &ffi::Unitset = self.raw.underlying();
         xs.getPosition()
     }
-    pub fn get_units_in_radius(&self, radius: i32, pred: UnitFilter) -> Unitset {
+    pub fn get_units_in_radius(&self, radius: i32, _pred: UnitFilter) -> Unitset {
         let xs: &ffi::Unitset = self.raw.underlying();
         Unitset {
             raw: Handle::Owned(ffi::_unitset_getUnitsInRadius(xs, radius, |_| true)), // todo

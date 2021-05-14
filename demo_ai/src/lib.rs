@@ -1,12 +1,12 @@
 use cxx::UniquePtr;
 use library::bw::color::Color;
 use library::bw::coordinate_type::CoordinateType;
+use library::bw::unit_type::UnitType;
 use library::ffi;
 use library::prelude::*;
 use std::sync::MutexGuard;
 use std::thread::sleep;
 use std::time::Duration;
-use library::bw::unit_type::UnitType;
 
 #[no_mangle]
 #[allow(non_snake_case)]
@@ -54,8 +54,24 @@ impl AIModule for DemoAI {
                 ];
                 for i in 0..colors.len() {
                     let delta = (i * 37) as i32;
-                    game.draw_box(CoordinateType::Map, 100 + delta, 100 + delta, 200 + delta, 200 + delta, colors[i], true);
-                    game.draw_box(CoordinateType::Map, 300 + delta, 100 + delta, 400 + delta, 200 + delta, colors[i], false);
+                    game.draw_box(
+                        CoordinateType::Map,
+                        100 + delta,
+                        100 + delta,
+                        200 + delta,
+                        200 + delta,
+                        colors[i],
+                        true,
+                    );
+                    game.draw_box(
+                        CoordinateType::Map,
+                        300 + delta,
+                        100 + delta,
+                        400 + delta,
+                        200 + delta,
+                        colors[i],
+                        false,
+                    );
                 }
                 // let sizes = [TextSize::Huge, TextSize::Large, TextSize::Small, TextSize::Default];
                 // for i in 0..sizes.len() {
@@ -66,12 +82,23 @@ impl AIModule for DemoAI {
                 let fc = game.get_frame_count();
                 if fc % 20 == 0 {
                     game.debug(|u| u.get_type() == UnitType::Zerg_Drone);
+                    let c = Position { x: 250, y: 3160 };
+                    let unit_opt = game.get_best_unit(
+                        |u1, u2| if u1.get_id() < u2.get_id() { u1 } else { u2 },
+                        |u| u.get_type() == UnitType::Zerg_Drone,
+                        c, 100);
+                    if let Some(unit) = unit_opt {
+                        game.send_text(&format!("The best unit: {:?} {:?} {:?}", unit.get_id(), unit.get_type(), unit.get_position()));
+                    } else {
+                        game.send_text("The best unit not found");
+                    }
+
                     // let forces = game.get_forces();
                     // for force in forces.iter() {
                     //     println!("force: {} {}", force.get_id(), force.get_name());
-                        // for player in force.get_players().iter() {
-                        //     println!("  player: {:?}", player);
-                        // }
+                    // for player in force.get_players().iter() {
+                    //     println!("  player: {:?}", player);
+                    // }
                     // }
 
                     println!("game.allies = {:?}", game.allies().into_iter().next());
@@ -87,12 +114,6 @@ impl AIModule for DemoAI {
                     //     let drones = inr.iter().filter(|u| u.get_type() == UnitType::Zerg_Drone).collect::<Vec<_>>();
                     // }
 
-                    // let c = Position { x: 250, y: 3160 };
-                    // let inr = game.get_units_in_radius(c, 100, |_| true).iter().collect::<Vec<_>>();
-                    // game.send_text(&format!("In radius size_hint: {:?}", inr.len()));
-                    // for u in inr {
-                    //     println!("In radius: unit with id {:0>3}, type: {:?}, pos: {:?}", u.get_id(), u.get_type(), u.get_position());
-                    // }
                     game.send_text(&format!("Hello, SSCAIT!, frame count = {}", fc));
                     sleep(Duration::from_millis(100));
                 }

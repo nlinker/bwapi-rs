@@ -1,8 +1,11 @@
 use crate::bw::game::Game;
-use crate::FromRaw;
+use crate::bw::unit::Unit;
+use crate::{ffi, FromRaw};
 use cxx::memory::UniquePtrTarget;
 use cxx::UniquePtr;
 use once_cell::sync::Lazy;
+use std::cell::RefCell;
+use std::collections::VecDeque;
 use std::marker::PhantomData;
 use std::ops::Deref;
 use std::pin::Pin;
@@ -46,6 +49,12 @@ pub mod weapon_type;
 
 /// Updated on gameInit call
 pub static GAME: Lazy<Arc<Mutex<Game>>> = Lazy::new(|| Arc::new(Mutex::new(Game { raw: null_mut() })));
+
+thread_local! {
+    static UNIT_FILTERS: RefCell<VecDeque<Box<dyn Fn(Unit) -> bool>>> = RefCell::new(VecDeque::new());
+    static CMP_UNIT_FILTERS: RefCell<VecDeque<Box<dyn Fn(Unit) -> i32>>> = RefCell::new(VecDeque::new());
+    static BEST_UNIT_FILTERS: RefCell<VecDeque<Box<dyn Fn(Unit, Unit) -> Unit>>> = RefCell::new(VecDeque::new());
+}
 
 /// `FC` - foreign collection like `ffi::Unitset` or `ffi::Playerset`
 #[derive(Debug)]
@@ -98,6 +107,77 @@ where
     fn size_hint(&self) -> (usize, Option<usize>) {
         self.iter.size_hint()
     }
+}
+
+pub fn with_unit_filter<F, FFI>(f: F, ffi_call: FFI)
+where
+    F: Fn(Unit) -> bool + 'static,
+    FFI: FnOnce(fn(x: *mut ffi::UnitInterface) -> bool),
+{
+    UNIT_FILTERS.with(|ufs| {
+        ufs.borrow_mut().push_back(Box::new(f));
+    });
+    //-----------------------------------
+    let ret = ffi_call(unit_filter::<F>);
+    //-----------------------------------
+    UNIT_FILTERS.with(|ufs| {
+        let _ = ufs.borrow_mut().pop_back();
+    });
+    ret
+}
+
+pub fn with_unit_and_best_filter<F, G, FFI, R>(f: F, g: G, ffi_call: FFI) -> R
+where
+    F: Fn(Unit) -> bool + 'static,
+    G: Fn(Unit, Unit) -> Unit + 'static,
+    FFI: FnOnce(
+        fn(*mut ffi::UnitInterface) -> bool,
+        fn(*mut ffi::UnitInterface, *mut ffi::UnitInterface) -> *mut ffi::UnitInterface,
+    ) -> R,
+{
+    UNIT_FILTERS.with(|ufs| {
+        ufs.borrow_mut().push_back(Box::new(f));
+    });
+    BEST_UNIT_FILTERS.with(|bufs| {
+        bufs.borrow_mut().push_back(Box::new(g));
+    });
+    //----------------------------------------------------------
+    let ret = ffi_call(unit_filter::<F>, best_unit_filter::<G>);
+    //----------------------------------------------------------
+    BEST_UNIT_FILTERS.with(|bufs| {
+        let _ = bufs.borrow_mut().pop_back();
+    });
+    UNIT_FILTERS.with(|ufs| {
+        let _ = ufs.borrow_mut().pop_back();
+    });
+    ret
+}
+
+fn unit_filter<F: Fn(Unit) -> bool + 'static>(x: *mut ffi::UnitInterface) -> bool {
+    UNIT_FILTERS.with(|funcs| {
+        if let Some(f) = funcs.borrow().back() {
+            let unit = unsafe { Unit::from_raw(x) };
+            f(unit)
+        } else {
+            unreachable!("Impossible: function stack is empty")
+        }
+    })
+}
+
+fn best_unit_filter<F: Fn(Unit, Unit) -> Unit + 'static>(
+    x: *mut ffi::UnitInterface,
+    y: *mut ffi::UnitInterface,
+) -> *mut ffi::UnitInterface {
+    BEST_UNIT_FILTERS.with(|funcs| {
+        if let Some(f) = funcs.borrow().back() {
+            let u1 = unsafe { Unit::from_raw(x) };
+            let u2 = unsafe { Unit::from_raw(y) };
+            let u: Unit = f(u1, u2);
+            u.raw as *mut _
+        } else {
+            unreachable!("Impossible: function stack is empty")
+        }
+    })
 }
 
 pub fn bwapi_get_revision() -> i32 {
