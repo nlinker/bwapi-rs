@@ -77,7 +77,7 @@ BWAPI::UnitInterface *_unitset_getClosestUnit(const BWAPI::Unitset &set, UnitFil
 std::unique_ptr<BWAPI::Unitset> _unitset_getInterceptors(const BWAPI::Unitset &set);
 std::unique_ptr<BWAPI::Unitset> _unitset_getLarva(const BWAPI::Unitset &set);
 std::unique_ptr<BWAPI::Unitset> _unitset_getLoadedUnits(const BWAPI::Unitset &set);
-std::unique_ptr<BWAPI::Unitset> _unitset_getUnitsInRadius(const BWAPI::Unitset &set, int radius, rust::Fn<bool(BWAPI::Unit)> pred);
+std::unique_ptr<BWAPI::Unitset> _unitset_getUnitsInRadius(const BWAPI::Unitset &set, int radius, UnitFilter pred);
 bool _unitset_move(const BWAPI::Unitset &set, BWAPI::Position target, bool shift_queue_command);
 
 std::unique_ptr<std::string> _force_getName(const BWAPI::ForceInterface& force);
