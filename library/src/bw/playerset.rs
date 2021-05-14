@@ -21,7 +21,7 @@ impl fmt::Debug for Playerset<'_> {
 
 impl ForeignIterator for ffi::PlayersetIterator {
     type ForeignItem = ffi::PlayerInterface;
-    fn next(self: Pin<&mut Self>) -> *const Self::ForeignItem {
+    fn next(self: Pin<&mut Self>) -> *mut Self::ForeignItem {
         self.next() // ffi call
     }
     fn size_hint(&self) -> (usize, Option<usize>) {

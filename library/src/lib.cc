@@ -120,7 +120,7 @@ std::unique_ptr<BWAPI::Unitset> _playerset_getUnits(const BWAPI::Playerset &set)
 // endregion
 
 // region === === Unitset === ===
-const BWAPI::UnitInterface *_unitset_getClosestUnit(const BWAPI::Unitset &set, UnitFilter pred, int radius) {
+BWAPI::UnitInterface *_unitset_getClosestUnit(const BWAPI::Unitset &set, UnitFilter pred, int radius) {
     return set.getClosestUnit(nullptr /* todo convert predicate */, radius);
 }
 

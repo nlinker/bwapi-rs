@@ -35,7 +35,7 @@ pub unsafe extern "C" fn gameInit(game: *const std::ffi::c_void) {
 /// `FromRaw` is a trait for entities that
 /// are typically created outside of Rust code.
 pub trait FromRaw<T> {
-    unsafe fn from_raw(raw: *const T) -> Self;
+    unsafe fn from_raw(raw: *mut T) -> Self;
 }
 
 #[allow(non_snake_case)]
@@ -111,27 +111,27 @@ pub mod ffi {
         pub type c_void;
 
         type BulletsetIterator;
-        fn next(self: Pin<&mut BulletsetIterator>) -> *const BulletInterface;
+        fn next(self: Pin<&mut BulletsetIterator>) -> *mut BulletInterface;
         fn sizeHint(self: &BulletsetIterator) -> usize;
         fn createBulletsetIterator(set: &Bulletset) -> UniquePtr<BulletsetIterator>;
 
         type ForcesetIterator;
-        fn next(self: Pin<&mut ForcesetIterator>) -> *const ForceInterface;
+        fn next(self: Pin<&mut ForcesetIterator>) -> *mut ForceInterface;
         fn sizeHint(self: &ForcesetIterator) -> usize;
         fn createForcesetIterator(set: &Forceset) -> UniquePtr<ForcesetIterator>;
 
         type PlayersetIterator;
-        fn next(self: Pin<&mut PlayersetIterator>) -> *const PlayerInterface;
+        fn next(self: Pin<&mut PlayersetIterator>) -> *mut PlayerInterface;
         fn sizeHint(self: &PlayersetIterator) -> usize;
         fn createPlayersetIterator(set: &Playerset) -> UniquePtr<PlayersetIterator>;
 
         type UnitsetIterator;
-        fn next(self: Pin<&mut UnitsetIterator>) -> *const UnitInterface;
+        fn next(self: Pin<&mut UnitsetIterator>) -> *mut UnitInterface;
         fn sizeHint(self: &UnitsetIterator) -> usize;
         fn createRegionsetIterator(set: &Regionset) -> UniquePtr<RegionsetIterator>;
 
         type RegionsetIterator;
-        fn next(self: Pin<&mut RegionsetIterator>) -> *const RegionInterface;
+        fn next(self: Pin<&mut RegionsetIterator>) -> *mut RegionInterface;
         fn sizeHint(self: &RegionsetIterator) -> usize;
         fn createUnitsetIterator(set: &Unitset) -> UniquePtr<UnitsetIterator>;
     }
@@ -168,7 +168,7 @@ pub mod ffi {
 
     // region BWAPI::Unitset
     unsafe extern "C++" {
-        fn _unitset_getClosestUnit(set: &Unitset, pred: unsafe fn(*mut UnitInterface) -> bool, radius: i32) -> *const UnitInterface;
+        fn _unitset_getClosestUnit(set: &Unitset, pred: unsafe fn(*mut UnitInterface) -> bool, radius: i32) -> *mut UnitInterface;
         fn _unitset_getInterceptors(set: &Unitset) -> UniquePtr<Unitset>;
         fn _unitset_getLarva(set: &Unitset) -> UniquePtr<Unitset>;
         fn _unitset_getLoadedUnits(set: &Unitset) -> UniquePtr<Unitset>;
@@ -844,19 +844,19 @@ pub mod ffi {
         unsafe fn on_end(wrapper: Pin<&mut AIModuleWrapper>, is_winner: bool);
         unsafe fn on_frame(wrapper: Pin<&mut AIModuleWrapper>);
         unsafe fn on_send_text(wrapper: Pin<&mut AIModuleWrapper>, text: &CxxString);
-        unsafe fn on_receive_text(wrapper: Pin<&mut AIModuleWrapper>, player: *const PlayerInterface, text: &CxxString);
-        unsafe fn on_player_left(wrapper: Pin<&mut AIModuleWrapper>, player: *const PlayerInterface);
+        unsafe fn on_receive_text(wrapper: Pin<&mut AIModuleWrapper>, player: *mut PlayerInterface, text: &CxxString);
+        unsafe fn on_player_left(wrapper: Pin<&mut AIModuleWrapper>, player: *mut PlayerInterface);
         unsafe fn on_nuke_detect(wrapper: Pin<&mut AIModuleWrapper>, target: Position);
-        unsafe fn on_unit_discover(wrapper: Pin<&mut AIModuleWrapper>, unit: *const UnitInterface);
-        unsafe fn on_unit_evade(wrapper: Pin<&mut AIModuleWrapper>, unit: *const UnitInterface);
-        unsafe fn on_unit_show(wrapper: Pin<&mut AIModuleWrapper>, unit: *const UnitInterface);
-        unsafe fn on_unit_hide(wrapper: Pin<&mut AIModuleWrapper>, unit: *const UnitInterface);
-        unsafe fn on_unit_create(wrapper: Pin<&mut AIModuleWrapper>, unit: *const UnitInterface);
-        unsafe fn on_unit_destroy(wrapper: Pin<&mut AIModuleWrapper>, unit: *const UnitInterface);
-        unsafe fn on_unit_morph(wrapper: Pin<&mut AIModuleWrapper>, unit: *const UnitInterface);
-        unsafe fn on_unit_renegade(wrapper: Pin<&mut AIModuleWrapper>, unit: *const UnitInterface);
+        unsafe fn on_unit_discover(wrapper: Pin<&mut AIModuleWrapper>, unit: *mut UnitInterface);
+        unsafe fn on_unit_evade(wrapper: Pin<&mut AIModuleWrapper>, unit: *mut UnitInterface);
+        unsafe fn on_unit_show(wrapper: Pin<&mut AIModuleWrapper>, unit: *mut UnitInterface);
+        unsafe fn on_unit_hide(wrapper: Pin<&mut AIModuleWrapper>, unit: *mut UnitInterface);
+        unsafe fn on_unit_create(wrapper: Pin<&mut AIModuleWrapper>, unit: *mut UnitInterface);
+        unsafe fn on_unit_destroy(wrapper: Pin<&mut AIModuleWrapper>, unit: *mut UnitInterface);
+        unsafe fn on_unit_morph(wrapper: Pin<&mut AIModuleWrapper>, unit: *mut UnitInterface);
+        unsafe fn on_unit_renegade(wrapper: Pin<&mut AIModuleWrapper>, unit: *mut UnitInterface);
         unsafe fn on_save_game(wrapper: Pin<&mut AIModuleWrapper>, game_name: &CxxString);
-        unsafe fn on_unit_complete(wrapper: Pin<&mut AIModuleWrapper>, unit: *const UnitInterface);
+        unsafe fn on_unit_complete(wrapper: Pin<&mut AIModuleWrapper>, unit: *mut UnitInterface);
     }
 
     // https://github.com/dtolnay/cxx/issues/855
@@ -879,11 +879,11 @@ fn on_frame(wrapper: Pin<&mut ffi::AIModuleWrapper>) {
 fn on_send_text(wrapper: Pin<&mut ffi::AIModuleWrapper>, text: &CxxString) {
     wrapper.get_box().on_event(Event::OnSendText(text.to_string()));
 }
-fn on_receive_text(wrapper: Pin<&mut ffi::AIModuleWrapper>, player: *const ffi::PlayerInterface, text: &CxxString) {
+fn on_receive_text(wrapper: Pin<&mut ffi::AIModuleWrapper>, player: *mut ffi::PlayerInterface, text: &CxxString) {
     let player = unsafe { crate::bw::player::Player::from_raw(player) };
     wrapper.get_box().on_event(Event::OnReceiveText(player, text.to_string()));
 }
-fn on_player_left(wrapper: Pin<&mut ffi::AIModuleWrapper>, player: *const ffi::PlayerInterface) {
+fn on_player_left(wrapper: Pin<&mut ffi::AIModuleWrapper>, player: *mut ffi::PlayerInterface) {
     let player = unsafe { crate::bw::player::Player::from_raw(player) };
     wrapper.get_box().on_event(Event::OnPlayerLeft(player));
 }
@@ -891,42 +891,42 @@ fn on_nuke_detect(wrapper: Pin<&mut ffi::AIModuleWrapper>, target: ffi::Position
     let target = crate::bw::position::Position { x: target.x, y: target.y };
     wrapper.get_box().on_event(Event::OnNukeDetect(target));
 }
-fn on_unit_discover(wrapper: Pin<&mut ffi::AIModuleWrapper>, unit: *const ffi::UnitInterface) {
+fn on_unit_discover(wrapper: Pin<&mut ffi::AIModuleWrapper>, unit: *mut ffi::UnitInterface) {
     let unit = unsafe { crate::bw::unit::Unit::from_raw(unit) };
     wrapper.get_box().on_event(Event::OnUnitDiscover(unit));
 }
-fn on_unit_evade(wrapper: Pin<&mut ffi::AIModuleWrapper>, unit: *const ffi::UnitInterface) {
+fn on_unit_evade(wrapper: Pin<&mut ffi::AIModuleWrapper>, unit: *mut ffi::UnitInterface) {
     let unit = unsafe { crate::bw::unit::Unit::from_raw(unit) };
     wrapper.get_box().on_event(Event::OnUnitEvade(unit));
 }
-fn on_unit_show(wrapper: Pin<&mut ffi::AIModuleWrapper>, unit: *const ffi::UnitInterface) {
+fn on_unit_show(wrapper: Pin<&mut ffi::AIModuleWrapper>, unit: *mut ffi::UnitInterface) {
     let unit = unsafe { crate::bw::unit::Unit::from_raw(unit) };
     wrapper.get_box().on_event(Event::OnUnitShow(unit));
 }
-fn on_unit_hide(wrapper: Pin<&mut ffi::AIModuleWrapper>, unit: *const ffi::UnitInterface) {
+fn on_unit_hide(wrapper: Pin<&mut ffi::AIModuleWrapper>, unit: *mut ffi::UnitInterface) {
     let unit = unsafe { crate::bw::unit::Unit::from_raw(unit) };
     wrapper.get_box().on_event(Event::OnUnitHide(unit));
 }
-fn on_unit_create(wrapper: Pin<&mut ffi::AIModuleWrapper>, unit: *const ffi::UnitInterface) {
+fn on_unit_create(wrapper: Pin<&mut ffi::AIModuleWrapper>, unit: *mut ffi::UnitInterface) {
     let unit = unsafe { crate::bw::unit::Unit::from_raw(unit) };
     wrapper.get_box().on_event(Event::OnUnitCreate(unit));
 }
-fn on_unit_destroy(wrapper: Pin<&mut ffi::AIModuleWrapper>, unit: *const ffi::UnitInterface) {
+fn on_unit_destroy(wrapper: Pin<&mut ffi::AIModuleWrapper>, unit: *mut ffi::UnitInterface) {
     let unit = unsafe { crate::bw::unit::Unit::from_raw(unit) };
     wrapper.get_box().on_event(Event::OnUnitDestroy(unit));
 }
-fn on_unit_morph(wrapper: Pin<&mut ffi::AIModuleWrapper>, unit: *const ffi::UnitInterface) {
+fn on_unit_morph(wrapper: Pin<&mut ffi::AIModuleWrapper>, unit: *mut ffi::UnitInterface) {
     let unit = unsafe { crate::bw::unit::Unit::from_raw(unit) };
     wrapper.get_box().on_event(Event::OnUnitMorph(unit));
 }
-fn on_unit_renegade(wrapper: Pin<&mut ffi::AIModuleWrapper>, unit: *const ffi::UnitInterface) {
+fn on_unit_renegade(wrapper: Pin<&mut ffi::AIModuleWrapper>, unit: *mut ffi::UnitInterface) {
     let unit = unsafe { crate::bw::unit::Unit::from_raw(unit) };
     wrapper.get_box().on_event(Event::OnUnitRenegade(unit));
 }
 fn on_save_game(wrapper: Pin<&mut ffi::AIModuleWrapper>, game_name: &CxxString) {
     wrapper.get_box().on_event(Event::OnSaveGame(game_name.to_string()));
 }
-fn on_unit_complete(wrapper: Pin<&mut ffi::AIModuleWrapper>, unit: *const ffi::UnitInterface) {
+fn on_unit_complete(wrapper: Pin<&mut ffi::AIModuleWrapper>, unit: *mut ffi::UnitInterface) {
     let unit = unsafe { crate::bw::unit::Unit::from_raw(unit) };
     wrapper.get_box().on_event(Event::OnUnitComplete(unit));
 }

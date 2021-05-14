@@ -44,11 +44,11 @@ public:
 };
 
 
-using BulletsetIterator = RefIterator<const BWAPI::Bulletset, const BWAPI::BulletInterface *>;
-using ForcesetIterator = RefIterator<const BWAPI::Forceset, const BWAPI::ForceInterface *>;
-using PlayersetIterator = RefIterator<const BWAPI::Playerset, const BWAPI::PlayerInterface *>;
-using RegionsetIterator = RefIterator<const BWAPI::Regionset, const BWAPI::RegionInterface *>;
-using UnitsetIterator = RefIterator<const BWAPI::Unitset, const BWAPI::UnitInterface *>;
+using BulletsetIterator = RefIterator<const BWAPI::Bulletset, BWAPI::BulletInterface *>;
+using ForcesetIterator = RefIterator<const BWAPI::Forceset, BWAPI::ForceInterface *>;
+using PlayersetIterator = RefIterator<const BWAPI::Playerset, BWAPI::PlayerInterface *>;
+using RegionsetIterator = RefIterator<const BWAPI::Regionset, BWAPI::RegionInterface *>;
+using UnitsetIterator = RefIterator<const BWAPI::Unitset, BWAPI::UnitInterface *>;
 
 std::unique_ptr<BulletsetIterator> createBulletsetIterator(const BWAPI::Bulletset &set);
 std::unique_ptr<ForcesetIterator> createForcesetIterator(const BWAPI::Forceset &set);

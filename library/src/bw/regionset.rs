@@ -21,7 +21,7 @@ impl fmt::Debug for Regionset<'_> {
 
 impl ForeignIterator for ffi::RegionsetIterator {
     type ForeignItem = ffi::RegionInterface;
-    fn next(self: Pin<&mut Self>) -> *const Self::ForeignItem {
+    fn next(self: Pin<&mut Self>) -> *mut Self::ForeignItem {
         self.next() // ffi call
     }
     fn size_hint(&self) -> (usize, Option<usize>) {

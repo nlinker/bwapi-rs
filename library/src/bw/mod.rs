@@ -76,7 +76,7 @@ impl<'a, FC: UniquePtrTarget> Handle<'a, FC> {
 
 pub trait ForeignIterator {
     type ForeignItem;
-    fn next(self: Pin<&mut Self>) -> *const Self::ForeignItem;
+    fn next(self: Pin<&mut Self>) -> *mut Self::ForeignItem;
     fn size_hint(&self) -> (usize, Option<usize>);
 }
 
@@ -98,7 +98,7 @@ where
     type Item = T;
     fn next(&mut self) -> Option<Self::Item> {
         let raw = self.iter.pin_mut().next();
-        if raw != null() {
+        if raw != null_mut() {
             Some(unsafe { Self::Item::from_raw(raw) })
         } else {
             None
@@ -173,7 +173,7 @@ fn best_unit_filter<F: Fn(Unit, Unit) -> Unit + 'static>(
             let u1 = unsafe { Unit::from_raw(x) };
             let u2 = unsafe { Unit::from_raw(y) };
             let u: Unit = f(u1, u2);
-            u.raw as *mut _
+            u.raw.as_ptr()
         } else {
             unreachable!("Impossible: function stack is empty")
         }

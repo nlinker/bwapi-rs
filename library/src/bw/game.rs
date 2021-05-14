@@ -16,7 +16,6 @@ use crate::bw::{with_unit_and_best_filter, with_unit_filter, Handle};
 use crate::{ffi, FromRaw};
 use cxx::UniquePtr;
 use std::pin::Pin;
-use std::ptr::{null, null_mut};
 
 #[derive(Debug)]
 pub struct Game {
@@ -28,25 +27,6 @@ impl Unpin for Game {}
 
 /// Safety: https://stackoverflow.com/a/60295465/5066426
 unsafe impl Send for Game {}
-
-#[cfg(test)]
-mod tests {
-    use crate::bw::game::Game;
-    use crate::bw::unit::Unit;
-    use crate::{ffi, FromRaw};
-
-    #[test]
-    fn function_wrap_test() {
-        let game: *mut ffi::Game = unsafe { std::mem::transmute(0xCCCC0000CCCC_u64) };
-        let ui: *mut ffi::UnitInterface = unsafe { std::mem::transmute(0xDEAD0000DEAD_u64) };
-        let game = Game { raw: game };
-        let _unit = unsafe { Unit::from_raw(ui) };
-        let p1 = game.debug(move |unit: Unit| unit.raw == ui); // 11113166405748136904
-        let p2 = game.debug(move |unit: Unit| unit.raw == ui); // 8655477979401146412
-        println!("p1 = {:?}", p1);
-        println!("p2 = {:?}", p2);
-    }
-}
 
 impl Game {
     pub fn debug<F: Fn(Unit) -> bool + 'static>(&self, f: F) {
@@ -63,19 +43,19 @@ impl Game {
     }
     pub fn can_build_here(&self, position: TilePosition, utype: UnitType, builder: Unit, check_explored: bool) -> bool {
         let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw) };
-        unsafe { g.canBuildHere(position, utype, builder.raw as *mut _, check_explored) }
+        unsafe { g.canBuildHere(position, utype, builder.raw.as_ptr(), check_explored) }
     }
     pub fn can_make(&self, utype: UnitType, builder: Unit) -> bool {
         let g: &ffi::Game = unsafe { &*self.raw };
-        unsafe { g.canMake(utype, builder.raw as *mut _) }
+        unsafe { g.canMake(utype, builder.raw.as_ptr()) }
     }
     pub fn can_research(&self, ttype: TechType, unit: Unit, check_can_issue_command_type: bool) -> bool {
         let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw) };
-        unsafe { g.canResearch(ttype, unit.raw as *mut _, check_can_issue_command_type) }
+        unsafe { g.canResearch(ttype, unit.raw.as_ptr(), check_can_issue_command_type) }
     }
     pub fn can_upgrade(&self, utype: UpgradeType, unit: Unit, check_can_issue_command_type: bool) -> bool {
         let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw) };
-        unsafe { g.canUpgrade(utype, unit.raw as *mut _, check_can_issue_command_type) }
+        unsafe { g.canUpgrade(utype, unit.raw.as_ptr(), check_can_issue_command_type) }
     }
     pub fn countdown_timer(&self) -> i32 {
         let g: &ffi::Game = unsafe { &*self.raw };
@@ -129,7 +109,11 @@ impl Game {
         let g: &ffi::Game = unsafe { &*self.raw };
         with_unit_and_best_filter(unit_fn, best_fn, |uf, bf| unsafe {
             let raw = ffi::_game_getBestUnit(g, bf, uf, center, radius);
-            raw.as_ref().map(|raw| Unit::from_raw(raw))
+            if !raw.is_null() {
+                Some(Unit::from_raw(raw))
+            } else {
+                None
+            }
         })
     }
 
@@ -226,7 +210,7 @@ impl Game {
 
     pub fn set_alliance(&self, player: Player, allied: bool, allied_victory: bool) -> bool {
         let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw) };
-        unsafe { g.setAlliance(player.raw as *mut _, allied, allied_victory) }
+        unsafe { g.setAlliance(player.raw.as_ptr(), allied, allied_victory) }
     }
 
     pub fn get_forces(&self) -> Forceset {
@@ -354,12 +338,3 @@ impl Game {
         self.draw_line(CoordinateType::Map, x1, y1, x2, y2, color);
     }
 }
-
-// struct X {
-//     closure: *const (),
-// }
-// unsafe impl Send for X {}
-//
-// static FS: Lazy<Mutex<HashMap<TypeId, X>>> = Lazy::new(|| {
-//     Mutex::new(HashMap::new())
-// });

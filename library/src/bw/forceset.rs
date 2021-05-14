@@ -22,7 +22,7 @@ impl fmt::Debug for Forceset<'_> {
 
 impl ForeignIterator for ffi::ForcesetIterator {
     type ForeignItem = ffi::ForceInterface;
-    fn next(self: Pin<&mut Self>) -> *const Self::ForeignItem {
+    fn next(self: Pin<&mut Self>) -> *mut Self::ForeignItem {
         self.next() // ffi call
     }
     fn size_hint(&self) -> (usize, Option<usize>) {

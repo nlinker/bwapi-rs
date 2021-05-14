@@ -72,7 +72,7 @@ std::unique_ptr<BWAPI::Unitset> _regionset_getUnits(const BWAPI::Regionset &set,
 rust::Vec<BWAPI::Race> _playerset_getRaces(const BWAPI::Playerset &set);
 std::unique_ptr<BWAPI::Unitset> _playerset_getUnits(const BWAPI::Playerset &set);
 
-const BWAPI::UnitInterface *_unitset_getClosestUnit(const BWAPI::Unitset &set, UnitFilter pred, int radius);
+BWAPI::UnitInterface *_unitset_getClosestUnit(const BWAPI::Unitset &set, UnitFilter pred, int radius);
 std::unique_ptr<BWAPI::Unitset> _unitset_getInterceptors(const BWAPI::Unitset &set);
 std::unique_ptr<BWAPI::Unitset> _unitset_getLarva(const BWAPI::Unitset &set);
 std::unique_ptr<BWAPI::Unitset> _unitset_getLoadedUnits(const BWAPI::Unitset &set);

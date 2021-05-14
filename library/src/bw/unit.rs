@@ -1,27 +1,28 @@
 use crate::bw::position::Position;
 use crate::bw::unit_type::UnitType;
 use crate::{ffi, FromRaw};
+use std::ptr::NonNull;
 
 #[derive(Debug, Clone)]
 pub struct Unit {
-    pub(crate) raw: *const ffi::UnitInterface,
+    pub(crate) raw: NonNull<ffi::UnitInterface>
 }
 
 impl FromRaw<ffi::UnitInterface> for Unit {
-    unsafe fn from_raw(raw: *const ffi::UnitInterface) -> Self {
+    unsafe fn from_raw(raw: *mut ffi::UnitInterface) -> Self {
         assert!(!raw.is_null());
-        Self { raw }
+        Self { raw: NonNull::new_unchecked(raw) }
     }
 }
 
 impl Unit {
     pub fn get_id(&self) -> i32 {
-        unsafe { (*self.raw).getID() }
+        unsafe { self.raw.as_ref().getID() }
     }
     pub fn get_type(&self) -> UnitType {
-        unsafe { (*self.raw).getType() }
+        unsafe { self.raw.as_ref().getType() }
     }
     pub fn get_position(&self) -> Position {
-        unsafe { (*self.raw).getPosition() }
+        unsafe { self.raw.as_ref().getPosition() }
     }
 }
