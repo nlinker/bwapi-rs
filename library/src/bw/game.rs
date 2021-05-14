@@ -528,24 +528,45 @@ impl Game {
         let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw.unwrap().as_mut()) };
         g.setCommandOptimizationLevel(level)
     }
-    // pub fn set_frame_skip(&self, frameSkip: i32) { let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw) }; g.setFrameSkip()  }
-    // pub fn set_gui(&self, enabled: bool) { let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw) }; g.setGUI()  }
-    // pub fn set_lat_com(&self, isEnabled: bool) { let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw) }; g.setLatCom()  }
-    // pub fn set_local_speed(&self, speed: i32) { let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw) }; g.setLocalSpeed()  }
-    // pub fn set_map(&self, text: &str) -> bool { let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw) }; g._game_setMap()  }
-    // pub fn set_reveal_all(&self, reveal: bool) -> bool { let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw) }; g.setRevealAll()  }
-    // pub fn set_screen_position(&self, p: Position) { let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw) }; g.setScreenPosition()  }
-    // pub fn set_vision(&self, player: Player, enabled: bool) -> bool { let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw) }; g.setVision()  }
-
+    pub fn set_frame_skip(&self, frame_skip: i32) {
+        let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw.unwrap().as_mut()) };
+        g.setFrameSkip(frame_skip)
+    }
+    pub fn set_gui(&self, enabled: bool) {
+        let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw.unwrap().as_mut()) };
+        g.setGUI(enabled)
+    }
+    pub fn set_lat_com(&self, is_enabled: bool) {
+        let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw.unwrap().as_mut()) };
+        g.setLatCom(is_enabled)
+    }
+    pub fn set_local_speed(&self, speed: i32) {
+        let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw.unwrap().as_mut()) };
+        g.setLocalSpeed(speed)
+    }
+    pub fn set_map(&self, text: &str) -> bool {
+        let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw.unwrap().as_mut()) };
+        ffi::_game_setMap(g, text)
+    }
+    pub fn set_reveal_all(&self, reveal: bool) -> bool {
+        let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw.unwrap().as_mut()) };
+        g.setRevealAll(reveal)
+    }
+    pub fn set_screen_position(&self, p: Position) {
+        let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw.unwrap().as_mut()) };
+        g.setScreenPosition(p)
+    }
+    pub fn set_vision(&self, player: Player, enabled: bool) -> bool {
+        let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw.unwrap().as_mut()) };
+        unsafe { g.setVision(player.raw.as_ptr(), enabled) }
+    }
     pub fn set_text_size(&self, size: TextSize) {
         let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw.unwrap().as_mut()) };
         g.setTextSize(size);
     }
-
-    // let ctype = ctype.unwrap_or(CoordinateType::Map);
-    pub fn draw_text(&self, ctype: CoordinateType, x: i32, y: i32, text: &str) {
+    pub fn draw_text(&self, ct: CoordinateType, x: i32, y: i32, text: &str) {
         let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw.unwrap().as_mut()) };
-        ffi::_game_drawText(g, ctype, x, y, text);
+        ffi::_game_drawText(g, ct, x, y, text);
     }
     pub fn draw_text_map(&self, x: i32, y: i32, text: &str) {
         self.draw_text(CoordinateType::Map, x, y, text);
