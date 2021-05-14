@@ -81,7 +81,7 @@ impl AIModule for DemoAI {
                 // println!("fn on_frame()");
                 let fc = game.get_frame_count();
                 if fc % 20 == 0 {
-                    game.debug(|u| u.get_type() == UnitType::Zerg_Drone);
+                    game.debug();
                     let c = Position { x: 250, y: 3160 };
                     let unit_opt = game.get_best_unit(
                         |u1, u2| if u1.get_id() < u2.get_id() { u1 } else { u2 },

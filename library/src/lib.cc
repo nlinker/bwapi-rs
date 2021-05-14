@@ -49,17 +49,16 @@ std::unique_ptr <AIModuleWrapper> createAIModuleWrapper(rust::Box <BoxedAIModule
     return std::unique_ptr<AIModuleWrapper>(new AIModuleWrapper(box.into_raw()));
 }
 
-void _game_debug(const BWAPI::Game &game, UnitFilter fun) {
-    // rust::Fn<bool(BWAPI::UnitInterface*)> fun
+void _game_debug(const BWAPI::Game &game) {
     using namespace BWAPI;
-    Game &g = const_cast<Game&>(game);
-    Position c(250, 3160);
-    auto units = g.getUnitsInRadius(c, 100, *fun);
-    for (auto& unit: units) {
-        std::ostringstream os;
-        os << "in radius unit: " << unit->getID() << ", " << unit->getType();
-        g.sendText(os.str().c_str());
-    }
+    // Game &g = const_cast<Game&>(game);
+    // Position _c(250, 3160);
+    //auto units = g.getUnitsInRadius(c, 100, *fun);
+    //for (auto& unit: units) {
+    //    std::ostringstream os;
+    //    os << "in radius unit: " << unit->getID() << ", " << unit->getType();
+    //    g.sendText(os.str().c_str());
+    //}
 }
 
 // region === === Iterators === ===

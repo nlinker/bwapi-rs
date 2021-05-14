@@ -271,7 +271,7 @@ pub mod ffi {
         #[cxx_name = "TilePosition"]
         type TilePositionSyn;
 
-        fn _game_debug(game: &Game, fun: unsafe fn(*mut UnitInterface) -> bool);
+        fn _game_debug(game: &Game);
         // fn getLastError(self: &Game) -> Error;
 
         fn allies(self: Pin<&mut Game>) -> Pin<&mut Playerset>;

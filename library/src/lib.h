@@ -82,7 +82,7 @@ bool _unitset_move(const BWAPI::Unitset &set, BWAPI::Position target, bool shift
 std::unique_ptr<std::string> _force_getName(const BWAPI::ForceInterface& force);
 std::unique_ptr<BWAPI::Playerset> _force_getPlayers(const BWAPI::ForceInterface& force);
 
-void _game_debug(const BWAPI::Game &game, UnitFilter fun);
+void _game_debug(const BWAPI::Game &game);
 BWAPI::UnitInterface *_game_getBestUnit(const BWAPI::Game &game, BestUnitFilter best, UnitFilter pred, BWAPI::Position center, int radius);
 BWAPI::UnitInterface *_game_getClosestUnit(const BWAPI::Game &game, BWAPI::Position center, UnitFilter pred, int radius);
 BWAPI::UnitInterface *_game_getClosestUnitInRectangle(const BWAPI::Game &game, BWAPI::Position center, UnitFilter pred, int left, int top, int right, int bottom);

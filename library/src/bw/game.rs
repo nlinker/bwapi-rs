@@ -12,7 +12,7 @@ use crate::bw::unit_filter::UnitFilter;
 use crate::bw::unit_type::UnitType;
 use crate::bw::unitset::Unitset;
 use crate::bw::upgrade_type::UpgradeType;
-use crate::bw::{with_unit_and_best_filter, with_unit_filter, Handle};
+use crate::bw::{with_unit_and_best_filter, Handle};
 use crate::{ffi, FromRaw};
 use cxx::UniquePtr;
 use std::pin::Pin;
@@ -39,9 +39,9 @@ impl FromRaw<ffi::Game> for Game {
 }
 
 impl Game {
-    pub fn debug<F: Fn(Unit) -> bool + 'static>(&self, f: F) {
+    pub fn debug(&self) {
         let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
-        with_unit_filter(f, |uf| ffi::_game_debug(g, uf));
+        ffi::_game_debug(g);
     }
 
     pub fn allies(&self) -> Playerset {
