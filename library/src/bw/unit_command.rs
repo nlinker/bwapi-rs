@@ -69,18 +69,14 @@ unsafe impl cxx::ExternType for UnitCommandType {
     type Kind = cxx::kind::Trivial;
 }
 
+#[repr(C)]
 #[derive(Debug, Clone)]
-// #[derive(TypedBuilder)]
 pub struct UnitCommand {
     pub unit: Unit,
     pub ctype: UnitCommandType,
-    // #[builder(default = None)]
     pub target: Option<Unit>,
-    // #[builder(default = 0)]
     pub x: i32,
-    // #[builder(default = 0)]
     pub y: i32,
-    // #[builder(default = 0)]
     pub extra: i32,
 }
 
