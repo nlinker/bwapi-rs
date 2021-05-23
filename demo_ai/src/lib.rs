@@ -86,9 +86,9 @@ impl AIModule for DemoAI {
                 let fc = game.get_frame_count();
                 if fc % 50 == 0 {
                     let xs = game.get_start_locations();
-                    let home = xs
+                    let (home, enemy): (Vec<TilePosition>, Vec<TilePosition>) = xs
                         .iter()
-                        .filter(|t| {
+                        .partition(|t| {
                             let p = Position {
                                 x: t.x * 32,
                                 y: t.y * 32,
@@ -96,13 +96,16 @@ impl AIModule for DemoAI {
                             !game
                                 .get_units_in_radius(p, 100, |u| u.get_type() == UnitType::Zerg_Hatchery)
                                 .is_empty()
-                        })
-                        .copied()
-                        .next()
-                        .unwrap();
+                        });
+                    let home = home.first().unwrap();
+                    let enemy = enemy.first().unwrap();
                     let home_pos = Position {
                         x: home.x * 32,
                         y: home.y * 32,
+                    };
+                    let enemy_pos = Position {
+                        x: enemy.x * 32,
+                        y: enemy.y * 32,
                     };
                     println!("home = {:?}, home position = {:?}", home, home_pos);
 
@@ -115,46 +118,19 @@ impl AIModule for DemoAI {
                             for drone in drones.iter() {
                                 drone.attack_u(&hatchery, false);
                             }
+                            let overlords = game.get_units_in_radius(home_pos, 200, |x| x.get_type() == UnitType::Zerg_Overlord);
+                            for over in overlords.iter() {
+                                over.move_(enemy_pos, false);
+                            }
                         }
                         self.is_burrowed = true;
                     } else {
                         if let Some(hatchery) =
                             game.get_closest_unit(home_pos, 100, |x| x.get_type() == UnitType::Zerg_Hatchery)
                         {
-                            let command = UnitCommand {
-                                unit: hatchery.clone(),
-                                uc_type: UnitCommandType::None,
-                                target: None,
-                                x: 0,
-                                y: 0,
-                                extra: 0,
-                            };
-                            println!(
-                                "check = {}, check_grouped = {}",
-                                hatchery.can_issue_command_with(
-                                    CanIssueCommandArg::builder()
-                                        .unit_command(command.clone())
-                                        .check_commandibility(false)
-                                        .check_can_use_tech_unit_on_units(false)
-                                        .check_can_issue_command_type(false)
-                                        .build()
-                                ),
-                                hatchery.can_issue_command_grouped_with(
-                                    command,
-                                    CanIssueCommandGroupedArg {
-                                        check_can_use_tech_position_on_positions: false,
-                                        check_can_use_tech_unit_on_units: false,
-                                        check_can_target_unit: false,
-                                        check_can_issue_command_type: false,
-                                        check_commandibility_grouped: false,
-                                        check_commandibility: false
-                                    }
-                                )
-                            );
-
                             println!("frame = {}, hatchery hit points = {:?}", fc, hatchery.get_hit_points());
-                            game.set_frame_skip(100);
-                            game.set_local_speed(0);
+                            game.set_frame_skip(10);
+                            game.set_local_speed(8);
                         }
                     }
                 }
