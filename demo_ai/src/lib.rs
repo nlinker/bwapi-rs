@@ -1,8 +1,6 @@
 use cxx::UniquePtr;
-use library::bw::can_do::{CanIssueCommandArg, CanIssueCommandGroupedArg};
 use library::bw::color::Color;
 use library::bw::coordinate_type::CoordinateType;
-use library::bw::unit_command::{UnitCommand, UnitCommandType};
 use library::bw::unit_type::UnitType;
 use library::ffi;
 use library::prelude::*;
@@ -86,27 +84,17 @@ impl AIModule for DemoAI {
                 let fc = game.get_frame_count();
                 if fc % 50 == 0 {
                     let xs = game.get_start_locations();
-                    let (home, enemy): (Vec<TilePosition>, Vec<TilePosition>) = xs
+                    let (home, enemy) = xs
                         .iter()
-                        .partition(|t| {
-                            let p = Position {
-                                x: t.x * 32,
-                                y: t.y * 32,
-                            };
+                        .partition::<Vec<TilePosition>, _>(|t| {
                             !game
-                                .get_units_in_radius(p, 100, |u| u.get_type() == UnitType::Zerg_Hatchery)
+                                .get_units_in_radius(t.to_position(), 100, |u| u.get_type() == UnitType::Zerg_Hatchery)
                                 .is_empty()
                         });
                     let home = home.first().unwrap();
                     let enemy = enemy.first().unwrap();
-                    let home_pos = Position {
-                        x: home.x * 32,
-                        y: home.y * 32,
-                    };
-                    let enemy_pos = Position {
-                        x: enemy.x * 32,
-                        y: enemy.y * 32,
-                    };
+                    let home_pos = home.to_position();
+                    let enemy_pos = enemy.to_position();
                     println!("home = {:?}, home position = {:?}", home, home_pos);
 
                     if !self.is_burrowed {
@@ -206,7 +194,7 @@ mod tests {
         impl AIModule for TestAI {
             fn on_event(&mut self, event: Event) {
                 match event {
-                    Event::OnNukeDetect(p) => {
+                    Event::OnNukeDetect { target: p } => {
                         println!("nuke = {:?}", p);
                     }
                     _ => {}

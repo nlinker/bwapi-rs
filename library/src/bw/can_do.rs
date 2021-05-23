@@ -1478,9 +1478,9 @@ CanIssueCommandGroupedArgBuilder<(
 #[derive(TypedBuilder)]
 pub struct CanAttackArg {
     #[builder(default = true)]
-    check_can_target_unit: bool,
+    pub check_can_target_unit: bool,
     #[builder(default = true)]
-    check_can_issue_command_type: bool,
+    pub check_can_issue_command_type: bool,
     #[builder(default = true)]
-    check_commandibility: bool,
+    pub check_commandibility: bool,
 }
