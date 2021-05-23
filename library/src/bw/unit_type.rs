@@ -246,8 +246,12 @@ unsafe impl cxx::ExternType for UnitType {
     type Kind = cxx::kind::Trivial;
 }
 
-// todo
-// const UnitType::set & 	allMacroTypes ()
-// const UnitType::set & 	allUnitTypes ()
-// int 	maxUnitHeight ()
-// int 	maxUnitWidth ()
+impl UnitType {
+    pub(crate) fn requires_psi(&self) -> bool {
+        todo!()
+    }
+
+    pub(crate) fn is_building(&self) -> bool {
+        todo!()
+    }
+}

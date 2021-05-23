@@ -1,4 +1,3 @@
-#![feature(never_type)]
 #[allow(non_snake_case)]
 pub mod bw;
 pub mod prelude;
@@ -668,6 +667,7 @@ pub mod ffi {
         #[cxx_name = "useTech"]
         unsafe fn useTechU(self: Pin<&mut UnitInterface>, tech: TechType, target: *mut UnitInterface) -> bool;
         fn placeCOP(self: Pin<&mut UnitInterface>, target: TilePosition) -> bool;
+
         fn canIssueCommand(self: &UnitInterface, command: UnitCommand, checkCanUseTechPositionOnPositions: bool, checkCanUseTechUnitOnUnits: bool, checkCanBuildUnitType: bool, checkCanTargetUnit: bool, checkCanIssueCommandType: bool, checkCommandibility: bool) -> bool;
         fn canIssueCommandGrouped(self: &UnitInterface, command: UnitCommand, checkCanUseTechPositionOnPositions: bool, checkCanUseTechUnitOnUnits: bool, checkCanTargetUnit: bool, checkCanIssueCommandType: bool, checkCommandibilityGrouped: bool, checkCommandibility: bool) -> bool;
         fn canCommand(self: &UnitInterface) -> bool;

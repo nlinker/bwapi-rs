@@ -18,6 +18,7 @@ pub mod ai_module;
 pub mod bullet;
 pub mod bullet_type;
 pub mod bulletset;
+pub mod can_do;
 pub mod color;
 pub mod coordinate_type;
 pub mod damage_type;
@@ -46,6 +47,7 @@ pub mod unit_type;
 pub mod unitset;
 pub mod upgrade_type;
 pub mod weapon_type;
+pub mod shared;
 
 /// Updated on gameInit call
 pub static GAME: Lazy<Arc<Mutex<Game>>> = Lazy::new(|| Arc::new(Mutex::new(Game { raw: None })));

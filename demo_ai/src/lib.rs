@@ -1,6 +1,8 @@
 use cxx::UniquePtr;
+use library::bw::can_do::{CanIssueCommandArg, CanIssueCommandGroupedArg};
 use library::bw::color::Color;
 use library::bw::coordinate_type::CoordinateType;
+use library::bw::unit_command::{UnitCommand, UnitCommandType};
 use library::bw::unit_type::UnitType;
 use library::ffi;
 use library::prelude::*;
@@ -119,6 +121,37 @@ impl AIModule for DemoAI {
                         if let Some(hatchery) =
                             game.get_closest_unit(home_pos, 100, |x| x.get_type() == UnitType::Zerg_Hatchery)
                         {
+                            let command = UnitCommand {
+                                unit: hatchery.clone(),
+                                uc_type: UnitCommandType::None,
+                                target: None,
+                                x: 0,
+                                y: 0,
+                                extra: 0,
+                            };
+                            println!(
+                                "check = {}, check_grouped = {}",
+                                hatchery.can_issue_command_(
+                                    &command,
+                                    CanIssueCommandArg::builder()
+                                        .check_commandibility(false)
+                                        .check_can_use_tech_unit_on_units(false)
+                                        .check_can_issue_command_type(false)
+                                        .build()
+                                ),
+                                hatchery.can_issue_command_grouped_(
+                                    &command,
+                                    CanIssueCommandGroupedArg {
+                                        check_can_use_tech_position_on_positions: false,
+                                        check_can_use_tech_unit_on_units: false,
+                                        check_can_target_unit: false,
+                                        check_can_issue_command_type: false,
+                                        check_commandibility_grouped: false,
+                                        check_commandibility: false
+                                    }
+                                )
+                            );
+
                             println!("frame = {}, hatchery hit points = {:?}", fc, hatchery.get_hit_points());
                             game.set_frame_skip(100);
                             game.set_local_speed(0);
@@ -207,8 +240,11 @@ mod tests {
         let mut demo = DemoAI {
             name: "DemoAI here".to_string(),
             counter: 0,
+            is_burrowed: false,
         };
         let mut ai = BoxedAIModule::new(demo);
-        ai.on_event(Event::OnNukeDetect(Position { x: 11, y: 22 }));
+        ai.on_event(Event::OnNukeDetect {
+            target: Position { x: 11, y: 22 },
+        });
     }
 }

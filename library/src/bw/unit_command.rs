@@ -67,12 +67,12 @@ unsafe impl cxx::ExternType for UnitCommandType {
 
 #[derive(Debug, Clone)]
 pub struct UnitCommand {
-    unit: Unit,
-    uc_type: UnitCommandType,
-    target: Unit,
-    x: i32,
-    y: i32,
-    extra: i32,
+    pub unit: Unit,
+    pub uc_type: UnitCommandType,
+    pub target: Option<Unit>,
+    pub x: i32,
+    pub y: i32,
+    pub extra: i32,
 }
 
 // #[derive(Debug)]
