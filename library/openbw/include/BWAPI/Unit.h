@@ -161,8 +161,7 @@ namespace BWAPI
     ///
     /// Example
     /// @code
-    ///   Unitset myUnits = Broodwar->self()->getUnits();
-    ///   for ( auto u = myUnits.begin(); u != myUnits.end(); ++u )
+    ///   for ( auto u : Broodwar->self()->getUnits() )
     ///   {
     ///     if ( u->isFlying() && u->isUnderAttack() ) // implies exists and isCompleted
     ///     {
@@ -2571,10 +2570,6 @@ namespace BWAPI
     ///
     /// @see Game::getLastError, UnitInterface::canIssueCommand, UnitInterface::placeCOP
     virtual bool canPlaceCOP(TilePosition target, bool checkCanIssueCommandType = true, bool checkCommandibility = true) const = 0;
-
-    virtual void setHitPoints(int value) = 0;
-    virtual void setShields(int value) = 0;
-    virtual void setEnergy(int value) = 0;
 
     ///@}
   };

@@ -521,14 +521,14 @@ namespace BWAPI
     /// @returns Sight range of the provided unit type for this player.
     int sightRange(UnitType unit) const;
 
-    /// <summary>Retrieves the weapon cooldown of a unit type, taking the player's attack speed
-    /// upgrades into consideration.</summary>
+    /// <summary>Retrieves the ground weapon cooldown of a unit type, taking the player's attack
+    /// speed upgrades into consideration.</summary>
     ///
     /// <param name="unit">
-    ///   The UnitType to retrieve the damage cooldown for.
+    ///   The UnitType to retrieve the ground damage cooldown for.
     /// </param>
     ///
-    /// @returns Weapon cooldown of the provided unit type for this player.
+    /// @returns Ground weapon cooldown of the provided unit type for this player.
     int weaponDamageCooldown(UnitType unit) const;
 
     /// <summary>Calculates the armor that a given unit type will have, including upgrades.</summary>
@@ -644,14 +644,5 @@ namespace BWAPI
     ///
     /// @since 4.1.2
     bool hasUnitTypeRequirement(UnitType unit, int amount = 1) const;
-
-    virtual void setRace(Race race) = 0;
-    virtual void closeSlot() = 0;
-    virtual void openSlot() = 0;
-
-    virtual void setUpgradeLevel(UpgradeType upgrade, int level) = 0;
-    virtual void setResearched(TechType tech, bool researched) = 0;
-    virtual void setMinerals(int value)= 0;
-    virtual void setGas(int value) = 0;
   };
 };

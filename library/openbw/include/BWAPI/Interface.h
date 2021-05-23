@@ -69,7 +69,7 @@ namespace BWAPI
     template <typename CT>
     CT getClientInfo(int key = 0) const
     {
-      return (CT)(long)this->getClientInfo(key);
+      return (CT)(int)this->getClientInfo(key);
     };
 
     /// <summary>Associates one or more pointers or values with any BWAPI interface.</summary>

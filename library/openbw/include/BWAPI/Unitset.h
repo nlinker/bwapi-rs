@@ -22,8 +22,12 @@ namespace BWAPI
     /// <summary>A blank Unitset containing no elements.</summary> This is typically used as a
     /// return value for BWAPI interface functions that have encountered an error.
     static const Unitset none;
-    
-    Unitset() : SetContainer() {}
+
+    Unitset& operator = (const Unitset& other) {
+        clear();
+        std::copy(other.begin(), other.end(), std::inserter(*this, begin()));
+        return *this;
+    }
 
     /// <summary>Calculates the average of all valid Unit positions in this set.</summary>
     ///

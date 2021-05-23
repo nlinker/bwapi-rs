@@ -702,7 +702,7 @@ pub mod ffi {
         #[cxx_name = "canBuild"]
         fn canBuildT(self: &UnitInterface, uType: UnitType, checkCanIssueCommandType: bool, checkCommandibility: bool) -> bool;
         #[cxx_name = "canBuild"]
-        fn canBuildU(self: &UnitInterface, uType: UnitType, tilePos: TilePosition, checkTargetUnitType: bool, checkCanIssueCommandType: bool, checkCommandibility: bool) -> bool;
+        fn canBuildTP(self: &UnitInterface, uType: UnitType, tilePos: TilePosition, checkTargetUnitType: bool, checkCanIssueCommandType: bool, checkCommandibility: bool) -> bool;
         #[cxx_name = "canBuildAddon"]
         fn canBuildAddon_(self: &UnitInterface, checkCommandibility: bool) -> bool;
         #[cxx_name = "canBuildAddon"]

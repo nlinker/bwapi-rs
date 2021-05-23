@@ -2,14 +2,11 @@
 #include <list>
 #include <string>
 #include <cstdarg>
-#include <vector>
-#include <tuple>
 
 #include <BWAPI/Interface.h>
 #include <BWAPI/UnitType.h>
 #include <BWAPI/Error.h>
 #include <BWAPI/Color.h>
-#include <BWAPI/AIModule.h>
 
 #include <BWAPI/Filters.h>
 #include <BWAPI/UnaryFilter.h>
@@ -17,7 +14,6 @@
 #include <BWAPI/CoordinateType.h>
 
 #include <sstream>
-#include <functional>
 
 namespace BWAPI
 {
@@ -120,7 +116,7 @@ namespace BWAPI
     /// <summary>Retrieves the set of all accessible bullets.</summary>
     ///
     /// @returns Bulletset containing all accessible Bullet objects.
-/*10*/    virtual const Bulletset& getBullets() const = 0;
+    virtual const Bulletset& getBullets() const = 0;
 
     /// <summary>Retrieves the set of all accessible @Nuke dots.</summary>
     ///
@@ -205,7 +201,7 @@ namespace BWAPI
     /// If the game is paused, then getFrameCount will not increase.
     ///
     /// @returns Number of logical frames that have elapsed since the game started as an integer.
-/*20*/    virtual int getFrameCount() const = 0;
+    virtual int getFrameCount() const = 0;
 
     /// <summary>Retrieves the maximum number of logical frames that have been recorded in a
     /// replay.</summary> If the game is not a replay, then the value returned is undefined.
@@ -316,7 +312,7 @@ namespace BWAPI
     /// @see Flag::Enum
     ///
     /// @todo Take Flag::Enum as parameter instead of int
-/*30*/    virtual bool isFlagEnabled(int flag) const = 0;
+    virtual bool isFlagEnabled(int flag) const = 0;
 
     /// <summary>Enables the state of a given flag.</summary>
     ///
@@ -485,7 +481,7 @@ namespace BWAPI
     /// @retval true If the type passed was Errors::None, clearing the last error.
     /// @retval false If any other error type was passed.
     /// @see getLastError, Errors
-/*36*/    virtual bool setLastError(BWAPI::Error e = Errors::None) const = 0;
+    virtual bool setLastError(BWAPI::Error e = Errors::None) const = 0;
 
     /// <summary>Retrieves the width of the map in build tile units.</summary>
     ///
@@ -515,7 +511,7 @@ namespace BWAPI
     /// @see mapFileName, mapName
     ///
     /// @TODO: Note on campaign files.
-/*40*/    virtual std::string mapPathName() const = 0;
+    virtual std::string mapPathName() const = 0;
 
     /// <summary>Retrieves the title of the currently loaded map.</summary>
     ///
@@ -548,7 +544,7 @@ namespace BWAPI
     /// </param>
     ///
     /// @returns true if the mini-tile is walkable and false if it is impassable for ground units.
-/*43*/    virtual bool isWalkable(int walkX, int walkY) const = 0;
+    virtual bool isWalkable(int walkX, int walkY) const = 0;
     /// @overload
     bool isWalkable(BWAPI::WalkPosition position) const;
 
@@ -815,7 +811,7 @@ namespace BWAPI
     /// </param>
     ///
     /// @see printf
-/*55*/    virtual void vPrintf(const char *format, va_list args) = 0;
+    virtual void vPrintf(const char *format, va_list args) = 0;
     
     /// <summary>Sends a text message to all other players in the game.</summary> The behaviour of
     /// this function is the same as std::printf, located in header cstdio.
@@ -866,12 +862,12 @@ namespace BWAPI
     /// </param>
     ///
     /// @see sendTextEx
- /*56*/   virtual void vSendTextEx(bool toAllies, const char *format, va_list args) = 0;
+    virtual void vSendTextEx(bool toAllies, const char *format, va_list args) = 0;
 
     /// <summary>Checks if the current client is inside a game.</summary>
     ///
     /// @returns true if the client is in a game, and false if it is not.
-/*57*/    virtual bool isInGame() const = 0;
+    virtual bool isInGame() const = 0;
 
     /// <summary>Checks if the current client is inside a multiplayer game.</summary>
     ///
@@ -895,7 +891,7 @@ namespace BWAPI
     /// <summary>Checks if the client is watching a replay.</summary>
     ///
     /// @returns true if the client is watching a replay and false otherwise
-/*61*/    virtual bool isReplay() const = 0;
+    virtual bool isReplay() const = 0;
 
     /// <summary>Pauses the game.</summary> While paused, AIModule::onFrame will still be called.
     /// @see resumeGame
@@ -938,7 +934,7 @@ namespace BWAPI
     /// </param>
     ///
     /// @see setFrameSkip, getFPS
- /*66*/   virtual void setLocalSpeed(int speed) = 0;
+    virtual void setLocalSpeed(int speed) = 0;
 
     /// <summary>Issues a given command to a set of units.</summary> This function automatically
     /// splits the set into groups of 12 and issues the same command to each of them. If a unit
@@ -988,7 +984,7 @@ namespace BWAPI
     /// @returns Player interface representing an enemy player.
     /// @retval nullptr If there is no enemy or the current game is a replay.
     /// @see enemies
-/*70*/    virtual Player enemy() const = 0;
+    virtual Player enemy() const = 0;
 
     /// <summary>Retrieves the Player interface object representing the neutral player.</summary>
     /// The neutral player owns all the resources and critters on the map by default.
@@ -1216,7 +1212,7 @@ namespace BWAPI
     ///   If true, then the shape will be filled and drawn as a solid, otherwise it will be drawn
     ///   as an outline. If omitted, this value will default to false.
     /// </param>
-/*80*/    virtual void drawEllipse(CoordinateType::Enum ctype, int x, int y, int xrad, int yrad, Color color, bool isSolid = false) = 0;
+    virtual void drawEllipse(CoordinateType::Enum ctype, int x, int y, int xrad, int yrad, Color color, bool isSolid = false) = 0;
     /// @overload
     void drawEllipseMap(int x, int y, int xrad, int yrad, Color color, bool isSolid = false);
     /// @overload
@@ -1302,7 +1298,7 @@ namespace BWAPI
     ///
     /// @returns Difference in frames between commands being sent and executed.
     /// @see getLatencyTime, getRemainingLatencyFrames
-/*83*/    virtual int getLatencyFrames() const = 0;
+    virtual int getLatencyFrames() const = 0;
 
     /// <summary>Retrieves the maximum delay, in milliseconds, between a command being issued and
     /// the command being executed by Broodwar.</summary>
@@ -1353,7 +1349,7 @@ namespace BWAPI
     ///
     /// @returns true if latency compensation is enabled, false if it is disabled.
     /// @see setLatCom
-/*90*/    virtual bool isLatComEnabled() const = 0;
+    virtual bool isLatComEnabled() const = 0;
 
     /// <summary>Changes the state of latency compensation.</summary> Latency compensation
     /// modifies the state of BWAPI's representation of units to reflect the implications of
@@ -1496,7 +1492,7 @@ namespace BWAPI
     /// <summary>Retrieves current amount of time in seconds that the game has elapsed.</summary>
     ///
     /// @returns Time, in seconds, that the game has elapsed as an integer.
-/*100*/    virtual int elapsedTime() const = 0;
+    virtual int elapsedTime() const = 0;
 
     /// <summary>Sets the command optimization level.</summary> Command optimization is a feature
     /// in BWAPI that tries to reduce the APM of the bot by grouping or eliminating unnecessary
@@ -1730,27 +1726,6 @@ namespace BWAPI
     /// @returns This game's random seed.
     /// @since 4.2.0
     virtual unsigned getRandomSeed() const = 0;
-    
-    virtual void setCharacterName(const std::string& name) = 0;
-    virtual void setGameType(GameType gameType) = 0;
-    virtual void setAIModule(AIModule* module) = 0;
-    virtual void createSinglePlayerGame(std::function<void()> setupFunction) = 0;
-    virtual void createMultiPlayerGame(std::function<void()> setupFunction) = 0;
-    virtual void startGame() = 0;
-    virtual void switchToPlayer(Player p) = 0;
-    virtual int connectedPlayerCount() = 0;
-    virtual Unit createUnit(Player player, UnitType type, Position pos) = 0;
-    virtual void killUnit(Unit u) = 0;
-    virtual void removeUnit(Unit u) = 0;
-    virtual void saveSnapshot(std::string id) = 0;
-    virtual void loadSnapshot(const std::string& id) = 0;
-    virtual void deleteSnapshot(const std::string& id) = 0;
-    virtual std::vector<std::string> listSnapshots() = 0;
-    virtual void setRandomSeed(uint32_t value) = 0;
-    virtual void disableTriggers() = 0;
-    virtual BWAPI::Position getScreenSize() const = 0;
-    virtual std::tuple<int, int, uint32_t*> drawGameScreen(int x, int y, int width, int height) = 0;
-
   };
 
   extern Game *BroodwarPtr;

@@ -1,7 +1,7 @@
 #cmake_minimum_required(VERSION 3.14)
 #project(BWAPILIB)
 
-include_directories(include)
+include_directories(../include)
 
 file(GLOB_RECURSE SRC_FILES ${PROJECT_SOURCE_DIR}/source *.cpp)
 

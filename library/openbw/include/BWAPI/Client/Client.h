@@ -1,10 +1,16 @@
 #pragma once
+#include "GameData.h"
+#include "GameImpl.h"
+#include "ForceImpl.h"
+#include "PlayerImpl.h"
+#include "UnitImpl.h"
+#include "GameTable.h"
 
-#include <memory>
+#include <Windows.h>
+
 
 namespace BWAPI
 {
-  class ClientImpl;
   class Client
   {
   public:
@@ -16,8 +22,12 @@ namespace BWAPI
     void disconnect();
     void update();
 
+    GameData* data = nullptr;
   private:
-    std::unique_ptr<ClientImpl> impl;
+    HANDLE      pipeObjectHandle;
+    HANDLE      mapFileHandle;
+    HANDLE      gameTableFileHandle;
+    GameTable*  gameTable = nullptr;
     
     bool connected = false;
   };
