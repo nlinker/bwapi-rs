@@ -33,7 +33,7 @@ pub struct DemoAI {
 
 impl AIModule for DemoAI {
     fn on_event(&mut self, event: Event) {
-        let game: MutexGuard<Game> = GAME.lock().unwrap();
+        let mut game: MutexGuard<Game> = GAME.lock().unwrap();
         match event {
             Event::OnStart => {
                 println!("fn on_start()");
@@ -131,16 +131,16 @@ impl AIModule for DemoAI {
                             };
                             println!(
                                 "check = {}, check_grouped = {}",
-                                hatchery.can_issue_command_(
-                                    &command,
+                                hatchery.can_issue_command_with(
                                     CanIssueCommandArg::builder()
+                                        .unit_command(command.clone())
                                         .check_commandibility(false)
                                         .check_can_use_tech_unit_on_units(false)
                                         .check_can_issue_command_type(false)
                                         .build()
                                 ),
-                                hatchery.can_issue_command_grouped_(
-                                    &command,
+                                hatchery.can_issue_command_grouped_with(
+                                    command,
                                     CanIssueCommandGroupedArg {
                                         check_can_use_tech_position_on_positions: false,
                                         check_can_use_tech_unit_on_units: false,
