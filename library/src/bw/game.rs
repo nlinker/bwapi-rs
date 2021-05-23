@@ -115,10 +115,10 @@ impl Game {
     }
     pub fn get_best_unit(
         &self,
-        best_fn: impl Fn(Unit, Unit) -> Unit + 'static,
-        unit_fn: impl Fn(Unit) -> bool + 'static,
         center: Position,
         radius: i32,
+        best_fn: impl Fn(Unit, Unit) -> Unit + 'static,
+        unit_fn: impl Fn(Unit) -> bool + 'static,
     ) -> Option<Unit> {
         let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
         with_unit_and_best_filter(unit_fn, best_fn, |uf, bf| {
@@ -148,8 +148,8 @@ impl Game {
     pub fn get_closest_unit(
         &self,
         center: Position,
-        unit_fn: impl Fn(Unit) -> bool + 'static,
         radius: i32,
+        unit_fn: impl Fn(Unit) -> bool + 'static,
     ) -> Option<Unit> {
         let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
         with_unit_filter(unit_fn, |uf| {
@@ -159,11 +159,11 @@ impl Game {
     pub fn get_closest_unit_in_rectangle(
         &self,
         center: Position,
-        unit_fn: impl Fn(Unit) -> bool + 'static,
         left: i32,
         top: i32,
         right: i32,
         bottom: i32,
+        unit_fn: impl Fn(Unit) -> bool + 'static,
     ) -> Option<Unit> {
         let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
         with_unit_filter(unit_fn, |uf| {

@@ -620,10 +620,10 @@ pub mod ffi {
         fn attackP(self: Pin<&mut UnitInterface>, target: Position, shiftQueueCommand: bool) -> bool;
         #[cxx_name = "attack"]
         unsafe fn attackU(self: Pin<&mut UnitInterface>, target: *mut UnitInterface, shiftQueueCommand: bool) -> bool;
-        fn build(self: Pin<&mut UnitInterface>, uType: UnitType, target: TilePosition) -> bool;
-        fn buildAddon(self: Pin<&mut UnitInterface>, uType: UnitType) -> bool;
-        fn train(self: Pin<&mut UnitInterface>, uType: UnitType) -> bool;
-        fn morph(self: Pin<&mut UnitInterface>, uType: UnitType) -> bool;
+        fn build(self: Pin<&mut UnitInterface>, unitType: UnitType, target: TilePosition) -> bool;
+        fn buildAddon(self: Pin<&mut UnitInterface>, unitType: UnitType) -> bool;
+        fn train(self: Pin<&mut UnitInterface>, unitType: UnitType) -> bool;
+        fn morph(self: Pin<&mut UnitInterface>, unitType: UnitType) -> bool;
         fn research(self: Pin<&mut UnitInterface>, tech: TechType) -> bool;
         fn upgrade(self: Pin<&mut UnitInterface>, upgrade: UpgradeType) -> bool;
         #[cxx_name = "setRallyPoint"]
@@ -700,21 +700,21 @@ pub mod ffi {
         #[cxx_name = "canBuild"]
         fn canBuild_(self: &UnitInterface, checkCommandibility: bool) -> bool;
         #[cxx_name = "canBuild"]
-        fn canBuildT(self: &UnitInterface, uType: UnitType, checkCanIssueCommandType: bool, checkCommandibility: bool) -> bool;
+        fn canBuildT(self: &UnitInterface, unitType: UnitType, checkCanIssueCommandType: bool, checkCommandibility: bool) -> bool;
         #[cxx_name = "canBuild"]
-        fn canBuildTP(self: &UnitInterface, uType: UnitType, tilePos: TilePosition, checkTargetUnitType: bool, checkCanIssueCommandType: bool, checkCommandibility: bool) -> bool;
+        fn canBuildTP(self: &UnitInterface, unitType: UnitType, tilePos: TilePosition, checkTargetUnitType: bool, checkCanIssueCommandType: bool, checkCommandibility: bool) -> bool;
         #[cxx_name = "canBuildAddon"]
         fn canBuildAddon_(self: &UnitInterface, checkCommandibility: bool) -> bool;
         #[cxx_name = "canBuildAddon"]
-        fn canBuildAddonT(self: &UnitInterface, uType: UnitType, checkCanIssueCommandType: bool, checkCommandibility: bool) -> bool;
+        fn canBuildAddonT(self: &UnitInterface, unitType: UnitType, checkCanIssueCommandType: bool, checkCommandibility: bool) -> bool;
         #[cxx_name = "canTrain"]
         fn canTrain_(self: &UnitInterface, checkCommandibility: bool) -> bool;
         #[cxx_name = "canTrain"]
-        fn canTrainT(self: &UnitInterface, uType: UnitType, checkCanIssueCommandType: bool, checkCommandibility: bool) -> bool;
+        fn canTrainT(self: &UnitInterface, unitType: UnitType, checkCanIssueCommandType: bool, checkCommandibility: bool) -> bool;
         #[cxx_name = "canMorph"]
         fn canMorph_(self: &UnitInterface, checkCommandibility: bool) -> bool;
         #[cxx_name = "canMorph"]
-        fn canMorphT(self: &UnitInterface, uType: UnitType, checkCanIssueCommandType: bool, checkCommandibility: bool) -> bool;
+        fn canMorphT(self: &UnitInterface, unitType: UnitType, checkCanIssueCommandType: bool, checkCommandibility: bool) -> bool;
         #[cxx_name = "canResearch"]
         fn canResearch_(self: &UnitInterface, checkCommandibility: bool) -> bool;
         #[cxx_name = "canResearch"]
@@ -878,67 +878,67 @@ pub mod ffi {
 
 //region ----------- Shims to the bw::ai_module::AIModule trait ------------
 fn on_start(wrapper: Pin<&mut ffi::AIModuleWrapper>) {
-    wrapper.get_box().on_event(Event::OnStart());
+    wrapper.get_box().on_event(Event::OnStart);
 }
 fn on_end(wrapper: Pin<&mut ffi::AIModuleWrapper>, is_winner: bool) {
-    wrapper.get_box().on_event(Event::OnEnd(is_winner));
+    wrapper.get_box().on_event(Event::OnEnd { is_winner });
 }
 fn on_frame(wrapper: Pin<&mut ffi::AIModuleWrapper>) {
-    wrapper.get_box().on_event(Event::OnFrame());
+    wrapper.get_box().on_event(Event::OnFrame);
 }
 fn on_send_text(wrapper: Pin<&mut ffi::AIModuleWrapper>, text: &CxxString) {
-    wrapper.get_box().on_event(Event::OnSendText(text.to_string()));
+    wrapper.get_box().on_event(Event::OnSendText { text: text.to_string() });
 }
 fn on_receive_text(wrapper: Pin<&mut ffi::AIModuleWrapper>, player: *mut ffi::PlayerInterface, text: &CxxString) {
     let player = unsafe { crate::bw::player::Player::from_raw(player) };
-    wrapper.get_box().on_event(Event::OnReceiveText(player, text.to_string()));
+    wrapper.get_box().on_event(Event::OnReceiveText { player, text: text.to_string() });
 }
 fn on_player_left(wrapper: Pin<&mut ffi::AIModuleWrapper>, player: *mut ffi::PlayerInterface) {
     let player = unsafe { crate::bw::player::Player::from_raw(player) };
-    wrapper.get_box().on_event(Event::OnPlayerLeft(player));
+    wrapper.get_box().on_event(Event::OnPlayerLeft { player });
 }
 fn on_nuke_detect(wrapper: Pin<&mut ffi::AIModuleWrapper>, target: ffi::Position) {
     let target = crate::bw::position::Position { x: target.x, y: target.y };
-    wrapper.get_box().on_event(Event::OnNukeDetect(target));
+    wrapper.get_box().on_event(Event::OnNukeDetect { target });
 }
 fn on_unit_discover(wrapper: Pin<&mut ffi::AIModuleWrapper>, unit: *mut ffi::UnitInterface) {
     let unit = unsafe { crate::bw::unit::Unit::from_raw(unit) };
-    wrapper.get_box().on_event(Event::OnUnitDiscover(unit));
+    wrapper.get_box().on_event(Event::OnUnitDiscover { unit });
 }
 fn on_unit_evade(wrapper: Pin<&mut ffi::AIModuleWrapper>, unit: *mut ffi::UnitInterface) {
     let unit = unsafe { crate::bw::unit::Unit::from_raw(unit) };
-    wrapper.get_box().on_event(Event::OnUnitEvade(unit));
+    wrapper.get_box().on_event(Event::OnUnitEvade { unit });
 }
 fn on_unit_show(wrapper: Pin<&mut ffi::AIModuleWrapper>, unit: *mut ffi::UnitInterface) {
     let unit = unsafe { crate::bw::unit::Unit::from_raw(unit) };
-    wrapper.get_box().on_event(Event::OnUnitShow(unit));
+    wrapper.get_box().on_event(Event::OnUnitShow { unit });
 }
 fn on_unit_hide(wrapper: Pin<&mut ffi::AIModuleWrapper>, unit: *mut ffi::UnitInterface) {
     let unit = unsafe { crate::bw::unit::Unit::from_raw(unit) };
-    wrapper.get_box().on_event(Event::OnUnitHide(unit));
+    wrapper.get_box().on_event(Event::OnUnitHide { unit });
 }
 fn on_unit_create(wrapper: Pin<&mut ffi::AIModuleWrapper>, unit: *mut ffi::UnitInterface) {
     let unit = unsafe { crate::bw::unit::Unit::from_raw(unit) };
-    wrapper.get_box().on_event(Event::OnUnitCreate(unit));
+    wrapper.get_box().on_event(Event::OnUnitCreate { unit });
 }
 fn on_unit_destroy(wrapper: Pin<&mut ffi::AIModuleWrapper>, unit: *mut ffi::UnitInterface) {
     let unit = unsafe { crate::bw::unit::Unit::from_raw(unit) };
-    wrapper.get_box().on_event(Event::OnUnitDestroy(unit));
+    wrapper.get_box().on_event(Event::OnUnitDestroy { unit });
 }
 fn on_unit_morph(wrapper: Pin<&mut ffi::AIModuleWrapper>, unit: *mut ffi::UnitInterface) {
     let unit = unsafe { crate::bw::unit::Unit::from_raw(unit) };
-    wrapper.get_box().on_event(Event::OnUnitMorph(unit));
+    wrapper.get_box().on_event(Event::OnUnitMorph { unit });
 }
 fn on_unit_renegade(wrapper: Pin<&mut ffi::AIModuleWrapper>, unit: *mut ffi::UnitInterface) {
     let unit = unsafe { crate::bw::unit::Unit::from_raw(unit) };
-    wrapper.get_box().on_event(Event::OnUnitRenegade(unit));
+    wrapper.get_box().on_event(Event::OnUnitRenegade { unit });
 }
 fn on_save_game(wrapper: Pin<&mut ffi::AIModuleWrapper>, game_name: &CxxString) {
-    wrapper.get_box().on_event(Event::OnSaveGame(game_name.to_string()));
+    wrapper.get_box().on_event(Event::OnSaveGame { game_name: game_name.to_string() });
 }
 fn on_unit_complete(wrapper: Pin<&mut ffi::AIModuleWrapper>, unit: *mut ffi::UnitInterface) {
     let unit = unsafe { crate::bw::unit::Unit::from_raw(unit) };
-    wrapper.get_box().on_event(Event::OnUnitComplete(unit));
+    wrapper.get_box().on_event(Event::OnUnitComplete { unit });
 }
 //------------------- endregion -------------------
 

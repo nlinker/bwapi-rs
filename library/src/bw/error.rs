@@ -1,7 +1,12 @@
+
+/// Many functions produce error code. BWAPI usually sets a error variable and returns a success flag.
+/// The rust binding instead returns a result with the error code.
+pub type Result<T> = ::std::result::Result<T, Error>;
+
 #[repr(u32)]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord)]
-pub enum BWAPI_Errors_Enum_Enum {
+pub enum Error {
     Unit_Does_Not_Exist = 0,
     Unit_Not_Visible = 1,
     Unit_Not_Owned = 2,

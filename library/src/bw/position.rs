@@ -33,3 +33,11 @@ unsafe impl cxx::ExternType for WalkPosition {
     type Id = cxx::type_id!("BWAPI::WalkPosition");
     type Kind = cxx::kind::Trivial;
 }
+
+// namespace Positions
+// {
+//     const Position Invalid{32000 / POSITION_SCALE, 32000 / POSITION_SCALE};
+//     const Position None{32000 / POSITION_SCALE, 32032 / POSITION_SCALE};
+//     const Position Unknown{32000 / POSITION_SCALE, 32064 / POSITION_SCALE};
+//     const Position Origin{0, 0};
+// }

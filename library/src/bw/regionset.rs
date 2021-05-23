@@ -46,6 +46,7 @@ impl Regionset<'_> {
     pub fn iter(&self) -> ForeignIter<'_, Region, ffi::RegionsetIterator> {
         self.into_iter()
     }
+    pub fn is_empty(&self) -> bool { self.iter().size_hint().0 == 0 }
     pub fn len(&self) -> usize {
         self.iter().size_hint().0
     }
