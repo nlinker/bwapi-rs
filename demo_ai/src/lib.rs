@@ -84,13 +84,11 @@ impl AIModule for DemoAI {
                 let fc = game.get_frame_count();
                 if fc % 50 == 0 {
                     let xs = game.get_start_locations();
-                    let (home, enemy) = xs
-                        .iter()
-                        .partition::<Vec<TilePosition>, _>(|t| {
-                            !game
-                                .get_units_in_radius(t.to_position(), 100, |u| u.get_type() == UnitType::Zerg_Hatchery)
-                                .is_empty()
-                        });
+                    let (home, enemy) = xs.iter().partition::<Vec<TilePosition>, _>(|t| {
+                        !game
+                            .get_units_in_radius(t.to_position(), 100, |u| u.get_type() == UnitType::Zerg_Hatchery)
+                            .is_empty()
+                    });
                     let home = home.first().unwrap();
                     let enemy = enemy.first().unwrap();
                     let home_pos = home.to_position();
@@ -104,9 +102,11 @@ impl AIModule for DemoAI {
                             let drones =
                                 game.get_units_in_radius(home_pos, 200, |x| x.get_type() == UnitType::Zerg_Drone);
                             for drone in drones.iter() {
-                                drone.attack_u(&hatchery, false);
+                                drone.attack_unit(&hatchery, false);
+                                // drone.attack_position(hatchery.get_position(), false);
                             }
-                            let overlords = game.get_units_in_radius(home_pos, 200, |x| x.get_type() == UnitType::Zerg_Overlord);
+                            let overlords =
+                                game.get_units_in_radius(home_pos, 200, |x| x.get_type() == UnitType::Zerg_Overlord);
                             for over in overlords.iter() {
                                 over.move_(enemy_pos, false);
                             }

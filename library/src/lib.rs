@@ -1,8 +1,8 @@
 #[allow(non_snake_case)]
 pub mod bw;
+mod bwlib;
 pub mod prelude;
 mod sys;
-mod bwlib;
 
 use crate::prelude::{AIModule, BoxedAIModule, Event, Game, GAME};
 use cxx::CxxString;
@@ -29,16 +29,21 @@ pub extern "C" fn _Unwind_RaiseException() -> ! {
 #[no_mangle]
 pub unsafe extern "C" fn gameInit(raw: *const std::ffi::c_void) {
     println!("gameInit called: game = {:?}", raw);
-    *GAME.lock().unwrap() = Game { raw: Some(NonNull::new_unchecked(raw as *mut ffi::Game)) };
+    *GAME.lock().unwrap() = Game {
+        raw: Some(NonNull::new_unchecked(raw as *mut ffi::Game)),
+    };
 }
 
 /// `FromRaw` is a trait for entities that
 /// are typically created outside of Rust code.
 pub trait FromRaw<T> {
     unsafe fn from_raw(raw: *mut T) -> Self;
-    fn option(raw: *mut T) -> Option<Self> where Self: Sized {
+    fn option(raw: *mut T) -> Option<Self>
+    where
+        Self: Sized,
+    {
         if raw.is_null() {
-           None
+            None
         } else {
             unsafe { Some(Self::from_raw(raw)) }
         }
@@ -168,7 +173,7 @@ pub mod ffi {
     // region BWAPI::Regionset
     unsafe extern "C++" {
         fn _regionset_dummy(set: &Regionset) -> UniquePtr<Regionset>;
-        fn getCenter (self: &Regionset) -> Position;
+        fn getCenter(self: &Regionset) -> Position;
         fn _regionset_getUnits(set: &Regionset, pred: unsafe fn(*mut UnitInterface) -> bool) -> UniquePtr<Unitset>;
     }
     // endregion
@@ -690,7 +695,7 @@ pub mod ffi {
         fn canAttackMove(self: &UnitInterface, checkCommandibility: bool) -> bool;
         fn canAttackMoveGrouped(self: &UnitInterface, checkCommandibilityGrouped: bool, checkCommandibility: bool) -> bool;
         #[cxx_name = "canAttackUnit"]
-        fn canAttackUnit_(self: &UnitInterface, checkCommandibility: bool) -> bool;
+        fn canAttackUnits(self: &UnitInterface, checkCommandibility: bool) -> bool;
         #[cxx_name = "canAttackUnit"]
         unsafe fn canAttackUnitU(self: &UnitInterface, targetUnit: *mut UnitInterface, checkCanTargetUnit: bool, checkCanIssueCommandType: bool, checkCommandibility: bool) -> bool;
         #[cxx_name = "canAttackUnitGrouped"]

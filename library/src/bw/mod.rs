@@ -38,6 +38,7 @@ pub mod position;
 pub mod race;
 pub mod region;
 pub mod regionset;
+pub mod shared;
 pub mod tech_type;
 pub mod unit;
 pub mod unit_command;
@@ -47,7 +48,6 @@ pub mod unit_type;
 pub mod unitset;
 pub mod upgrade_type;
 pub mod weapon_type;
-pub mod shared;
 
 /// Updated on gameInit call
 pub static GAME: Lazy<Arc<Mutex<Game>>> = Lazy::new(|| Arc::new(Mutex::new(Game { raw: None })));

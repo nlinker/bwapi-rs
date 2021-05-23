@@ -35,20 +35,31 @@ unsafe impl cxx::ExternType for WalkPosition {
 }
 
 impl Position {
-    pub fn to_walk_position(&self) -> WalkPosition { (*self).into() }
-    pub fn to_tile_position(&self) -> TilePosition { (*self).into() }
+    pub fn to_walk_position(&self) -> WalkPosition {
+        (*self).into()
+    }
+    pub fn to_tile_position(&self) -> TilePosition {
+        (*self).into()
+    }
 }
 
 impl WalkPosition {
-    pub fn to_position(&self) -> Position { (*self).into() }
-    pub fn to_tile_position(&self) -> TilePosition { (*self).into() }
+    pub fn to_position(&self) -> Position {
+        (*self).into()
+    }
+    pub fn to_tile_position(&self) -> TilePosition {
+        (*self).into()
+    }
 }
 
 impl TilePosition {
-    pub fn to_position(&self) -> Position { (*self).into() }
-    pub fn to_walk_position(&self) -> WalkPosition { (*self).into() }
+    pub fn to_position(&self) -> Position {
+        (*self).into()
+    }
+    pub fn to_walk_position(&self) -> WalkPosition {
+        (*self).into()
+    }
 }
-
 
 impl From<TilePosition> for Position {
     fn from(p: TilePosition) -> Self {
@@ -70,37 +81,25 @@ impl From<Position> for TilePosition {
 
 impl From<WalkPosition> for Position {
     fn from(p: WalkPosition) -> Self {
-        Self {
-            x: p.x * 8,
-            y: p.y * 8,
-        }
+        Self { x: p.x * 8, y: p.y * 8 }
     }
 }
 
 impl From<Position> for WalkPosition {
     fn from(p: Position) -> Self {
-        Self {
-            x: p.x / 8,
-            y: p.y / 8,
-        }
+        Self { x: p.x / 8, y: p.y / 8 }
     }
 }
 
 impl From<TilePosition> for WalkPosition {
     fn from(p: TilePosition) -> Self {
-        Self {
-            x: p.x * 4,
-            y: p.y * 4,
-        }
+        Self { x: p.x * 4, y: p.y * 4 }
     }
 }
 
 impl From<WalkPosition> for TilePosition {
     fn from(p: WalkPosition) -> Self {
-        Self {
-            x: p.x / 4,
-            y: p.y / 4,
-        }
+        Self { x: p.x / 4, y: p.y / 4 }
     }
 }
 
