@@ -53,7 +53,7 @@ impl Region {
         let r: &ffi::RegionInterface = unsafe { self.raw.as_ref() };
         r.getDefensePriority()
     }
-    pub fn get_distance(&self, other: Region) -> i32 {
+    pub fn get_distance(&self, other: &Region) -> i32 {
         let r: &ffi::RegionInterface = unsafe { self.raw.as_ref() };
         unsafe { r.getDistance(other.raw.as_ptr()) }
     }
