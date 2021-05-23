@@ -619,59 +619,8 @@ pub mod ffi {
         fn isUnderStorm(self: &UnitInterface) -> bool;
         fn isUpgrading(self: &UnitInterface) -> bool;
         unsafe fn isVisible(self: &UnitInterface, player: *mut PlayerInterface) -> bool;
+
         fn issueCommand(self: Pin<&mut UnitInterface>, command: UnitCommand) -> bool;
-        #[cxx_name = "attack"]
-        fn attackP(self: Pin<&mut UnitInterface>, target: Position, shiftQueueCommand: bool) -> bool;
-        #[cxx_name = "attack"]
-        unsafe fn attackU(self: Pin<&mut UnitInterface>, target: *mut UnitInterface, shiftQueueCommand: bool) -> bool;
-        fn build(self: Pin<&mut UnitInterface>, unitType: UnitType, target: TilePosition) -> bool;
-        fn buildAddon(self: Pin<&mut UnitInterface>, unitType: UnitType) -> bool;
-        fn train(self: Pin<&mut UnitInterface>, unitType: UnitType) -> bool;
-        fn morph(self: Pin<&mut UnitInterface>, unitType: UnitType) -> bool;
-        fn research(self: Pin<&mut UnitInterface>, tech: TechType) -> bool;
-        fn upgrade(self: Pin<&mut UnitInterface>, upgrade: UpgradeType) -> bool;
-        #[cxx_name = "setRallyPoint"]
-        fn setRallyPointP(self: Pin<&mut UnitInterface>, target: Position) -> bool;
-        #[cxx_name = "setRallyPoint"]
-        unsafe fn setRallyPointU(self: Pin<&mut UnitInterface>, target: *mut UnitInterface) -> bool;
-        fn _unit_move(unit: Pin<&mut UnitInterface>, target: Position, shiftQueueCommand: bool) -> bool;
-        fn patrol(self: Pin<&mut UnitInterface>, target: Position, shiftQueueCommand: bool) -> bool;
-        fn holdPosition(self: Pin<&mut UnitInterface>, shiftQueueCommand: bool) -> bool;
-        fn stop(self: Pin<&mut UnitInterface>, shiftQueueCommand: bool) -> bool;
-        unsafe fn follow(self: Pin<&mut UnitInterface>, target: *mut UnitInterface, shiftQueueCommand: bool) -> bool;
-        unsafe fn gather(self: Pin<&mut UnitInterface>, target: *mut UnitInterface, shiftQueueCommand: bool) -> bool;
-        fn returnCargo(self: Pin<&mut UnitInterface>, shiftQueueCommand: bool) -> bool;
-        unsafe fn repair(self: Pin<&mut UnitInterface>, target: *mut UnitInterface, shiftQueueCommand: bool) -> bool;
-        fn burrow(self: Pin<&mut UnitInterface>) -> bool;
-        fn unburrow(self: Pin<&mut UnitInterface>) -> bool;
-        fn cloak(self: Pin<&mut UnitInterface>) -> bool;
-        fn decloak(self: Pin<&mut UnitInterface>) -> bool;
-        fn siege(self: Pin<&mut UnitInterface>) -> bool;
-        fn unsiege(self: Pin<&mut UnitInterface>) -> bool;
-        fn lift(self: Pin<&mut UnitInterface>) -> bool;
-        fn land(self: Pin<&mut UnitInterface>, target: TilePosition) -> bool;
-        unsafe fn load(self: Pin<&mut UnitInterface>, target: *mut UnitInterface, shiftQueueCommand: bool) -> bool;
-        unsafe fn unload(self: Pin<&mut UnitInterface>, target: *mut UnitInterface) -> bool;
-        #[cxx_name = "unloadAll"]
-        fn unloadAll_(self: Pin<&mut UnitInterface>, shiftQueueCommand: bool) -> bool;
-        #[cxx_name = "unloadAll"]
-        fn unloadAllP(self: Pin<&mut UnitInterface>, target: Position, shiftQueueCommand: bool) -> bool;
-        #[cxx_name = "rightClick"]
-        fn rightClickP(self: Pin<&mut UnitInterface>, target: Position, shiftQueueCommand: bool) -> bool;
-        #[cxx_name = "rightClick"]
-        unsafe fn rightClickU(self: Pin<&mut UnitInterface>, target: *mut UnitInterface, shiftQueueCommand: bool) -> bool;
-        fn haltConstruction(self: Pin<&mut UnitInterface>) -> bool;
-        fn cancelConstruction(self: Pin<&mut UnitInterface>) -> bool;
-        fn cancelAddon(self: Pin<&mut UnitInterface>) -> bool;
-        fn cancelTrain(self: Pin<&mut UnitInterface>, slot: i32) -> bool;
-        fn cancelMorph(self: Pin<&mut UnitInterface>) -> bool;
-        fn cancelResearch(self: Pin<&mut UnitInterface>) -> bool;
-        fn cancelUpgrade(self: Pin<&mut UnitInterface>) -> bool;
-        #[cxx_name = "useTech"]
-        fn useTechP(self: Pin<&mut UnitInterface>, tech: TechType, target: Position) -> bool;
-        #[cxx_name = "useTech"]
-        unsafe fn useTechU(self: Pin<&mut UnitInterface>, tech: TechType, target: *mut UnitInterface) -> bool;
-        fn placeCOP(self: Pin<&mut UnitInterface>, target: TilePosition) -> bool;
 
         fn canIssueCommand(self: &UnitInterface, command: UnitCommand, checkCanUseTechPositionOnPositions: bool, checkCanUseTechUnitOnUnits: bool, checkCanBuildUnitType: bool, checkCanTargetUnit: bool, checkCanIssueCommandType: bool, checkCommandibility: bool) -> bool;
         fn canIssueCommandGrouped(self: &UnitInterface, command: UnitCommand, checkCanUseTechPositionOnPositions: bool, checkCanUseTechUnitOnUnits: bool, checkCanTargetUnit: bool, checkCanIssueCommandType: bool, checkCommandibilityGrouped: bool, checkCommandibility: bool) -> bool;

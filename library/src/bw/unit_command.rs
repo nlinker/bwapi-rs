@@ -103,20 +103,20 @@ impl UnitCommand {
             .extra(shift_queue_command as i32)
             .build()
     }
-    pub fn build(unit: &Unit, target: TilePosition, utype: UnitType) -> UnitCommand {
+    pub fn build(unit: &Unit, target: TilePosition, unit_type: UnitType) -> UnitCommand {
         UnitCommand::builder()
             .unit(unit.clone())
             .ctype(UnitCommandType::Build)
             .x(target.x)
             .y(target.y)
-            .extra(utype as i32)
+            .extra(unit_type as i32)
             .build()
     }
-    pub fn build_addon(unit: &Unit, utype: UnitType) -> UnitCommand {
+    pub fn build_addon(unit: &Unit, unit_type: UnitType) -> UnitCommand {
         UnitCommand::builder()
             .unit(unit.clone())
             .ctype(UnitCommandType::Build_Addon)
-            .extra(utype as i32)
+            .extra(unit_type as i32)
             .build()
     }
     pub fn train(unit: &Unit, unit_type: UnitType) -> UnitCommand {
@@ -194,7 +194,7 @@ impl UnitCommand {
             .extra(shift_queue_command as i32)
             .build()
     }
-    pub fn follow(unit: &Unit, target: Unit, shift_queue_command: bool) -> UnitCommand {
+    pub fn follow(unit: &Unit, target: &Unit, shift_queue_command: bool) -> UnitCommand {
         UnitCommand::builder()
             .unit(unit.clone())
             .ctype(UnitCommandType::Follow)
@@ -202,7 +202,7 @@ impl UnitCommand {
             .extra(shift_queue_command as i32)
             .build()
     }
-    pub fn gather(unit: &Unit, target: Unit, shift_queue_command: bool) -> UnitCommand {
+    pub fn gather(unit: &Unit, target: &Unit, shift_queue_command: bool) -> UnitCommand {
         UnitCommand::builder()
             .unit(unit.clone())
             .ctype(UnitCommandType::Gather)
@@ -217,7 +217,7 @@ impl UnitCommand {
             .extra(shift_queue_command as i32)
             .build()
     }
-    pub fn repair(unit: &Unit, target: Unit, shift_queue_command: bool) -> UnitCommand {
+    pub fn repair(unit: &Unit, target: &Unit, shift_queue_command: bool) -> UnitCommand {
         UnitCommand::builder()
             .unit(unit.clone())
             .ctype(UnitCommandType::Repair)
@@ -275,7 +275,7 @@ impl UnitCommand {
             .y(target.y)
             .build()
     }
-    pub fn load(unit: &Unit, target: Unit, shift_queue_command: bool) -> UnitCommand {
+    pub fn load(unit: &Unit, target: &Unit, shift_queue_command: bool) -> UnitCommand {
         UnitCommand::builder()
             .unit(unit.clone())
             .ctype(UnitCommandType::Load)
@@ -283,7 +283,7 @@ impl UnitCommand {
             .extra(shift_queue_command as i32)
             .build()
     }
-    pub fn unload(unit: &Unit, target: Unit) -> UnitCommand {
+    pub fn unload(unit: &Unit, target: &Unit) -> UnitCommand {
         UnitCommand::builder()
             .unit(unit.clone())
             .ctype(UnitCommandType::Unload)
@@ -315,7 +315,7 @@ impl UnitCommand {
             .extra(shift_queue_command as i32)
             .build()
     }
-    pub fn right_click_unit(unit: &Unit, target: Unit, shift_queue_command: bool) -> UnitCommand {
+    pub fn right_click_unit(unit: &Unit, target: &Unit, shift_queue_command: bool) -> UnitCommand {
         UnitCommand::builder()
             .unit(unit.clone())
             .ctype(UnitCommandType::Right_Click_Unit)
@@ -395,7 +395,7 @@ impl UnitCommand {
             .extra(tech_type as i32)
             .build()
     }
-    pub fn use_tech_unit(unit: &Unit, tech_type: TechType, target: Unit) -> UnitCommand {
+    pub fn use_tech_unit(unit: &Unit, tech_type: TechType, target: &Unit) -> UnitCommand {
         UnitCommand::builder()
             .unit(unit.clone())
             .ctype(UnitCommandType::Use_Tech_Unit)

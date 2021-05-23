@@ -335,7 +335,4 @@ std::unique_ptr<BWAPI::Unitset> _unit_getUnitsInRadius(const BWAPI::UnitInterfac
 std::unique_ptr<BWAPI::Unitset> _unit_getUnitsInWeaponRange(const BWAPI::UnitInterface &unit, BWAPI::WeaponType wType, UnitFilter pred) {
     return std::make_unique<BWAPI::Unitset>(unit.getUnitsInWeaponRange(wType, pred));
 }
-bool _unit_move(BWAPI::UnitInterface &unit, BWAPI::Position target, bool shiftQueueCommand) {
-    return unit.move(target, shiftQueueCommand);
-}
 // endregion
