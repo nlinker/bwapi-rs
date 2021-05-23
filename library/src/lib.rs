@@ -847,7 +847,7 @@ pub mod ffi {
     extern "Rust" {
         include!("library/src/aim.h");
         type BoxedAIModule<'a>;
-        // the hack is to create AimBox to create AIModuleWrapper on the C++ side
+        // the hack is used to create BoxedAIModule on the C++ side
         unsafe fn hack<'a>() -> &'static BoxedAIModule<'a>;
 
         unsafe fn on_start(wrapper: Pin<&mut AIModuleWrapper>);
