@@ -34,31 +34,34 @@ unsafe impl cxx::ExternType for WalkPosition {
     type Kind = cxx::kind::Trivial;
 }
 
-impl Position {
-    pub fn to_walk_position(&self) -> WalkPosition {
-        (*self).into()
-    }
-    pub fn to_tile_position(&self) -> TilePosition {
-        (*self).into()
-    }
+pub trait PositionLike {
+    fn to_position(&self) -> Position;
+    fn to_walk_position(&self) -> WalkPosition;
+    fn to_tile_position(&self) -> TilePosition;
 }
 
-impl WalkPosition {
-    pub fn to_position(&self) -> Position {
-        (*self).into()
-    }
-    pub fn to_tile_position(&self) -> TilePosition {
-        (*self).into()
-    }
+impl PositionLike for (i32, i32) {
+    fn to_position(&self) -> Position { Position { x: self.0, y: self.1 } }
+    fn to_walk_position(&self) -> WalkPosition { WalkPosition { x: self.0, y: self.1 } }
+    fn to_tile_position(&self) -> TilePosition { TilePosition { x: self.0, y: self.1 } }
 }
 
-impl TilePosition {
-    pub fn to_position(&self) -> Position {
-        (*self).into()
-    }
-    pub fn to_walk_position(&self) -> WalkPosition {
-        (*self).into()
-    }
+impl PositionLike for Position {
+    fn to_position(&self) -> Position { (*self).into() }
+    fn to_walk_position(&self) -> WalkPosition { (*self).into() }
+    fn to_tile_position(&self) -> TilePosition { (*self).into() }
+}
+
+impl PositionLike for WalkPosition {
+    fn to_position(&self) -> Position { (*self).into() }
+    fn to_walk_position(&self) -> WalkPosition { (*self).into() }
+    fn to_tile_position(&self) -> TilePosition { (*self).into() }
+}
+
+impl PositionLike for TilePosition {
+    fn to_position(&self) -> Position { (*self).into() }
+    fn to_walk_position(&self) -> WalkPosition { (*self).into() }
+    fn to_tile_position(&self) -> TilePosition { (*self).into() }
 }
 
 impl From<TilePosition> for Position {

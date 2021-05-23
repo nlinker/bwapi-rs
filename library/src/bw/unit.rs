@@ -12,7 +12,7 @@ use crate::bw::weapon_type::WeaponType;
 use crate::bw::{with_unit_filter, Handle};
 use crate::{ffi, FromRaw};
 use std::pin::Pin;
-use std::ptr::NonNull;
+use std::ptr::{NonNull, null_mut};
 
 #[derive(Debug, Clone)]
 pub struct Unit {
@@ -592,20 +592,31 @@ impl Unit {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
         x.isUpgrading()
     }
-    pub fn is_visible(&self, player: &Player) -> bool {
-        let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
-        unsafe { x.isVisible(player.raw.as_ptr()) }
+    pub fn is_visible(&self) -> bool {
+        self.is_visible_(None)
     }
+    pub fn is_visible_(&self, player: Option<&Player>) -> bool {
+        let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        if let Some(player) = player {
+            unsafe { x.isVisible(player.raw.as_ptr()) }
+        } else {
+            unsafe { x.isVisible(null_mut()) }
+        }
+    }
+
     pub fn issue_command(&self, command: UnitCommand) -> bool {
         let x: Pin<&mut ffi::UnitInterface> = unsafe { Pin::new_unchecked(&mut *self.raw.as_ptr()) };
         x.issueCommand(command)
     }
-    pub fn attack_position(&self, target: Position, shift_queue_command: bool) -> bool {
+    pub fn attack_position(&self, target: Position) -> bool {
+        // todo self.issue_command()
         let x: Pin<&mut ffi::UnitInterface> = unsafe { Pin::new_unchecked(&mut *self.raw.as_ptr()) };
+        let shift_queue_command = false;
         x.attackP(target, shift_queue_command)
     }
-    pub fn attack_unit(&self, target: &Unit, shift_queue_command: bool) -> bool {
+    pub fn attack_unit(&self, target: &Unit) -> bool {
         let x: Pin<&mut ffi::UnitInterface> = unsafe { Pin::new_unchecked(&mut *self.raw.as_ptr()) };
+        let shift_queue_command = false;
         unsafe { x.attackU(target.raw.as_ptr(), shift_queue_command) }
     }
     pub fn build(&self, unit_type: UnitType, target: TilePosition) -> bool {
@@ -640,36 +651,44 @@ impl Unit {
         let x: Pin<&mut ffi::UnitInterface> = unsafe { Pin::new_unchecked(&mut *self.raw.as_ptr()) };
         unsafe { x.setRallyPointU(target.raw.as_ptr()) }
     }
-    pub fn move_(&self, target: Position, shift_queue_command: bool) -> bool {
+    pub fn move_(&self, target: Position) -> bool {
         let x: Pin<&mut ffi::UnitInterface> = unsafe { Pin::new_unchecked(&mut *self.raw.as_ptr()) };
+        let shift_queue_command = false;
         ffi::_unit_move(x, target, shift_queue_command)
     }
-    pub fn patrol(&self, target: Position, shift_queue_command: bool) -> bool {
+    pub fn patrol(&self, target: Position) -> bool {
         let x: Pin<&mut ffi::UnitInterface> = unsafe { Pin::new_unchecked(&mut *self.raw.as_ptr()) };
+        let shift_queue_command = false;
         x.patrol(target, shift_queue_command)
     }
-    pub fn hold_position(&self, shift_queue_command: bool) -> bool {
+    pub fn hold_position(&self) -> bool {
         let x: Pin<&mut ffi::UnitInterface> = unsafe { Pin::new_unchecked(&mut *self.raw.as_ptr()) };
+        let shift_queue_command = false;
         x.holdPosition(shift_queue_command)
     }
-    pub fn stop(&self, shift_queue_command: bool) -> bool {
+    pub fn stop(&self) -> bool {
         let x: Pin<&mut ffi::UnitInterface> = unsafe { Pin::new_unchecked(&mut *self.raw.as_ptr()) };
+        let shift_queue_command = false;
         x.stop(shift_queue_command)
     }
-    pub fn follow(&self, target: &Unit, shift_queue_command: bool) -> bool {
+    pub fn follow(&self, target: &Unit) -> bool {
         let x: Pin<&mut ffi::UnitInterface> = unsafe { Pin::new_unchecked(&mut *self.raw.as_ptr()) };
+        let shift_queue_command = false;
         unsafe { x.follow(target.raw.as_ptr(), shift_queue_command) }
     }
-    pub fn gather(&self, target: &Unit, shift_queue_command: bool) -> bool {
+    pub fn gather(&self, target: &Unit) -> bool {
         let x: Pin<&mut ffi::UnitInterface> = unsafe { Pin::new_unchecked(&mut *self.raw.as_ptr()) };
+        let shift_queue_command = false;
         unsafe { x.gather(target.raw.as_ptr(), shift_queue_command) }
     }
-    pub fn return_cargo(&self, shift_queue_command: bool) -> bool {
+    pub fn return_cargo(&self) -> bool {
         let x: Pin<&mut ffi::UnitInterface> = unsafe { Pin::new_unchecked(&mut *self.raw.as_ptr()) };
+        let shift_queue_command = false;
         x.returnCargo(shift_queue_command)
     }
-    pub fn repair(&self, target: &Unit, shift_queue_command: bool) -> bool {
+    pub fn repair(&self, target: &Unit) -> bool {
         let x: Pin<&mut ffi::UnitInterface> = unsafe { Pin::new_unchecked(&mut *self.raw.as_ptr()) };
+        let shift_queue_command = false;
         unsafe { x.repair(target.raw.as_ptr(), shift_queue_command) }
     }
     pub fn burrow(&self) -> bool {
@@ -704,28 +723,33 @@ impl Unit {
         let x: Pin<&mut ffi::UnitInterface> = unsafe { Pin::new_unchecked(&mut *self.raw.as_ptr()) };
         x.land(target)
     }
-    pub fn load(&self, target: &Unit, shift_queue_command: bool) -> bool {
+    pub fn load(&self, target: &Unit) -> bool {
         let x: Pin<&mut ffi::UnitInterface> = unsafe { Pin::new_unchecked(&mut *self.raw.as_ptr()) };
+        let shift_queue_command = false;
         unsafe { x.load(target.raw.as_ptr(), shift_queue_command) }
     }
     pub fn unload(&self, target: &Unit) -> bool {
         let x: Pin<&mut ffi::UnitInterface> = unsafe { Pin::new_unchecked(&mut *self.raw.as_ptr()) };
         unsafe { x.unload(target.raw.as_ptr()) }
     }
-    pub fn unload_all(&self, shift_queue_command: bool) -> bool {
+    pub fn unload_all(&self) -> bool {
         let x: Pin<&mut ffi::UnitInterface> = unsafe { Pin::new_unchecked(&mut *self.raw.as_ptr()) };
+        let shift_queue_command = false;
         x.unloadAll_(shift_queue_command)
     }
-    pub fn unload_all_p(&self, target: Position, shift_queue_command: bool) -> bool {
+    pub fn unload_all_p(&self, target: Position) -> bool {
         let x: Pin<&mut ffi::UnitInterface> = unsafe { Pin::new_unchecked(&mut *self.raw.as_ptr()) };
+        let shift_queue_command = false;
         x.unloadAllP(target, shift_queue_command)
     }
-    pub fn right_click_p(&self, target: Position, shift_queue_command: bool) -> bool {
+    pub fn right_click_p(&self, target: Position) -> bool {
         let x: Pin<&mut ffi::UnitInterface> = unsafe { Pin::new_unchecked(&mut *self.raw.as_ptr()) };
+        let shift_queue_command = false;
         x.rightClickP(target, shift_queue_command)
     }
-    pub fn right_click_u(&self, target: &Unit, shift_queue_command: bool) -> bool {
+    pub fn right_click_u(&self, target: &Unit) -> bool {
         let x: Pin<&mut ffi::UnitInterface> = unsafe { Pin::new_unchecked(&mut *self.raw.as_ptr()) };
+        let shift_queue_command = false;
         unsafe { x.rightClickU(target.raw.as_ptr(), shift_queue_command) }
     }
     pub fn halt_construction(&self) -> bool {
@@ -740,9 +764,9 @@ impl Unit {
         let x: Pin<&mut ffi::UnitInterface> = unsafe { Pin::new_unchecked(&mut *self.raw.as_ptr()) };
         x.cancelAddon()
     }
-    pub fn cancel_train(&self, slot: Option<i32>) -> bool {
+    pub fn cancel_train(&self) -> bool {
         let x: Pin<&mut ffi::UnitInterface> = unsafe { Pin::new_unchecked(&mut *self.raw.as_ptr()) };
-        let slot = slot.unwrap_or(-2);
+        let slot = -2;
         x.cancelTrain(slot)
     }
     pub fn cancel_morph(&self) -> bool {
@@ -769,6 +793,7 @@ impl Unit {
         let x: Pin<&mut ffi::UnitInterface> = unsafe { Pin::new_unchecked(&mut *self.raw.as_ptr()) };
         x.placeCOP(target)
     }
+
     pub fn can_issue_command(&self, command: UnitCommand) -> bool {
         self.can_issue_command_(command, CanIssueCommandArg::builder().build())
     }
@@ -785,7 +810,7 @@ impl Unit {
         )
     }
     pub fn can_issue_command_grouped(&self, command: UnitCommand) -> bool {
-        self.can_issue_command_grouped_(command: UnitCommand, CanIssueCommandGroupedArg::builder().build())
+        self.can_issue_command_grouped_(command, CanIssueCommandGroupedArg::builder().build())
     }
     pub fn can_issue_command_grouped_(&self, command: UnitCommand, arg: CanIssueCommandGroupedArg) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
@@ -833,6 +858,7 @@ impl Unit {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
         unsafe { x.canTargetUnit(target_unit.raw.as_ptr(), check_commandibility) }
     }
+
     pub fn can_attack(&self) -> bool {
         self.can_attack_(true)
     }

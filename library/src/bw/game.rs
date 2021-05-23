@@ -410,7 +410,10 @@ impl Game {
         let g: &ffi::Game = unsafe { self.raw.as_ref().unwrap().as_ref() };
         g.isBattleNet()
     }
-    pub fn is_buildable(&self, position: TilePosition, include_buildings: bool) -> bool {
+    pub fn is_buildable(&self, position: TilePosition) -> bool {
+        self.is_buildable_(position, false)
+    }
+    pub fn is_buildable_(&self, position: TilePosition, include_buildings: bool) -> bool {
         let g: &ffi::Game = unsafe { self.raw.as_ref().unwrap().as_ref() };
         g.isBuildable(position, include_buildings)
     }

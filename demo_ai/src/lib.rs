@@ -102,13 +102,13 @@ impl AIModule for DemoAI {
                             let drones =
                                 game.get_units_in_radius(home_pos, 200, |x| x.get_type() == UnitType::Zerg_Drone);
                             for drone in drones.iter() {
-                                drone.attack_unit(&hatchery, false);
+                                drone.attack_unit(&hatchery);
                                 // drone.attack_position(hatchery.get_position(), false);
                             }
                             let overlords =
                                 game.get_units_in_radius(home_pos, 200, |x| x.get_type() == UnitType::Zerg_Overlord);
                             for over in overlords.iter() {
-                                over.move_(enemy_pos, false);
+                                over.move_(enemy_pos);
                             }
                         }
                         self.is_burrowed = true;

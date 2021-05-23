@@ -1,4 +1,9 @@
 use crate::bw::unit::Unit;
+use crate::bw::position::{Position, TilePosition};
+use crate::bw::unit_type::UnitType;
+use crate::bw::tech_type::TechType;
+use crate::bw::upgrade_type::UpgradeType;
+use typed_builder::TypedBuilder;
 
 #[repr(u32)]
 #[allow(non_camel_case_types)]
@@ -66,66 +71,100 @@ unsafe impl cxx::ExternType for UnitCommandType {
 }
 
 #[derive(Debug, Clone)]
+#[derive(TypedBuilder)]
 pub struct UnitCommand {
     pub unit: Unit,
-    pub uc_type: UnitCommandType,
+    pub ctype: UnitCommandType,
+    #[builder(default = None)]
     pub target: Option<Unit>,
+    #[builder(default = 0)]
     pub x: i32,
+    #[builder(default = 0)]
     pub y: i32,
+    #[builder(default = 0)]
     pub extra: i32,
 }
 
-// #[derive(Debug)]
-// pub enum UnitCommand {
-//     AttackUnit { unit: Unit, target: Unit, shift_queue_command: bool },
-//     AttackMove { unit: Unit, target: Position, shift_queue_command: bool },
-//     Build { unit: Unit, target: TilePosition, utype: UnitType },
-//     BuildAddon { unit: Unit, utype: UnitType },
-//     Train { unit: Unit, utype: UnitType },
-//     Morph { unit: Unit, utype: UnitType },
-//     Research { unit: Unit, tech: TechType },
-//     Upgrade { unit: Unit, upgrade: UpgradeType },
-//     SetRallyPosition { unit: Unit, target: Position },
-//     SetRallyUnit { unit: Unit, target: Unit },
-//     Move { unit: Unit, target: Position, shift_queue_command: bool },
-//     Patrol { unit: Unit, target: Position, shift_queue_command: bool },
-//     HoldPosition { unit: Unit, shift_queue_command: bool },
-//     Stop { unit: Unit, shift_queue_command: bool },
-//     Follow { unit: Unit, target: Unit, shift_queue_command: bool },
-//     Gather { unit: Unit, target: Unit, shift_queue_command: bool },
-//     ReturnCargo { unit: Unit, shift_queue_command: bool },
-//     Repair { unit: Unit, target: Unit, shift_queue_command: bool },
-//     Burrow { unit: Unit },
-//     Unburrow { unit: Unit },
-//     Cloak { unit: Unit },
-//     Decloak { unit: Unit },
-//     Siege { unit: Unit },
-//     Unsiege { unit: Unit },
-//     Lift { unit: Unit },
-//     Land { unit: Unit, target: TilePosition },
-//     Load { unit: Unit, target: Unit, shift_queue_command: bool },
-//     Unload { unit: Unit, target: Unit },
-//     UnloadAll { unit: Unit, shift_queue_command: bool },
-//     UnloadAllPosition { unit: Unit, target: Position, shift_queue_command: bool },
-//     RightClickUnit { unit: Unit, target: Unit, shift_queue_command: bool },
-//     RightClickPosition { unit: Unit, target: Position, shift_queue_command: bool },
-//     HaltConstruction { unit: Unit },
-//     CancelConstruction { unit: Unit },
-//     CancelAddon { unit: Unit },
-//     CancelTrain { unit: Unit, slot: i32 },
-//     CancelMorph { unit: Unit },
-//     CancelResearch { unit: Unit },
-//     CancelUpgrade { unit: Unit },
-//     UseTech { unit: Unit, tech: TechType },
-//     UseTechUnit { unit: Unit, tech: TechType, target: Unit },
-//     UseTechPosition { unit: Unit, tech: TechType, target: Position },
-//     PlaceCOP { unit: Unit, target: TilePosition },
-//     None,
-//     Unknown,
-// }
+impl UnitCommand {
+    pub fn attack_move(unit: &Unit, target: Position, shift_queue_command: bool) -> UnitCommand {
+        // `shift_queue_command as i32` works https://stackoverflow.com/a/55461702/5066426
+        UnitCommand::builder()
+            .unit(unit.clone())
+            .ctype(UnitCommandType::Attack_Move)
+            .x(target.x)
+            .y(target.y)
+            .extra(shift_queue_command as i32)
+            .build()
+    }
+    pub fn attack_unit(unit: &Unit, target: &Unit, shift_queue_command: bool) -> UnitCommand {
+        UnitCommand::builder()
+            .unit(unit.clone())
+            .ctype(UnitCommandType::Attack_Unit)
+            .target(Some(target.clone()))
+            .extra(shift_queue_command as i32)
+            .build()
+    }
+    pub fn build(unit: &Unit, target: TilePosition, utype: UnitType) -> UnitCommand {
+        UnitCommand::builder()
+            .unit(unit.clone())
+            .ctype(UnitCommandType::Build)
+            .x(target.x)
+            .y(target.y)
+            .extra(utype as i32)
+            .build()
+    }
+    pub fn build_addon(unit: &Unit, utype: UnitType) -> UnitCommand {
+        UnitCommand::builder()
+            .unit(unit.clone())
+            .ctype(UnitCommandType::Build_Addon)
+            .extra(utype as i32)
+            .build()
+    }
+    pub fn train(unit: &Unit, utype: UnitType) -> UnitCommand { UnitCommand::builder().unit(unit.clone()).ctype(UnitCommandType::Train).build() }
+    pub fn morph(unit: &Unit, utype: UnitType) -> UnitCommand { UnitCommand::builder().unit(unit.clone()).ctype(UnitCommandType::Morph).build() }
+    pub fn research(unit: &Unit, tech: TechType) -> UnitCommand { UnitCommand::builder().unit(unit.clone()).ctype(UnitCommandType::Research).build() }
+    pub fn upgrade(unit: &Unit, upgrade: UpgradeType) -> UnitCommand { UnitCommand::builder().unit(unit.clone()).ctype(UnitCommandType::Upgrade).build() }
+    pub fn set_rally_position(unit: &Unit, target: Position) -> UnitCommand { UnitCommand::builder().unit(unit.clone()).ctype(UnitCommandType::Set_Rally_Position).build() }
+    pub fn set_rally_unit(unit: &Unit, target: Unit) -> UnitCommand { UnitCommand::builder().unit(unit.clone()).ctype(UnitCommandType::Set_Rally_Unit).build() }
+    pub fn move_(unit: &Unit, target: Position, shift_queue_command: bool) -> UnitCommand { UnitCommand::builder().unit(unit.clone()).ctype(UnitCommandType::Move).build() }
+    pub fn patrol(unit: &Unit, target: Position, shift_queue_command: bool) -> UnitCommand { UnitCommand::builder().unit(unit.clone()).ctype(UnitCommandType::Patrol).build() }
+    pub fn hold_position(unit: &Unit, shift_queue_command: bool) -> UnitCommand { UnitCommand::builder().unit(unit.clone()).ctype(UnitCommandType::Hold_Position).build() }
+    pub fn stop(unit: &Unit, shift_queue_command: bool) -> UnitCommand { UnitCommand::builder().unit(unit.clone()).ctype(UnitCommandType::Stop).build() }
+    pub fn follow(unit: &Unit, target: Unit, shift_queue_command: bool) -> UnitCommand { UnitCommand::builder().unit(unit.clone()).ctype(UnitCommandType::Follow).build() }
+    pub fn gather(unit: &Unit, target: Unit, shift_queue_command: bool) -> UnitCommand { UnitCommand::builder().unit(unit.clone()).ctype(UnitCommandType::Gather).build() }
+    pub fn return_cargo(unit: &Unit, shift_queue_command: bool) -> UnitCommand { UnitCommand::builder().unit(unit.clone()).ctype(UnitCommandType::Return_Cargo).build() }
+    pub fn repair(unit: &Unit, target: Unit, shift_queue_command: bool) -> UnitCommand { UnitCommand::builder().unit(unit.clone()).ctype(UnitCommandType::Repair).build() }
+    pub fn burrow(unit: &Unit) -> UnitCommand { UnitCommand::builder().unit(unit.clone()).ctype(UnitCommandType::Burrow).build() }
+    pub fn unburrow(unit: &Unit) -> UnitCommand { UnitCommand::builder().unit(unit.clone()).ctype(UnitCommandType::Unburrow).build() }
+    pub fn cloak(unit: &Unit) -> UnitCommand { UnitCommand::builder().unit(unit.clone()).ctype(UnitCommandType::Cloak).build() }
+    pub fn decloak(unit: &Unit) -> UnitCommand { UnitCommand::builder().unit(unit.clone()).ctype(UnitCommandType::Decloak).build() }
+    pub fn siege(unit: &Unit) -> UnitCommand { UnitCommand::builder().unit(unit.clone()).ctype(UnitCommandType::Siege).build() }
+    pub fn unsiege(unit: &Unit) -> UnitCommand { UnitCommand::builder().unit(unit.clone()).ctype(UnitCommandType::Unsiege).build() }
+    pub fn lift(unit: &Unit) -> UnitCommand { UnitCommand::builder().unit(unit.clone()).ctype(UnitCommandType::Lift).build() }
+    pub fn land(unit: &Unit, target: TilePosition) -> UnitCommand { UnitCommand::builder().unit(unit.clone()).ctype(UnitCommandType::Land).build() }
+    pub fn load(unit: &Unit, target: Unit, shift_queue_command: bool) -> UnitCommand { UnitCommand::builder().unit(unit.clone()).ctype(UnitCommandType::Load).build() }
+    pub fn unload(unit: &Unit, target: Unit) -> UnitCommand { UnitCommand::builder().unit(unit.clone()).ctype(UnitCommandType::Unload).build() }
+    pub fn unload_all(unit: &Unit, shift_queue_command: bool) -> UnitCommand { UnitCommand::builder().unit(unit.clone()).ctype(UnitCommandType::Unload_All).build() }
+    pub fn unload_all_position(unit: &Unit, target: Position, shift_queue_command: bool) -> UnitCommand { UnitCommand::builder().unit(unit.clone()).ctype(UnitCommandType::Unload_All_Position).build() }
+    pub fn right_click_position(unit: &Unit, target: Position, shift_queue_command: bool) -> UnitCommand { UnitCommand::builder().unit(unit.clone()).ctype(UnitCommandType::Right_Click_Position).build() }
+    pub fn right_click_unit(unit: &Unit, target: Unit, shift_queue_command: bool) -> UnitCommand { UnitCommand::builder().unit(unit.clone()).ctype(UnitCommandType::Right_Click_Unit).build() }
+    pub fn halt_construction(unit: &Unit) -> UnitCommand { UnitCommand::builder().unit(unit.clone()).ctype(UnitCommandType::Halt_Construction).build() }
+    pub fn cancel_construction(unit: &Unit) -> UnitCommand { UnitCommand::builder().unit(unit.clone()).ctype(UnitCommandType::Cancel_Construction).build() }
+    pub fn cancel_addon(unit: &Unit) -> UnitCommand { UnitCommand::builder().unit(unit.clone()).ctype(UnitCommandType::Cancel_Addon).build() }
+    pub fn cancel_train(unit: &Unit) -> UnitCommand { UnitCommand::builder().unit(unit.clone()).ctype(UnitCommandType::Cancel_Train).build() }
+    pub fn cancel_train_slot(unit: &Unit, slot: i32) -> UnitCommand { UnitCommand::builder().unit(unit.clone()).ctype(UnitCommandType::Cancel_Train_Slot).build() }
+    pub fn cancel_morph(unit: &Unit) -> UnitCommand { UnitCommand::builder().unit(unit.clone()).ctype(UnitCommandType::Cancel_Morph).build() }
+    pub fn cancel_research(unit: &Unit) -> UnitCommand { UnitCommand::builder().unit(unit.clone()).ctype(UnitCommandType::Cancel_Research).build() }
+    pub fn cancel_upgrade(unit: &Unit) -> UnitCommand { UnitCommand::builder().unit(unit.clone()).ctype(UnitCommandType::Cancel_Upgrade).build() }
+    pub fn use_tech(unit: &Unit, tech: TechType) -> UnitCommand { UnitCommand::builder().unit(unit.clone()).ctype(UnitCommandType::Use_Tech).build() }
+    pub fn use_tech_position(unit: &Unit, tech: TechType, target: Position) -> UnitCommand { UnitCommand::builder().unit(unit.clone()).ctype(UnitCommandType::Use_Tech_Position).build() }
+    pub fn use_tech_unit(unit: &Unit, tech: TechType, target: Unit) -> UnitCommand { UnitCommand::builder().unit(unit.clone()).ctype(UnitCommandType::Use_Tech_Unit).build() }
+    pub fn place_cop(unit: &Unit, target: TilePosition) -> UnitCommand { UnitCommand::builder().unit(unit.clone()).ctype(UnitCommandType::Place_COP).build() }
+}
 
 // required for ffi layer
 unsafe impl cxx::ExternType for UnitCommand {
     type Id = cxx::type_id!("BWAPI::UnitCommand");
     type Kind = cxx::kind::Trivial;
 }
+

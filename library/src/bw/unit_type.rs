@@ -1,3 +1,5 @@
+use crate::prelude::TilePosition;
+
 #[repr(u32)]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord)]
@@ -247,11 +249,247 @@ unsafe impl cxx::ExternType for UnitType {
 }
 
 impl UnitType {
-    pub(crate) fn requires_psi(&self) -> bool {
+    pub fn get_race(&self) -> bool {
         todo!()
     }
-
-    pub(crate) fn is_building(&self) -> bool {
+    pub fn what_builds(&self) -> bool {
+        todo!()
+    }
+    pub fn required_units(&self) -> bool {
+        todo!()
+    }
+    pub fn required_tech(&self) -> bool {
+        todo!()
+    }
+    pub fn cloaking_tech(&self) -> bool {
+        todo!()
+    }
+    pub fn abilities(&self) -> bool {
+        todo!()
+    }
+    pub fn upgrades(&self) -> bool {
+        todo!()
+    }
+    pub fn armor_upgrade(&self) -> bool {
+        todo!()
+    }
+    pub fn max_hit_points(&self) -> bool {
+        todo!()
+    }
+    pub fn max_shields(&self) -> bool {
+        todo!()
+    }
+    pub fn max_energy(&self) -> bool {
+        todo!()
+    }
+    pub fn armor(&self) -> bool {
+        todo!()
+    }
+    pub fn mineral_price(&self) -> bool {
+        todo!()
+    }
+    pub fn gas_price(&self) -> bool {
+        todo!()
+    }
+    pub fn build_time(&self) -> bool {
+        todo!()
+    }
+    pub fn supply_required(&self) -> bool {
+        todo!()
+    }
+    pub fn supply_provided(&self) -> bool {
+        todo!()
+    }
+    pub fn space_required(&self) -> bool {
+        todo!()
+    }
+    pub fn space_provided(&self) -> bool {
+        todo!()
+    }
+    pub fn build_score(&self) -> bool {
+        todo!()
+    }
+    pub fn destroy_score(&self) -> bool {
+        todo!()
+    }
+    pub fn size(&self) -> bool {
+        todo!()
+    }
+    pub fn tile_width(&self) -> bool {
+        todo!()
+    }
+    pub fn tile_height(&self) -> bool {
+        todo!()
+    }
+    pub fn tile_size(&self) -> TilePosition {
+        todo!()
+    }
+    pub fn dimension_left(&self) -> bool {
+        todo!()
+    }
+    pub fn dimension_up(&self) -> bool {
+        todo!()
+    }
+    pub fn dimension_right(&self) -> bool {
+        todo!()
+    }
+    pub fn dimension_down(&self) -> bool {
+        todo!()
+    }
+    pub fn width(&self) -> bool {
+        todo!()
+    }
+    pub fn height(&self) -> bool {
+        todo!()
+    }
+    pub fn seek_range(&self) -> bool {
+        todo!()
+    }
+    pub fn sight_range(&self) -> bool {
+        todo!()
+    }
+    pub fn ground_weapon(&self) -> bool {
+        todo!()
+    }
+    pub fn max_ground_hits(&self) -> bool {
+        todo!()
+    }
+    pub fn air_weapon(&self) -> bool {
+        todo!()
+    }
+    pub fn max_air_hits(&self) -> bool {
+        todo!()
+    }
+    pub fn top_speed(&self) -> bool {
+        todo!()
+    }
+    pub fn acceleration(&self) -> bool {
+        todo!()
+    }
+    pub fn halt_distance(&self) -> bool {
+        todo!()
+    }
+    pub fn turn_radius(&self) -> bool {
+        todo!()
+    }
+    pub fn can_produce(&self) -> bool {
+        todo!()
+    }
+    pub fn can_attack(&self) -> bool {
+        todo!()
+    }
+    pub fn can_move(&self) -> bool {
+        todo!()
+    }
+    pub fn is_flyer(&self) -> bool {
+        todo!()
+    }
+    pub fn regenerates_hp(&self) -> bool {
+        todo!()
+    }
+    pub fn is_spellcaster(&self) -> bool {
+        todo!()
+    }
+    pub fn has_permanent_cloak(&self) -> bool {
+        todo!()
+    }
+    pub fn is_invincible(&self) -> bool {
+        todo!()
+    }
+    pub fn is_organic(&self) -> bool {
+        todo!()
+    }
+    pub fn is_mechanical(&self) -> bool {
+        todo!()
+    }
+    pub fn is_robotic(&self) -> bool {
+        todo!()
+    }
+    pub fn is_detector(&self) -> bool {
+        todo!()
+    }
+    pub fn is_resource_container(&self) -> bool {
+        todo!()
+    }
+    pub fn is_resource_depot(&self) -> bool {
+        todo!()
+    }
+    pub fn is_refinery(&self) -> bool {
+        todo!()
+    }
+    pub fn is_worker(&self) -> bool {
+        todo!()
+    }
+    pub fn requires_psi(&self) -> bool {
+        todo!()
+    }
+    pub fn requires_creep(&self) -> bool {
+        todo!()
+    }
+    pub fn is_two_units_in_one_egg(&self) -> bool {
+        todo!()
+    }
+    pub fn is_burrowable(&self) -> bool {
+        todo!()
+    }
+    pub fn is_cloakable(&self) -> bool {
+        todo!()
+    }
+    pub fn is_building(&self) -> bool {
+        todo!()
+    }
+    pub fn is_addon(&self) -> bool {
+        todo!()
+    }
+    pub fn is_flying_building(&self) -> bool {
+        todo!()
+    }
+    pub fn is_neutral(&self) -> bool {
+        todo!()
+    }
+    pub fn is_hero(&self) -> bool {
+        todo!()
+    }
+    pub fn is_powerup(&self) -> bool {
+        todo!()
+    }
+    pub fn is_beacon(&self) -> bool {
+        todo!()
+    }
+    pub fn is_flag_beacon(&self) -> bool {
+        todo!()
+    }
+    pub fn is_special_building(&self) -> bool {
+        todo!()
+    }
+    pub fn is_spell(&self) -> bool {
+        todo!()
+    }
+    pub fn produces_creep(&self) -> bool {
+        todo!()
+    }
+    pub fn produces_larva(&self) -> bool {
+        todo!()
+    }
+    pub fn is_mineral_field(&self) -> bool {
+        todo!()
+    }
+    pub fn is_critter(&self) -> bool {
+        todo!()
+    }
+    pub fn can_build_addon(&self) -> bool {
+        todo!()
+    }
+    pub fn builds_what(&self) -> bool {
+        todo!()
+    }
+    pub fn researches_what(&self) -> bool {
+        todo!()
+    }
+    pub fn upgrades_what(&self) -> bool {
+        todo!()
+    }
+    pub fn is_successor_of(&self) -> bool {
         todo!()
     }
 }

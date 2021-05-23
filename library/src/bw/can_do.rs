@@ -1,7 +1,5 @@
 use typed_builder::TypedBuilder;
 
-use crate::bw::unit_command::UnitCommand;
-
 // region CanIssueCommandArg::builder
 #[derive(TypedBuilder)]
 pub struct CanIssueCommandArg {
@@ -23,7 +21,6 @@ pub struct CanIssueCommandArg {
 // region CanIssueCommandGroupedArg::builder
 #[derive(TypedBuilder)]
 pub struct CanIssueCommandGroupedArg {
-    pub unit_command: UnitCommand,
     #[builder(default = true)]
     pub check_can_use_tech_position_on_positions: bool,
     #[builder(default = true)]
