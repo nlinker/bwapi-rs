@@ -55,7 +55,13 @@ impl Game {
             raw: Handle::BorrowedMut(set),
         }
     }
-    pub fn can_build_here(&self, position: TilePosition, utype: UnitType, builder: &Unit, check_explored: bool) -> bool {
+    pub fn can_build_here(
+        &self,
+        position: TilePosition,
+        utype: UnitType,
+        builder: &Unit,
+        check_explored: bool,
+    ) -> bool {
         let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw.unwrap().as_ptr()) };
         unsafe { g.canBuildHere(position, utype, builder.raw.as_ptr(), check_explored) }
     }
@@ -176,13 +182,19 @@ impl Game {
         &self,
         from_type: UnitType,
         to_type: UnitType,
-        from_player: Player,
-        to_player: Player,
+        from_player: &Player,
+        to_player: &Player,
     ) -> i32 {
         let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
         unsafe { g.getDamageFrom(from_type, to_type, from_player.raw.as_ptr(), to_player.raw.as_ptr()) }
     }
-    pub fn get_damage_to(&self, to_type: UnitType, from_type: UnitType, to_player: Player, from_player: Player) -> i32 {
+    pub fn get_damage_to(
+        &self,
+        to_type: UnitType,
+        from_type: UnitType,
+        to_player: &Player,
+        from_player: &Player,
+    ) -> i32 {
         let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
         unsafe { g.getDamageTo(from_type, to_type, from_player.raw.as_ptr(), to_player.raw.as_ptr()) }
     }
@@ -520,7 +532,7 @@ impl Game {
         let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw.unwrap().as_mut()) };
         ffi::_game_sendTextEx(g, to_allies, text)
     }
-    pub fn set_alliance(&self, player: Player, allied: bool, allied_victory: bool) -> bool {
+    pub fn set_alliance(&self, player: &Player, allied: bool, allied_victory: bool) -> bool {
         let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw.unwrap().as_mut()) };
         unsafe { g.setAlliance(player.raw.as_ptr(), allied, allied_victory) }
     }
@@ -556,7 +568,7 @@ impl Game {
         let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw.unwrap().as_mut()) };
         g.setScreenPosition(p)
     }
-    pub fn set_vision(&self, player: Player, enabled: bool) -> bool {
+    pub fn set_vision(&self, player: &Player, enabled: bool) -> bool {
         let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw.unwrap().as_mut()) };
         unsafe { g.setVision(player.raw.as_ptr(), enabled) }
     }

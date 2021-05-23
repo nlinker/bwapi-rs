@@ -84,23 +84,41 @@ impl AIModule for DemoAI {
                 let fc = game.get_frame_count();
                 if fc % 50 == 0 {
                     let xs = game.get_start_locations();
-                    let home = xs.iter().filter(|t| {
-                        let p = Position { x: t.x * 32, y: t.y * 32 };
-                        !game.get_units_in_radius(p, 100, |u| u.get_type() == UnitType::Zerg_Hatchery).is_empty()
-                    }).copied().next().unwrap();
-                    let home_pos = Position { x: home.x * 32, y: home.y * 32 };
+                    let home = xs
+                        .iter()
+                        .filter(|t| {
+                            let p = Position {
+                                x: t.x * 32,
+                                y: t.y * 32,
+                            };
+                            !game
+                                .get_units_in_radius(p, 100, |u| u.get_type() == UnitType::Zerg_Hatchery)
+                                .is_empty()
+                        })
+                        .copied()
+                        .next()
+                        .unwrap();
+                    let home_pos = Position {
+                        x: home.x * 32,
+                        y: home.y * 32,
+                    };
                     println!("home = {:?}, home position = {:?}", home, home_pos);
 
                     if !self.is_burrowed {
-                        if let Some(hatchery) = game.get_closest_unit(home_pos, 100, |x| x.get_type() == UnitType::Zerg_Hatchery) {
-                            let drones = game.get_units_in_radius(home_pos, 200, |x| x.get_type() == UnitType::Zerg_Drone);
+                        if let Some(hatchery) =
+                            game.get_closest_unit(home_pos, 100, |x| x.get_type() == UnitType::Zerg_Hatchery)
+                        {
+                            let drones =
+                                game.get_units_in_radius(home_pos, 200, |x| x.get_type() == UnitType::Zerg_Drone);
                             for drone in drones.iter() {
                                 drone.attack_u(&hatchery, false);
                             }
                         }
                         self.is_burrowed = true;
                     } else {
-                        if let Some(hatchery) = game.get_closest_unit(home_pos, 100, |x| x.get_type() == UnitType::Zerg_Hatchery) {
+                        if let Some(hatchery) =
+                            game.get_closest_unit(home_pos, 100, |x| x.get_type() == UnitType::Zerg_Hatchery)
+                        {
                             println!("frame = {}, hatchery hit points = {:?}", fc, hatchery.get_hit_points());
                             game.set_frame_skip(100);
                             game.set_local_speed(0);

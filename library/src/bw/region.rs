@@ -1,10 +1,10 @@
-use crate::{ffi, FromRaw};
-use std::ptr::NonNull;
-use crate::bw::unit::Unit;
-use crate::bw::unitset::Unitset;
 use crate::bw::position::Position;
 use crate::bw::regionset::Regionset;
+use crate::bw::unit::Unit;
+use crate::bw::unitset::Unitset;
 use crate::bw::{with_unit_filter, Handle};
+use crate::{ffi, FromRaw};
+use std::ptr::NonNull;
 
 #[derive(Debug)]
 pub struct Region {
@@ -64,7 +64,7 @@ impl Region {
     pub fn get_neighbors(&self) -> Regionset {
         let r: &ffi::RegionInterface = unsafe { self.raw.as_ref() };
         Regionset {
-            raw: Handle::Borrowed(r.getNeighbors())
+            raw: Handle::Borrowed(r.getNeighbors()),
         }
     }
     pub fn get_region_group_id(&self) -> i32 {
@@ -75,7 +75,7 @@ impl Region {
         let r: &ffi::RegionInterface = unsafe { self.raw.as_ref() };
         let set = with_unit_filter(unit_fn, |uf| ffi::_region_getUnits(r, uf));
         Unitset {
-            raw: Handle::Owned(set)
+            raw: Handle::Owned(set),
         }
     }
     pub fn is_accessible(&self) -> bool {

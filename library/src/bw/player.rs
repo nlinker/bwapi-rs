@@ -137,7 +137,7 @@ impl Player {
         let p: &ffi::PlayerInterface = unsafe { self.raw.as_ref() };
         p.incompleteUnitCount(unit_type)
     }
-    pub fn is_ally(&self, player: Player) -> bool {
+    pub fn is_ally(&self, player: &Player) -> bool {
         let p: &ffi::PlayerInterface = unsafe { self.raw.as_ref() };
         unsafe { p.isAlly(player.raw.as_ptr()) }
     }
@@ -145,7 +145,7 @@ impl Player {
         let p: &ffi::PlayerInterface = unsafe { self.raw.as_ref() };
         p.isDefeated()
     }
-    pub fn is_enemy(&self, player: Player) -> bool {
+    pub fn is_enemy(&self, player: &Player) -> bool {
         let p: &ffi::PlayerInterface = unsafe { self.raw.as_ref() };
         unsafe { p.isEnemy(player.raw.as_ptr()) }
     }

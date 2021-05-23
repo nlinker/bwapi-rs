@@ -1,4 +1,3 @@
-
 /// Many functions produce error code. BWAPI usually sets a error variable and returns a success flag.
 /// The rust binding instead returns a result with the error code.
 pub type Result<T> = ::std::result::Result<T, Error>;

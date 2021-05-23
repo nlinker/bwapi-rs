@@ -58,7 +58,7 @@ impl Bullet {
     pub fn is_visible(&self) -> bool {
         unsafe { self.raw.as_ref().isVisible(null_mut()) }
     }
-    pub fn is_visible_to_player(&self, player: Player) -> bool {
+    pub fn is_visible_to_player(&self, player: &Player) -> bool {
         unsafe { self.raw.as_ref().isVisible(player.raw.as_ptr()) }
     }
 }

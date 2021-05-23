@@ -39,7 +39,9 @@ impl Unitset<'_> {
     pub fn iter(&self) -> ForeignIter<'_, Unit, ffi::UnitsetIterator> {
         self.into_iter()
     }
-    pub fn is_empty(&self) -> bool { self.iter().size_hint().0 == 0 }
+    pub fn is_empty(&self) -> bool {
+        self.iter().size_hint().0 == 0
+    }
     pub fn len(&self) -> usize {
         self.iter().size_hint().0
     }

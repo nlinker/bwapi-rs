@@ -1,17 +1,17 @@
-use crate::bw::position::{Position, TilePosition};
-use crate::bw::unit_type::UnitType;
-use crate::{ffi, FromRaw};
-use std::ptr::NonNull;
-use crate::bw::player::Player;
-use crate::bw::unit_command::{UnitCommand, UnitCommandType};
-use crate::bw::tech_type::TechType;
-use crate::bw::upgrade_type::UpgradeType;
-use crate::bw::{Handle, with_unit_filter};
-use crate::bw::unitset::Unitset;
 use crate::bw::order::Order;
+use crate::bw::player::Player;
+use crate::bw::position::{Position, TilePosition};
 use crate::bw::region::Region;
+use crate::bw::tech_type::TechType;
+use crate::bw::unit_command::{UnitCommand, UnitCommandType};
+use crate::bw::unit_type::UnitType;
+use crate::bw::unitset::Unitset;
+use crate::bw::upgrade_type::UpgradeType;
 use crate::bw::weapon_type::WeaponType;
+use crate::bw::{with_unit_filter, Handle};
+use crate::{ffi, FromRaw};
 use std::pin::Pin;
+use std::ptr::NonNull;
 
 #[derive(Debug, Clone)]
 pub struct Unit {
@@ -136,7 +136,9 @@ impl Unit {
     pub fn get_interceptors(&self) -> Unitset {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
         let set = ffi::_unit_getInterceptors(x);
-        Unitset { raw: Handle::Owned(set) }
+        Unitset {
+            raw: Handle::Owned(set),
+        }
     }
     pub fn get_irradiate_timer(&self) -> i32 {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
@@ -149,7 +151,9 @@ impl Unit {
     pub fn get_larva(&self) -> Unitset {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
         let set = ffi::_unit_getLarva(x);
-        Unitset { raw: Handle::Owned(set) }
+        Unitset {
+            raw: Handle::Owned(set),
+        }
     }
     pub fn get_last_attacking_player(&self) -> Option<Player> {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
@@ -170,7 +174,9 @@ impl Unit {
     pub fn get_loaded_units(&self) -> Unitset {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
         let set = ffi::_unit_getLoadedUnits(x);
-        Unitset { raw: Handle::Owned(set) }
+        Unitset {
+            raw: Handle::Owned(set),
+        }
     }
     pub fn get_lockdown_timer(&self) -> i32 {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
@@ -221,7 +227,9 @@ impl Unit {
         let p = x.getRallyPosition();
         // Position None{32000 / POSITION_SCALE, 32032 / POSITION_SCALE}
         let none = Position { x: 32000, y: 32032 };
-        if p == none { None } else {
+        if p == none {
+            None
+        } else {
             Some(p)
         }
     }
@@ -336,12 +344,16 @@ impl Unit {
     pub fn get_units_in_radius(&self, radius: i32, unit_fn: impl Fn(Unit) -> bool + 'static) -> Unitset {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
         let set = with_unit_filter(unit_fn, |uf| ffi::_unit_getUnitsInRadius(x, radius, uf));
-        Unitset { raw: Handle::Owned(set) }
+        Unitset {
+            raw: Handle::Owned(set),
+        }
     }
     pub fn get_units_in_weapon_range(&self, weapon: WeaponType, unit_fn: impl Fn(Unit) -> bool + 'static) -> Unitset {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
         let set = with_unit_filter(unit_fn, |uf| ffi::_unit_getUnitsInWeaponRange(x, weapon, uf));
-        Unitset { raw: Handle::Owned(set) }
+        Unitset {
+            raw: Handle::Owned(set),
+        }
     }
     pub fn get_upgrade(&self) -> UpgradeType {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
@@ -579,7 +591,7 @@ impl Unit {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
         x.isUpgrading()
     }
-    pub fn is_visible(&self, player: Player) -> bool {
+    pub fn is_visible(&self, player: &Player) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
         unsafe { x.isVisible(player.raw.as_ptr()) }
     }
@@ -756,13 +768,47 @@ impl Unit {
         let x: Pin<&mut ffi::UnitInterface> = unsafe { Pin::new_unchecked(&mut *self.raw.as_ptr()) };
         x.placeCOP(target)
     }
-    pub fn can_issue_command(&self, command: UnitCommand, check_can_use_tech_position_on_positions: bool, check_can_use_tech_unit_on_units: bool, check_can_build_unit_type: bool, check_can_target_unit: bool, check_can_issue_command_type: bool, check_commandibility: bool) -> bool {
+    pub fn can_issue_command(
+        &self,
+        command: UnitCommand,
+        check_can_use_tech_position_on_positions: bool,
+        check_can_use_tech_unit_on_units: bool,
+        check_can_build_unit_type: bool,
+        check_can_target_unit: bool,
+        check_can_issue_command_type: bool,
+        check_commandibility: bool,
+    ) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
-        x.canIssueCommand(command, check_can_use_tech_position_on_positions, check_can_use_tech_unit_on_units, check_can_build_unit_type, check_can_target_unit, check_can_issue_command_type, check_commandibility)
+        x.canIssueCommand(
+            command,
+            check_can_use_tech_position_on_positions,
+            check_can_use_tech_unit_on_units,
+            check_can_build_unit_type,
+            check_can_target_unit,
+            check_can_issue_command_type,
+            check_commandibility,
+        )
     }
-    pub fn can_issue_command_grouped(&self, command: UnitCommand, check_can_use_tech_position_on_positions: bool, check_can_use_tech_unit_on_units: bool, check_can_target_unit: bool, check_can_issue_command_type: bool, check_commandibility_grouped: bool, check_commandibility: bool) -> bool {
+    pub fn can_issue_command_grouped(
+        &self,
+        command: UnitCommand,
+        check_can_use_tech_position_on_positions: bool,
+        check_can_use_tech_unit_on_units: bool,
+        check_can_target_unit: bool,
+        check_can_issue_command_type: bool,
+        check_commandibility_grouped: bool,
+        check_commandibility: bool,
+    ) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
-        x.canIssueCommandGrouped(command, check_can_use_tech_position_on_positions, check_can_use_tech_unit_on_units, check_can_target_unit, check_can_issue_command_type, check_commandibility_grouped, check_commandibility)
+        x.canIssueCommandGrouped(
+            command,
+            check_can_use_tech_position_on_positions,
+            check_can_use_tech_unit_on_units,
+            check_can_target_unit,
+            check_can_issue_command_type,
+            check_commandibility_grouped,
+            check_commandibility,
+        )
     }
     pub fn can_command(&self) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
@@ -776,7 +822,12 @@ impl Unit {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
         x.canIssueCommandType(command_type, check_commandibility)
     }
-    pub fn can_issue_command_type_grouped(&self, command_type: UnitCommandType, check_commandibility_grouped: bool, check_commandibility: bool) -> bool {
+    pub fn can_issue_command_type_grouped(
+        &self,
+        command_type: UnitCommandType,
+        check_commandibility_grouped: bool,
+        check_commandibility: bool,
+    ) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
         x.canIssueCommandTypeGrouped(command_type, check_commandibility_grouped, check_commandibility)
     }
@@ -788,25 +839,77 @@ impl Unit {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
         x.canAttack_(check_commandibility)
     }
-    pub fn can_attack_p(&self, target: Position, check_can_target_unit: bool, check_can_issue_command_type: bool, check_commandibility: bool) -> bool {
+    pub fn can_attack_p(
+        &self,
+        target: Position,
+        check_can_target_unit: bool,
+        check_can_issue_command_type: bool,
+        check_commandibility: bool,
+    ) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
-        x.canAttackP(target, check_can_target_unit, check_can_issue_command_type, check_commandibility)
+        x.canAttackP(
+            target,
+            check_can_target_unit,
+            check_can_issue_command_type,
+            check_commandibility,
+        )
     }
-    pub fn can_attack_u(&self, target: &Unit, check_can_target_unit: bool, check_can_issue_command_type: bool, check_commandibility: bool) -> bool {
+    pub fn can_attack_u(
+        &self,
+        target: &Unit,
+        check_can_target_unit: bool,
+        check_can_issue_command_type: bool,
+        check_commandibility: bool,
+    ) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
-        unsafe { x.canAttackU(target.raw.as_ptr(), check_can_target_unit, check_can_issue_command_type, check_commandibility) }
+        unsafe {
+            x.canAttackU(
+                target.raw.as_ptr(),
+                check_can_target_unit,
+                check_can_issue_command_type,
+                check_commandibility,
+            )
+        }
     }
     pub fn can_attack_grouped(&self, check_commandibility_grouped: bool, check_commandibility: bool) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
         x.canAttackGrouped_(check_commandibility_grouped, check_commandibility)
     }
-    pub fn can_attack_grouped_p(&self, target: Position, check_can_target_unit: bool, check_can_issue_command_type: bool, check_commandibility_grouped: bool, check_commandibility: bool) -> bool {
+    pub fn can_attack_grouped_p(
+        &self,
+        target: Position,
+        check_can_target_unit: bool,
+        check_can_issue_command_type: bool,
+        check_commandibility_grouped: bool,
+        check_commandibility: bool,
+    ) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
-        x.canAttackGroupedP(target, check_can_target_unit, check_can_issue_command_type, check_commandibility_grouped, check_commandibility)
+        x.canAttackGroupedP(
+            target,
+            check_can_target_unit,
+            check_can_issue_command_type,
+            check_commandibility_grouped,
+            check_commandibility,
+        )
     }
-    pub fn can_attack_grouped_u(&self, target: &Unit, check_can_target_unit: bool, check_can_issue_command_type: bool, check_commandibility_grouped: bool, check_commandibility: bool) -> bool {
+    pub fn can_attack_grouped_u(
+        &self,
+        target: &Unit,
+        check_can_target_unit: bool,
+        check_can_issue_command_type: bool,
+        check_commandibility_grouped: bool,
+        check_commandibility: bool,
+    ) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
-        unsafe { x.canAttackGroupedU(target.raw.as_ptr(), check_can_target_unit, check_can_issue_command_type, check_commandibility_grouped, check_commandibility) }
+        unsafe {
+            x.canAttackGroupedU(
+                target.raw.as_ptr(),
+                check_can_target_unit,
+                check_can_issue_command_type,
+                check_commandibility_grouped,
+                check_commandibility,
+            )
+        }
     }
     pub fn can_attack_move(&self, check_commandibility: bool) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
@@ -820,35 +923,86 @@ impl Unit {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
         x.canAttackUnit_(check_commandibility)
     }
-    pub fn can_attack_unit_u(&self, target_unit: &Unit, check_can_target_unit: bool, check_can_issue_command_type: bool, check_commandibility: bool) -> bool {
+    pub fn can_attack_unit_u(
+        &self,
+        target_unit: &Unit,
+        check_can_target_unit: bool,
+        check_can_issue_command_type: bool,
+        check_commandibility: bool,
+    ) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
-        unsafe { x.canAttackUnitU(target_unit.raw.as_ptr(), check_can_target_unit, check_can_issue_command_type, check_commandibility) }
+        unsafe {
+            x.canAttackUnitU(
+                target_unit.raw.as_ptr(),
+                check_can_target_unit,
+                check_can_issue_command_type,
+                check_commandibility,
+            )
+        }
     }
     pub fn can_attack_unit_grouped(&self, check_commandibility_grouped: bool, check_commandibility: bool) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
         x.canAttackUnitGrouped_(check_commandibility_grouped, check_commandibility)
     }
-    pub fn can_attack_unit_grouped_u(&self, target_unit: &Unit, check_can_target_unit: bool, check_can_issue_command_type: bool, check_commandibility_grouped: bool, check_commandibility: bool) -> bool {
+    pub fn can_attack_unit_grouped_u(
+        &self,
+        target_unit: &Unit,
+        check_can_target_unit: bool,
+        check_can_issue_command_type: bool,
+        check_commandibility_grouped: bool,
+        check_commandibility: bool,
+    ) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
-        unsafe { x.canAttackUnitGroupedU(target_unit.raw.as_ptr(), check_can_target_unit, check_can_issue_command_type, check_commandibility_grouped, check_commandibility) }
+        unsafe {
+            x.canAttackUnitGroupedU(
+                target_unit.raw.as_ptr(),
+                check_can_target_unit,
+                check_can_issue_command_type,
+                check_commandibility_grouped,
+                check_commandibility,
+            )
+        }
     }
     pub fn can_build(&self, check_commandibility: bool) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
         x.canBuild_(check_commandibility)
     }
-    pub fn can_build_t(&self, unit_type: UnitType, check_can_issue_command_type: bool, check_commandibility: bool) -> bool {
+    pub fn can_build_t(
+        &self,
+        unit_type: UnitType,
+        check_can_issue_command_type: bool,
+        check_commandibility: bool,
+    ) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
         x.canBuildT(unit_type, check_can_issue_command_type, check_commandibility)
     }
-    pub fn can_build_tp(&self, unit_type: UnitType, tile: TilePosition, check_target_unit_type: bool, check_can_issue_command_type: bool, check_commandibility: bool) -> bool {
+    pub fn can_build_tp(
+        &self,
+        unit_type: UnitType,
+        tile: TilePosition,
+        check_target_unit_type: bool,
+        check_can_issue_command_type: bool,
+        check_commandibility: bool,
+    ) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
-        x.canBuildTP(unit_type, tile, check_target_unit_type, check_can_issue_command_type, check_commandibility)
+        x.canBuildTP(
+            unit_type,
+            tile,
+            check_target_unit_type,
+            check_can_issue_command_type,
+            check_commandibility,
+        )
     }
     pub fn can_build_addon(&self, check_commandibility: bool) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
         x.canBuildAddon_(check_commandibility)
     }
-    pub fn can_build_addon_t(&self, unit_type: UnitType, check_can_issue_command_type: bool, check_commandibility: bool) -> bool {
+    pub fn can_build_addon_t(
+        &self,
+        unit_type: UnitType,
+        check_can_issue_command_type: bool,
+        check_commandibility: bool,
+    ) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
         x.canBuildAddonT(unit_type, check_can_issue_command_type, check_commandibility)
     }
@@ -856,7 +1010,12 @@ impl Unit {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
         x.canTrain_(check_commandibility)
     }
-    pub fn can_train_t(&self, unit_type: UnitType, check_can_issue_command_type: bool, check_commandibility: bool) -> bool {
+    pub fn can_train_t(
+        &self,
+        unit_type: UnitType,
+        check_can_issue_command_type: bool,
+        check_commandibility: bool,
+    ) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
         x.canTrainT(unit_type, check_can_issue_command_type, check_commandibility)
     }
@@ -864,7 +1023,12 @@ impl Unit {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
         x.canMorph_(check_commandibility)
     }
-    pub fn can_morph_t(&self, unit_type: UnitType, check_can_issue_command_type: bool, check_commandibility: bool) -> bool {
+    pub fn can_morph_t(
+        &self,
+        unit_type: UnitType,
+        check_can_issue_command_type: bool,
+        check_commandibility: bool,
+    ) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
         x.canMorphT(unit_type, check_can_issue_command_type, check_commandibility)
     }
@@ -888,13 +1052,37 @@ impl Unit {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
         x.canSetRallyPoint_(check_commandibility)
     }
-    pub fn can_set_rally_point_p(&self, target: Position, check_can_target_unit: bool, check_can_issue_command_type: bool, check_commandibility: bool) -> bool {
+    pub fn can_set_rally_point_p(
+        &self,
+        target: Position,
+        check_can_target_unit: bool,
+        check_can_issue_command_type: bool,
+        check_commandibility: bool,
+    ) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
-        x.canSetRallyPointP(target, check_can_target_unit, check_can_issue_command_type, check_commandibility)
+        x.canSetRallyPointP(
+            target,
+            check_can_target_unit,
+            check_can_issue_command_type,
+            check_commandibility,
+        )
     }
-    pub fn can_set_rally_point_u(&self, target: &Unit, check_can_target_unit: bool, check_can_issue_command_type: bool, check_commandibility: bool) -> bool {
+    pub fn can_set_rally_point_u(
+        &self,
+        target: &Unit,
+        check_can_target_unit: bool,
+        check_can_issue_command_type: bool,
+        check_commandibility: bool,
+    ) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
-        unsafe { x.canSetRallyPointU(target.raw.as_ptr(), check_can_target_unit, check_can_issue_command_type, check_commandibility) }
+        unsafe {
+            x.canSetRallyPointU(
+                target.raw.as_ptr(),
+                check_can_target_unit,
+                check_can_issue_command_type,
+                check_commandibility,
+            )
+        }
     }
     pub fn can_set_rally_position(&self, check_commandibility: bool) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
@@ -904,9 +1092,22 @@ impl Unit {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
         x.canSetRallyUnit_(check_commandibility)
     }
-    pub fn can_set_rally_unit_u(&self, target_unit: &Unit, check_can_target_unit: bool, check_can_issue_command_type: bool, check_commandibility: bool) -> bool {
+    pub fn can_set_rally_unit_u(
+        &self,
+        target_unit: &Unit,
+        check_can_target_unit: bool,
+        check_can_issue_command_type: bool,
+        check_commandibility: bool,
+    ) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
-        unsafe { x.canSetRallyUnitU(target_unit.raw.as_ptr(), check_can_target_unit, check_can_issue_command_type, check_commandibility) }
+        unsafe {
+            x.canSetRallyUnitU(
+                target_unit.raw.as_ptr(),
+                check_can_target_unit,
+                check_can_issue_command_type,
+                check_commandibility,
+            )
+        }
     }
     pub fn can_move(&self, check_commandibility: bool) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
@@ -928,17 +1129,43 @@ impl Unit {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
         x.canFollow_(check_commandibility)
     }
-    pub fn can_follow_u(&self, target_unit: &Unit, check_can_target_unit: bool, check_can_issue_command_type: bool, check_commandibility: bool) -> bool {
+    pub fn can_follow_u(
+        &self,
+        target_unit: &Unit,
+        check_can_target_unit: bool,
+        check_can_issue_command_type: bool,
+        check_commandibility: bool,
+    ) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
-        unsafe { x.canFollowU(target_unit.raw.as_ptr(), check_can_target_unit, check_can_issue_command_type, check_commandibility) }
+        unsafe {
+            x.canFollowU(
+                target_unit.raw.as_ptr(),
+                check_can_target_unit,
+                check_can_issue_command_type,
+                check_commandibility,
+            )
+        }
     }
     pub fn can_gather(&self, check_commandibility: bool) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
         x.canGather_(check_commandibility)
     }
-    pub fn can_gather_u(&self, target_unit: &Unit, check_can_target_unit: bool, check_can_issue_command_type: bool, check_commandibility: bool) -> bool {
+    pub fn can_gather_u(
+        &self,
+        target_unit: &Unit,
+        check_can_target_unit: bool,
+        check_can_issue_command_type: bool,
+        check_commandibility: bool,
+    ) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
-        unsafe { x.canGatherU(target_unit.raw.as_ptr(), check_can_target_unit, check_can_issue_command_type, check_commandibility) }
+        unsafe {
+            x.canGatherU(
+                target_unit.raw.as_ptr(),
+                check_can_target_unit,
+                check_can_issue_command_type,
+                check_commandibility,
+            )
+        }
     }
     pub fn can_return_cargo(&self, check_commandibility: bool) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
@@ -956,9 +1183,22 @@ impl Unit {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
         x.canRepair_(check_commandibility)
     }
-    pub fn can_repair_u(&self, target_unit: &Unit, check_can_target_unit: bool, check_can_issue_command_type: bool, check_commandibility: bool) -> bool {
+    pub fn can_repair_u(
+        &self,
+        target_unit: &Unit,
+        check_can_target_unit: bool,
+        check_can_issue_command_type: bool,
+        check_commandibility: bool,
+    ) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
-        unsafe { x.canRepairU(target_unit.raw.as_ptr(), check_can_target_unit, check_can_issue_command_type, check_commandibility) }
+        unsafe {
+            x.canRepairU(
+                target_unit.raw.as_ptr(),
+                check_can_target_unit,
+                check_can_issue_command_type,
+                check_commandibility,
+            )
+        }
     }
     pub fn can_burrow(&self, check_commandibility: bool) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
@@ -992,7 +1232,12 @@ impl Unit {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
         x.canLand_(check_commandibility)
     }
-    pub fn can_land_p(&self, target: TilePosition, check_can_issue_command_type: bool, check_commandibility: bool) -> bool {
+    pub fn can_land_p(
+        &self,
+        target: TilePosition,
+        check_can_issue_command_type: bool,
+        check_commandibility: bool,
+    ) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
         x.canLandP(target, check_can_issue_command_type, check_commandibility)
     }
@@ -1000,15 +1245,33 @@ impl Unit {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
         x.canLoad_(check_commandibility)
     }
-    pub fn can_load_u(&self, target_unit: &Unit, check_can_target_unit: bool, check_can_issue_command_type: bool, check_commandibility: bool) -> bool {
+    pub fn can_load_u(
+        &self,
+        target_unit: &Unit,
+        check_can_target_unit: bool,
+        check_can_issue_command_type: bool,
+        check_commandibility: bool,
+    ) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
-        unsafe { x.canLoadU(target_unit.raw.as_ptr(), check_can_target_unit, check_can_issue_command_type, check_commandibility) }
+        unsafe {
+            x.canLoadU(
+                target_unit.raw.as_ptr(),
+                check_can_target_unit,
+                check_can_issue_command_type,
+                check_commandibility,
+            )
+        }
     }
     pub fn can_unload_with_or_without_target(&self, check_commandibility: bool) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
         x.canUnloadWithOrWithoutTarget(check_commandibility)
     }
-    pub fn can_unload_at_position(&self, target_drop_pos: Position, check_can_issue_command_type: bool, check_commandibility: bool) -> bool {
+    pub fn can_unload_at_position(
+        &self,
+        target_drop_pos: Position,
+        check_can_issue_command_type: bool,
+        check_commandibility: bool,
+    ) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
         x.canUnloadAtPosition(target_drop_pos, check_can_issue_command_type, check_commandibility)
     }
@@ -1016,9 +1279,24 @@ impl Unit {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
         x.canUnload_(check_commandibility)
     }
-    pub fn can_unload_u(&self, target_unit: &Unit, check_can_target_unit: bool, check_position: bool, check_can_issue_command_type: bool, check_commandibility: bool) -> bool {
+    pub fn can_unload_u(
+        &self,
+        target_unit: &Unit,
+        check_can_target_unit: bool,
+        check_position: bool,
+        check_can_issue_command_type: bool,
+        check_commandibility: bool,
+    ) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
-        unsafe { x.canUnloadU(target_unit.raw.as_ptr(), check_can_target_unit, check_position, check_can_issue_command_type, check_commandibility) }
+        unsafe {
+            x.canUnloadU(
+                target_unit.raw.as_ptr(),
+                check_can_target_unit,
+                check_position,
+                check_can_issue_command_type,
+                check_commandibility,
+            )
+        }
     }
     pub fn can_unload_all(&self, check_commandibility: bool) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
@@ -1028,7 +1306,12 @@ impl Unit {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
         x.canUnloadAllPosition_(check_commandibility)
     }
-    pub fn can_unload_all_position_p(&self, target_drop_pos: Position, check_can_issue_command_type: bool, check_commandibility: bool) -> bool {
+    pub fn can_unload_all_position_p(
+        &self,
+        target_drop_pos: Position,
+        check_can_issue_command_type: bool,
+        check_commandibility: bool,
+    ) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
         x.canUnloadAllPositionP(target_drop_pos, check_can_issue_command_type, check_commandibility)
     }
@@ -1036,31 +1319,87 @@ impl Unit {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
         x.canRightClick_(check_commandibility)
     }
-    pub fn can_right_click_p(&self, target: Position, check_can_target_unit: bool, check_can_issue_command_type: bool, check_commandibility: bool) -> bool {
+    pub fn can_right_click_p(
+        &self,
+        target: Position,
+        check_can_target_unit: bool,
+        check_can_issue_command_type: bool,
+        check_commandibility: bool,
+    ) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
-        x.canRightClickP(target, check_can_target_unit, check_can_issue_command_type, check_commandibility)
+        x.canRightClickP(
+            target,
+            check_can_target_unit,
+            check_can_issue_command_type,
+            check_commandibility,
+        )
     }
-    pub fn can_right_click_u(&self, target: &Unit, check_can_target_unit: bool, check_can_issue_command_type: bool, check_commandibility: bool) -> bool {
+    pub fn can_right_click_u(
+        &self,
+        target: &Unit,
+        check_can_target_unit: bool,
+        check_can_issue_command_type: bool,
+        check_commandibility: bool,
+    ) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
-        unsafe { x.canRightClickU(target.raw.as_ptr(), check_can_target_unit, check_can_issue_command_type, check_commandibility) }
+        unsafe {
+            x.canRightClickU(
+                target.raw.as_ptr(),
+                check_can_target_unit,
+                check_can_issue_command_type,
+                check_commandibility,
+            )
+        }
     }
     pub fn can_right_click_grouped(&self, check_commandibility_grouped: bool, check_commandibility: bool) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
         x.canRightClickGrouped_(check_commandibility_grouped, check_commandibility)
     }
-    pub fn can_right_click_grouped_p(&self, target: Position, check_can_target_unit: bool, check_can_issue_command_type: bool, check_commandibility_grouped: bool, check_commandibility: bool) -> bool {
+    pub fn can_right_click_grouped_p(
+        &self,
+        target: Position,
+        check_can_target_unit: bool,
+        check_can_issue_command_type: bool,
+        check_commandibility_grouped: bool,
+        check_commandibility: bool,
+    ) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
-        x.canRightClickGroupedP(target, check_can_target_unit, check_can_issue_command_type, check_commandibility_grouped, check_commandibility)
+        x.canRightClickGroupedP(
+            target,
+            check_can_target_unit,
+            check_can_issue_command_type,
+            check_commandibility_grouped,
+            check_commandibility,
+        )
     }
-    pub fn can_right_click_grouped_u(&self, target: &Unit, check_can_target_unit: bool, check_can_issue_command_type: bool, check_commandibility_grouped: bool, check_commandibility: bool) -> bool {
+    pub fn can_right_click_grouped_u(
+        &self,
+        target: &Unit,
+        check_can_target_unit: bool,
+        check_can_issue_command_type: bool,
+        check_commandibility_grouped: bool,
+        check_commandibility: bool,
+    ) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
-        unsafe { x.canRightClickGroupedU(target.raw.as_ptr(), check_can_target_unit, check_can_issue_command_type, check_commandibility_grouped, check_commandibility) }
+        unsafe {
+            x.canRightClickGroupedU(
+                target.raw.as_ptr(),
+                check_can_target_unit,
+                check_can_issue_command_type,
+                check_commandibility_grouped,
+                check_commandibility,
+            )
+        }
     }
     pub fn can_right_click_position(&self, check_commandibility: bool) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
         x.canRightClickPosition(check_commandibility)
     }
-    pub fn can_right_click_position_grouped(&self, check_commandibility_grouped: bool, check_commandibility: bool) -> bool {
+    pub fn can_right_click_position_grouped(
+        &self,
+        check_commandibility_grouped: bool,
+        check_commandibility: bool,
+    ) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
         x.canRightClickPositionGrouped(check_commandibility_grouped, check_commandibility)
     }
@@ -1068,17 +1407,45 @@ impl Unit {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
         x.canRightClickUnit_(check_commandibility)
     }
-    pub fn can_right_click_unit_u(&self, target_unit: &Unit, check_can_target_unit: bool, check_can_issue_command_type: bool, check_commandibility: bool) -> bool {
+    pub fn can_right_click_unit_u(
+        &self,
+        target_unit: &Unit,
+        check_can_target_unit: bool,
+        check_can_issue_command_type: bool,
+        check_commandibility: bool,
+    ) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
-        unsafe { x.canRightClickUnitU(target_unit.raw.as_ptr(), check_can_target_unit, check_can_issue_command_type, check_commandibility) }
+        unsafe {
+            x.canRightClickUnitU(
+                target_unit.raw.as_ptr(),
+                check_can_target_unit,
+                check_can_issue_command_type,
+                check_commandibility,
+            )
+        }
     }
     pub fn can_right_click_unit_grouped(&self, check_commandibility_grouped: bool, check_commandibility: bool) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
         x.canRightClickUnitGrouped_(check_commandibility_grouped, check_commandibility)
     }
-    pub fn can_right_click_unit_grouped_u(&self, target_unit: &Unit, check_can_target_unit: bool, check_can_issue_command_type: bool, check_commandibility_grouped: bool, check_commandibility: bool) -> bool {
+    pub fn can_right_click_unit_grouped_u(
+        &self,
+        target_unit: &Unit,
+        check_can_target_unit: bool,
+        check_can_issue_command_type: bool,
+        check_commandibility_grouped: bool,
+        check_commandibility: bool,
+    ) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
-        unsafe { x.canRightClickUnitGroupedU(target_unit.raw.as_ptr(), check_can_target_unit, check_can_issue_command_type, check_commandibility_grouped, check_commandibility) }
+        unsafe {
+            x.canRightClickUnitGroupedU(
+                target_unit.raw.as_ptr(),
+                check_can_target_unit,
+                check_can_issue_command_type,
+                check_commandibility_grouped,
+                check_commandibility,
+            )
+        }
     }
     pub fn can_halt_construction(&self, check_commandibility: bool) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
@@ -1100,7 +1467,12 @@ impl Unit {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
         x.canCancelTrainSlot_(check_commandibility)
     }
-    pub fn can_cancel_train_slot_i(&self, slot: i32, check_can_issue_command_type: bool, check_commandibility: bool) -> bool {
+    pub fn can_cancel_train_slot_i(
+        &self,
+        slot: i32,
+        check_can_issue_command_type: bool,
+        check_commandibility: bool,
+    ) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
         x.canCancelTrainSlotI(slot, check_can_issue_command_type, check_commandibility)
     }
@@ -1120,43 +1492,130 @@ impl Unit {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
         x.canUseTechWithOrWithoutTarget_(check_commandibility)
     }
-    pub fn can_use_tech_with_or_without_target_t(&self, tech: TechType, check_can_issue_command_type: bool, check_commandibility: bool) -> bool {
+    pub fn can_use_tech_with_or_without_target_t(
+        &self,
+        tech: TechType,
+        check_can_issue_command_type: bool,
+        check_commandibility: bool,
+    ) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
         x.canUseTechWithOrWithoutTargetT(tech, check_can_issue_command_type, check_commandibility)
     }
-    pub fn can_use_tech_p(&self, tech: TechType, target: Position, check_can_target_unit: bool, check_targets_type: bool, check_can_issue_command_type: bool, check_commandibility: bool) -> bool {
+    pub fn can_use_tech_p(
+        &self,
+        tech: TechType,
+        target: Position,
+        check_can_target_unit: bool,
+        check_targets_type: bool,
+        check_can_issue_command_type: bool,
+        check_commandibility: bool,
+    ) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
-        x.canUseTechP(tech, target, check_can_target_unit, check_targets_type, check_can_issue_command_type, check_commandibility)
+        x.canUseTechP(
+            tech,
+            target,
+            check_can_target_unit,
+            check_targets_type,
+            check_can_issue_command_type,
+            check_commandibility,
+        )
     }
-    pub fn can_use_tech_u(&self, tech: TechType, target: &Unit, check_can_target_unit: bool, check_targets_type: bool, check_can_issue_command_type: bool, check_commandibility: bool) -> bool {
+    pub fn can_use_tech_u(
+        &self,
+        tech: TechType,
+        target: &Unit,
+        check_can_target_unit: bool,
+        check_targets_type: bool,
+        check_can_issue_command_type: bool,
+        check_commandibility: bool,
+    ) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
-        unsafe { x.canUseTechU(tech, target.raw.as_ptr(), check_can_target_unit, check_targets_type, check_can_issue_command_type, check_commandibility) }
+        unsafe {
+            x.canUseTechU(
+                tech,
+                target.raw.as_ptr(),
+                check_can_target_unit,
+                check_targets_type,
+                check_can_issue_command_type,
+                check_commandibility,
+            )
+        }
     }
-    pub fn can_use_tech_without_target(&self, tech: TechType, check_can_issue_command_type: bool, check_commandibility: bool) -> bool {
+    pub fn can_use_tech_without_target(
+        &self,
+        tech: TechType,
+        check_can_issue_command_type: bool,
+        check_commandibility: bool,
+    ) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
         x.canUseTechWithoutTarget(tech, check_can_issue_command_type, check_commandibility)
     }
-    pub fn can_use_tech_unit(&self, tech: TechType, check_can_issue_command_type: bool, check_commandibility: bool) -> bool {
+    pub fn can_use_tech_unit(
+        &self,
+        tech: TechType,
+        check_can_issue_command_type: bool,
+        check_commandibility: bool,
+    ) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
         x.canUseTechUnit_(tech, check_can_issue_command_type, check_commandibility)
     }
-    pub fn can_use_tech_unit_t(&self, tech: TechType, target_unit: &Unit, check_can_target_unit: bool, check_targets_units: bool, check_can_issue_command_type: bool, check_commandibility: bool) -> bool {
+    pub fn can_use_tech_unit_t(
+        &self,
+        tech: TechType,
+        target_unit: &Unit,
+        check_can_target_unit: bool,
+        check_targets_units: bool,
+        check_can_issue_command_type: bool,
+        check_commandibility: bool,
+    ) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
-        unsafe { x.canUseTechUnitT(tech, target_unit.raw.as_ptr(), check_can_target_unit, check_targets_units, check_can_issue_command_type, check_commandibility) }
+        unsafe {
+            x.canUseTechUnitT(
+                tech,
+                target_unit.raw.as_ptr(),
+                check_can_target_unit,
+                check_targets_units,
+                check_can_issue_command_type,
+                check_commandibility,
+            )
+        }
     }
-    pub fn can_use_tech_position(&self, tech: TechType, check_can_issue_command_type: bool, check_commandibility: bool) -> bool {
+    pub fn can_use_tech_position(
+        &self,
+        tech: TechType,
+        check_can_issue_command_type: bool,
+        check_commandibility: bool,
+    ) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
         x.canUseTechPosition_(tech, check_can_issue_command_type, check_commandibility)
     }
-    pub fn can_use_tech_position_p(&self, tech: TechType, target: Position, check_targets_positions: bool, check_can_issue_command_type: bool, check_commandibility: bool) -> bool {
+    pub fn can_use_tech_position_p(
+        &self,
+        tech: TechType,
+        target: Position,
+        check_targets_positions: bool,
+        check_can_issue_command_type: bool,
+        check_commandibility: bool,
+    ) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
-        x.canUseTechPositionP(tech, target, check_targets_positions, check_can_issue_command_type, check_commandibility)
+        x.canUseTechPositionP(
+            tech,
+            target,
+            check_targets_positions,
+            check_can_issue_command_type,
+            check_commandibility,
+        )
     }
     pub fn can_place_cop(&self, check_commandibility: bool) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
         x.canPlaceCOP_(check_commandibility)
     }
-    pub fn can_place_cop_p(&self, target: TilePosition, check_can_issue_command_type: bool, check_commandibility: bool) -> bool {
+    pub fn can_place_cop_p(
+        &self,
+        target: TilePosition,
+        check_can_issue_command_type: bool,
+        check_commandibility: bool,
+    ) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
         x.canPlaceCOPP(target, check_can_issue_command_type, check_commandibility)
     }
