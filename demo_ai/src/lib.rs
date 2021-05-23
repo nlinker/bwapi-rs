@@ -95,7 +95,7 @@ impl AIModule for DemoAI {
                         if let Some(hatchery) = game.get_closest_unit(home_pos, 100, |x| x.get_type() == UnitType::Zerg_Hatchery) {
                             let drones = game.get_units_in_radius(home_pos, 200, |x| x.get_type() == UnitType::Zerg_Drone);
                             for drone in drones.iter() {
-                                drone.attack_u(hatchery.clone(), false);
+                                drone.attack_u(&hatchery, false);
                             }
                         }
                         self.is_burrowed = true;

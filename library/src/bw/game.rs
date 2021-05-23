@@ -55,19 +55,19 @@ impl Game {
             raw: Handle::BorrowedMut(set),
         }
     }
-    pub fn can_build_here(&self, position: TilePosition, utype: UnitType, builder: Unit, check_explored: bool) -> bool {
+    pub fn can_build_here(&self, position: TilePosition, utype: UnitType, builder: &Unit, check_explored: bool) -> bool {
         let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw.unwrap().as_ptr()) };
         unsafe { g.canBuildHere(position, utype, builder.raw.as_ptr(), check_explored) }
     }
-    pub fn can_make(&self, utype: UnitType, builder: Unit) -> bool {
+    pub fn can_make(&self, utype: UnitType, builder: &Unit) -> bool {
         let g: &ffi::Game = unsafe { self.raw.unwrap().as_ref() };
         unsafe { g.canMake(utype, builder.raw.as_ptr()) }
     }
-    pub fn can_research(&self, ttype: TechType, unit: Unit, check_can_issue_command_type: bool) -> bool {
+    pub fn can_research(&self, ttype: TechType, unit: &Unit, check_can_issue_command_type: bool) -> bool {
         let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw.unwrap().as_ptr()) };
         unsafe { g.canResearch(ttype, unit.raw.as_ptr(), check_can_issue_command_type) }
     }
-    pub fn can_upgrade(&self, utype: UpgradeType, unit: Unit, check_can_issue_command_type: bool) -> bool {
+    pub fn can_upgrade(&self, utype: UpgradeType, unit: &Unit, check_can_issue_command_type: bool) -> bool {
         let g: Pin<&mut ffi::Game> = unsafe { Pin::new_unchecked(&mut *self.raw.unwrap().as_ptr()) };
         unsafe { g.canUpgrade(utype, unit.raw.as_ptr(), check_can_issue_command_type) }
     }

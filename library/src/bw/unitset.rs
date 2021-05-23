@@ -89,7 +89,7 @@ impl Unitset<'_> {
         let xs: &ffi::Unitset = self.raw.underlying();
         xs.issueCommand(command)
     }
-    pub fn attack(&self, target: Unit, shift_queue_command: bool) -> bool {
+    pub fn attack(&self, target: &Unit, shift_queue_command: bool) -> bool {
         let xs: &ffi::Unitset = self.raw.underlying();
         unsafe { xs.attackU(target.raw.as_ptr(), shift_queue_command) }
     }
@@ -113,7 +113,7 @@ impl Unitset<'_> {
         let xs: &ffi::Unitset = self.raw.underlying();
         xs.morph(utype)
     }
-    pub fn set_rally_point(&self, target: Unit) -> bool {
+    pub fn set_rally_point(&self, target: &Unit) -> bool {
         let xs: &ffi::Unitset = self.raw.underlying();
         unsafe { xs.setRallyPointU(target.raw.as_ptr()) }
     }
@@ -137,11 +137,11 @@ impl Unitset<'_> {
         let xs: &ffi::Unitset = self.raw.underlying();
         xs.stop(shift_queue_command)
     }
-    pub fn follow(&self, target: Unit, shift_queue_command: bool) -> bool {
+    pub fn follow(&self, target: &Unit, shift_queue_command: bool) -> bool {
         let xs: &ffi::Unitset = self.raw.underlying();
         unsafe { xs.follow(target.raw.as_ptr(), shift_queue_command) }
     }
-    pub fn gather(&self, target: Unit, shift_queue_command: bool) -> bool {
+    pub fn gather(&self, target: &Unit, shift_queue_command: bool) -> bool {
         let xs: &ffi::Unitset = self.raw.underlying();
         unsafe { xs.gather(target.raw.as_ptr(), shift_queue_command) }
     }
@@ -149,7 +149,7 @@ impl Unitset<'_> {
         let xs: &ffi::Unitset = self.raw.underlying();
         xs.returnCargo(shift_queue_command)
     }
-    pub fn repair(&self, target: Unit, shift_queue_command: bool) -> bool {
+    pub fn repair(&self, target: &Unit, shift_queue_command: bool) -> bool {
         let xs: &ffi::Unitset = self.raw.underlying();
         unsafe { xs.repair(target.raw.as_ptr(), shift_queue_command) }
     }
@@ -181,7 +181,7 @@ impl Unitset<'_> {
         let xs: &ffi::Unitset = self.raw.underlying();
         xs.lift()
     }
-    pub fn load(&self, target: Unit, shift_queue_command: bool) -> bool {
+    pub fn load(&self, target: &Unit, shift_queue_command: bool) -> bool {
         let xs: &ffi::Unitset = self.raw.underlying();
         unsafe { xs.load(target.raw.as_ptr(), shift_queue_command) }
     }
@@ -193,7 +193,7 @@ impl Unitset<'_> {
         let xs: &ffi::Unitset = self.raw.underlying();
         xs.unloadAllP(target, shift_queue_command)
     }
-    pub fn right_click(&self, target: Unit, shift_queue_command: bool) -> bool {
+    pub fn right_click(&self, target: &Unit, shift_queue_command: bool) -> bool {
         let xs: &ffi::Unitset = self.raw.underlying();
         unsafe { xs.rightClickU(target.raw.as_ptr(), shift_queue_command) }
     }
@@ -229,7 +229,7 @@ impl Unitset<'_> {
         let xs: &ffi::Unitset = self.raw.underlying();
         xs.cancelUpgrade()
     }
-    pub fn use_tech(&self, tech: TechType, target: Unit) -> bool {
+    pub fn use_tech(&self, tech: TechType, target: &Unit) -> bool {
         let xs: &ffi::Unitset = self.raw.underlying();
         unsafe { xs.useTechU(tech, target.raw.as_ptr()) }
     }
