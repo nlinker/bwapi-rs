@@ -201,7 +201,7 @@ mod tests {
                 }
             }
         }
-        let mut demo = DemoAI {
+        let demo = DemoAI {
             name: "DemoAI here".to_string(),
             counter: 0,
             is_burrowed: false,

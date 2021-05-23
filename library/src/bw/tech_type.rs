@@ -1,6 +1,8 @@
+use num_enum::FromPrimitive;
+
 #[repr(u32)]
 #[allow(non_camel_case_types)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, FromPrimitive)]
 pub enum TechType {
     Stim_Packs = 0,
     Lockdown,
@@ -40,6 +42,7 @@ pub enum TechType {
 
     None = 44,
     Nuclear_Strike,
+    #[num_enum(default)]
     Unknown,
     MAX,
 }

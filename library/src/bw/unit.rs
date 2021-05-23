@@ -1,4 +1,4 @@
-use crate::bw::can_do::{CanIssueCommandArg, CanIssueCommandGroupedArg, CanCheck3Arg};
+use crate::bw::can_do::{CanIssueCommandFlags, CanIssueCommandGroupedFlags, CanCheck3Flags};
 use crate::bw::order::Order;
 use crate::bw::player::Player;
 use crate::bw::position::{Position, TilePosition};
@@ -795,9 +795,9 @@ impl Unit {
     }
 
     pub fn can_issue_command(&self, command: UnitCommand) -> bool {
-        self.can_issue_command_(command, CanIssueCommandArg::builder().build())
+        self.can_issue_command_(command, CanIssueCommandFlags::builder().build())
     }
-    pub fn can_issue_command_(&self, command: UnitCommand, arg: CanIssueCommandArg) -> bool {
+    pub fn can_issue_command_(&self, command: UnitCommand, arg: CanIssueCommandFlags) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
         x.canIssueCommand(
             command,
@@ -810,9 +810,9 @@ impl Unit {
         )
     }
     pub fn can_issue_command_grouped(&self, command: UnitCommand) -> bool {
-        self.can_issue_command_grouped_(command, CanIssueCommandGroupedArg::builder().build())
+        self.can_issue_command_grouped_(command, CanIssueCommandGroupedFlags::builder().build())
     }
-    pub fn can_issue_command_grouped_(&self, command: UnitCommand, arg: CanIssueCommandGroupedArg) -> bool {
+    pub fn can_issue_command_grouped_(&self, command: UnitCommand, arg: CanIssueCommandGroupedFlags) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
         x.canIssueCommandGrouped(
             command,
@@ -867,9 +867,9 @@ impl Unit {
         x.canAttack_(check_commandibility)
     }
     pub fn can_attack_position(&self, target: Position) -> bool {
-        self.can_attack_position_(target, CanCheck3Arg::builder().build())
+        self.can_attack_position_(target, CanCheck3Flags::builder().build())
     }
-    pub fn can_attack_position_(&self, target: Position, arg: CanCheck3Arg) -> bool {
+    pub fn can_attack_position_(&self, target: Position, arg: CanCheck3Flags) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
         x.canAttackP(
             target,
@@ -879,9 +879,9 @@ impl Unit {
         )
     }
     pub fn can_attack_unit(&self, target: &Unit) -> bool {
-        self.can_attack_unit_(target, CanCheck3Arg::builder().build())
+        self.can_attack_unit_(target, CanCheck3Flags::builder().build())
     }
-    pub fn can_attack_unit_(&self, target: &Unit, arg: CanCheck3Arg) -> bool {
+    pub fn can_attack_unit_(&self, target: &Unit, arg: CanCheck3Flags) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
         unsafe {
             x.canAttackU(

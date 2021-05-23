@@ -1,6 +1,8 @@
+use num_enum::FromPrimitive;
+
 #[repr(u32)]
 #[allow(non_camel_case_types)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, FromPrimitive)]
 pub enum UpgradeType {
     Terran_Infantry_Armor = 0,
     Terran_Vehicle_Plating = 1,
@@ -59,6 +61,7 @@ pub enum UpgradeType {
 
     Upgrade_60 = 60,
     None = 61,
+    #[num_enum(default)]
     Unknown = 62,
     MAX = 63,
 }

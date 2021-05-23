@@ -1,8 +1,9 @@
 use crate::prelude::TilePosition;
+use num_enum::FromPrimitive;
 
 #[repr(u32)]
 #[allow(non_camel_case_types)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, FromPrimitive)]
 pub enum UnitType {
     Terran_Marine = 0,
     Terran_Ghost,
@@ -187,9 +188,9 @@ pub enum UnitType {
     Unused_Cave_In,
     Unused_Cantina,
     Unused_Mining_Platform,
-    Unused_Independant_Command_Center,
-    Special_Independant_Starport,
-    Unused_Independant_Jump_Gate,
+    Unused_Independent_Command_Center,
+    Special_Independent_Starport,
+    Unused_Independent_Jump_Gate,
     Unused_Ruins,
     Unused_Khaydarin_Crystal_Formation,
     Resource_Vespene_Geyser,
@@ -238,6 +239,7 @@ pub enum UnitType {
     Men,
     Buildings,
     Factories,
+    #[num_enum(default)]
     Unknown,
     MAX,
 }

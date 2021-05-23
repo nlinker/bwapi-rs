@@ -2,7 +2,7 @@ use typed_builder::TypedBuilder;
 
 // region CanIssueCommandArg::builder
 #[derive(TypedBuilder)]
-pub struct CanIssueCommandArg {
+pub struct CanIssueCommandFlags {
     #[builder(default = true)]
     pub check_can_use_tech_position_on_positions: bool,
     #[builder(default = true)]
@@ -20,7 +20,7 @@ pub struct CanIssueCommandArg {
 
 // region CanIssueCommandGroupedArg::builder
 #[derive(TypedBuilder)]
-pub struct CanIssueCommandGroupedArg {
+pub struct CanIssueCommandGroupedFlags {
     #[builder(default = true)]
     pub check_can_use_tech_position_on_positions: bool,
     #[builder(default = true)]
@@ -38,7 +38,7 @@ pub struct CanIssueCommandGroupedArg {
 
 // region CanCheck3Arg::builder
 #[derive(TypedBuilder)]
-pub struct CanCheck3Arg {
+pub struct CanCheck3Flags {
     #[builder(default = true)]
     pub check_can_target_unit: bool,
     #[builder(default = true)]
@@ -49,13 +49,13 @@ pub struct CanCheck3Arg {
 // endregion
 
 #[derive(TypedBuilder)]
-pub struct CanCheck4Arg {
+pub struct CanCheck4Flags {
     #[builder(default = true)]
-    check_can_target_unit: bool,
+    pub check_can_target_unit: bool,
     #[builder(default = true)]
-    check_can_issue_command_type: bool,
+    pub check_can_issue_command_type: bool,
     #[builder(default = true)]
-    check_commandibility_grouped: bool,
+    pub check_commandibility_grouped: bool,
     #[builder(default = true)]
-    check_commandibility: bool,
+    pub check_commandibility: bool,
 }

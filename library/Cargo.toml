@@ -14,11 +14,13 @@ crate-type = ["rlib"]
 
 [dependencies]
 cxx = "1.0"
+enum-iterator = "0.6.0"
+num_enum = "0.5.1"
+num_enum_derive = "0.5.1"
 once_cell = "1.7.2"
 thin_trait_object = "1.1.2"
-enum-iterator = "0.6.0"
-#derive_builder = "0.10.2"
 typed-builder = "0.9.0"
+#derive_builder = "0.10.2"
 #strum = "0.20"
 #strum_macros = "0.20"
 
