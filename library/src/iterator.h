@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 #include "BWAPI/Bullet.h"
 #include "BWAPI/Bulletset.h"
 #include "BWAPI/Force.h"
