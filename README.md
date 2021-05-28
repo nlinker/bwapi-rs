@@ -47,7 +47,13 @@ cd launcher
 # ai = ../target/debug/libdemo_ai.dylib
 vim bwapi-data/bwapi.ini
 
-cd ../demo_ai && cargo build && cd ../launcher && ./openbw_launcher
+cd ../demo_ai && cargo build && cd ../launcher && ./BWAPILauncher
+```
+
+Cross-compile under MacOS to WineHQ (x86, _not_ x64, since Starcraft Broodwar 1.16.1 is x86 binary)
+```shell
+brew install mingw-w64
+cargo build --target i686-pc-windows-gnu                                                                                                                                              git:master*
 ```
 
 ### Linux

@@ -55,7 +55,7 @@ pub trait FromRaw<T> {
 pub mod ffi {
     #[namespace = "BWAPI"]
     unsafe extern "C++" {
-        include!("library/openbw/include/BWAPI.h");
+        include!("library/3rdparty/bwapi/bwapi/include/BWAPI.h");
         fn BWAPI_getRevision() -> i32;
         fn BWAPI_isDebug() -> bool;
 

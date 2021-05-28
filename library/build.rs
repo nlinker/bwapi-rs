@@ -1,6 +1,6 @@
 use std::env;
-use std::fs;
 use std::path::PathBuf;
+use cmake::Config;
 
 // borrowed from tensorflow/rust
 macro_rules! get(($name:expr) => (ok!(env::var($name))));
@@ -17,29 +17,22 @@ fn main() {
     let target = &get!("TARGET");
     let build_mode = &get!("PROFILE");
     let cur_dir = PathBuf::from(&get!("CARGO_MANIFEST_DIR"));
-    let subtrees_dir = cur_dir.join("subtrees");
+    let third_party_dir = cur_dir.join("3rdparty");
 
     log_var!(output_dir);
     log_var!(target);
     log_var!(build_mode);
     log_var!(cur_dir);
-    log_var!(subtrees_dir);
+    log_var!(third_party_dir);
 
     // OpenBW/bwapi is being built by cmake
-    // let openbw_dir = subtrees_dir.join("openbw");
-    // let bwapi_dir = subtrees_dir.join("bwapi");
-    // log_var!(openbw_dir);
-    // log_var!(bwapi_dir);
-    // let bwapi_build_dir = Config::new(&bwapi_dir)
-    //     .define("OPENBW_DIR", &openbw_dir)
-    //     .define("OPENBW_ENABLE_UI", "0")
-    //     .build();
-    // log_var!(bwapi_build_dir);
+    let bwapi_build_dir = Config::new(&third_party_dir).build();
+    let bwapi_include_dir = cur_dir.join("3rdparty").join("bwapi").join("bwapi").join("include");
+    let bwapi_lib_dir = bwapi_build_dir.join("lib");
 
-    let bwapi_include_dir = cur_dir.join("openbw").join("include");
-    let bwapi_lib_dir = cur_dir.join("openbw").join("bwapilib").join("lib");
-
+    log_var!(bwapi_build_dir);
     log_var!(bwapi_include_dir);
+    log_var!(bwapi_lib_dir);
 
     let source_files = vec!["src/lib.rs"];
     cxx_build::bridges(source_files)
@@ -49,16 +42,6 @@ fn main() {
         .include("src")
         .file("src/lib.cc")
         .compile("bwapi_xi");
-
-    let openbw_libs = ["libBWAPILIB.dylib", "libBWAPILIB.dylib.txt"];
-    for l in &openbw_libs {
-        fs::copy(bwapi_lib_dir.join(l), output_dir.join(l)).unwrap();
-    }
-
-    // cc::Build::new()
-    //     .file("src/lib.cpp")
-    //     .include(bwapi_include_dir)
-    //     .compile("rice-c");
 
     println!("cargo:rerun-if-changed=src/lib.rs");
     println!("cargo:rerun-if-changed=src/lib.cc");
