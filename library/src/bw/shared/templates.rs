@@ -4,7 +4,7 @@ use crate::bw::unitset::Unitset;
 // translated from shared/Templates.h
 
 //--------------------------------------------- HAS POWER ------------------------------------------------
-const PSI_FIELD_MASK: [[i32; 16]; 10] = [
+const _PSI_FIELD_MASK: [[i32; 16]; 10] = [
     [0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0],
     [0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
     [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
@@ -17,7 +17,7 @@ const PSI_FIELD_MASK: [[i32; 16]; 10] = [
     [0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0],
 ];
 
-pub fn has_power(x: i32, y: i32, unit_type: UnitType, pylons: &Unitset) -> bool {
+fn _has_power(x: i32, y: i32, unit_type: UnitType, pylons: &Unitset) -> bool {
     fn is_valid_unit_type(unit_type: UnitType) -> bool {
         match unit_type {
             UnitType::None => false,
@@ -42,7 +42,7 @@ pub fn has_power(x: i32, y: i32, unit_type: UnitType, pylons: &Unitset) -> bool 
         if (p.x - x).abs() >= 256 || (p.y - y).abs() >= 160 {
             continue;
         }
-        if PSI_FIELD_MASK[(y - p.y + 160) as usize / 32][(x - p.x + 256) as usize / 32] == 1 {
+        if _PSI_FIELD_MASK[(y - p.y + 160) as usize / 32][(x - p.x + 256) as usize / 32] == 1 {
             return true;
         }
     }

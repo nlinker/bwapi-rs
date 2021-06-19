@@ -1,4 +1,4 @@
-use crate::bw::can_do::{CanCheck3Flags, CanIssueCommandFlags, CanIssueCommandGroupedFlags};
+use crate::bw::can_do::{Common3uFlags, CommandFlags, CommandGroupedFlags, Common4igFlags, Common4piFlags, Common4tiFlags, Common4uiFlags, Common3pFlags};
 use crate::bw::order::Order;
 use crate::bw::player::Player;
 use crate::bw::position::{Position, TilePosition};
@@ -736,33 +736,34 @@ impl Unit {
     }
 
     pub fn can_issue_command(&self, command: UnitCommand) -> bool {
-        self.can_issue_command_(command, CanIssueCommandFlags::builder().build())
+        self.can_issue_command_(command, CommandFlags::builder().build())
     }
-    pub fn can_issue_command_(&self, command: UnitCommand, arg: CanIssueCommandFlags) -> bool {
+    pub fn can_issue_command_(&self, command: UnitCommand, flags: CommandFlags) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
         x.canIssueCommand(
             command,
-            arg.check_can_use_tech_position_on_positions,
-            arg.check_can_use_tech_unit_on_units,
-            arg.check_can_build_unit_type,
-            arg.check_can_target_unit,
-            arg.check_can_issue_command_type,
-            arg.check_commandibility,
+            flags.check_can_use_tech_position_on_positions,
+            flags.check_can_use_tech_unit_on_units,
+            flags.check_can_build_unit_type,
+            flags.check_can_target_unit,
+            flags.check_can_issue_command_type,
+            flags.check_commandibility,
         )
     }
+
     pub fn can_issue_command_grouped(&self, command: UnitCommand) -> bool {
-        self.can_issue_command_grouped_(command, CanIssueCommandGroupedFlags::builder().build())
+        self.can_issue_command_grouped_(command, CommandGroupedFlags::builder().build())
     }
-    pub fn can_issue_command_grouped_(&self, command: UnitCommand, arg: CanIssueCommandGroupedFlags) -> bool {
+    pub fn can_issue_command_grouped_(&self, command: UnitCommand, flags: CommandGroupedFlags) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
         x.canIssueCommandGrouped(
             command,
-            arg.check_can_use_tech_position_on_positions,
-            arg.check_can_use_tech_unit_on_units,
-            arg.check_can_target_unit,
-            arg.check_can_issue_command_type,
-            arg.check_commandibility_grouped,
-            arg.check_commandibility,
+            flags.check_can_use_tech_position_on_positions,
+            flags.check_can_use_tech_unit_on_units,
+            flags.check_can_target_unit,
+            flags.check_can_issue_command_type,
+            flags.check_commandibility_grouped,
+            flags.check_commandibility,
         )
     }
 
@@ -771,187 +772,146 @@ impl Unit {
         x.canCommand()
     }
     pub fn can_command_grouped(&self) -> bool {
-        self.can_command_grouped_(true)
-    }
-    pub fn can_command_grouped_(&self, check_commandibility: bool) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let check_commandibility: bool = true;
         x.canCommandGrouped(check_commandibility)
     }
-
     pub fn can_issue_command_type(&self, command_type: UnitCommandType) -> bool {
-        self.can_issue_command_type_(command_type, true)
-    }
-    pub fn can_issue_command_type_(&self, command_type: UnitCommandType, check_commandibility: bool) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let check_commandibility = true;
         x.canIssueCommandType(command_type, check_commandibility)
     }
     pub fn can_issue_command_type_grouped(&self, command_type: UnitCommandType) -> bool {
-        self.can_issue_command_type_grouped_(command_type, true, true)
-    }
-    pub fn can_issue_command_type_grouped_(
-        &self,
-        command_type: UnitCommandType,
-        check_commandibility_grouped: bool,
-        check_commandibility: bool,
-    ) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let check_commandibility_grouped = true;
+        let check_commandibility = true;
         x.canIssueCommandTypeGrouped(command_type, check_commandibility_grouped, check_commandibility)
     }
     pub fn can_target_unit(&self, target_unit: &Unit) -> bool {
-        self.can_target_unit_(target_unit, true)
-    }
-    pub fn can_target_unit_(&self, target_unit: &Unit, check_commandibility: bool) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let check_commandibility = true;
         unsafe { x.canTargetUnit(target_unit.raw.as_ptr(), check_commandibility) }
     }
-
     pub fn can_attack(&self) -> bool {
-        self.can_attack_(true)
-    }
-    pub fn can_attack_(&self, check_commandibility: bool) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let check_commandibility = true;
         x.canAttack_(check_commandibility)
     }
     pub fn can_attack_position(&self, target: Position) -> bool {
-        self.can_attack_position_(target, CanCheck3Flags::builder().build())
-    }
-    pub fn can_attack_position_(&self, target: Position, arg: CanCheck3Flags) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let flags = Common3uFlags::builder().build();
         x.canAttackP(
             target,
-            arg.check_can_target_unit,
-            arg.check_can_issue_command_type,
-            arg.check_commandibility,
+            flags.check_can_target_unit,
+            flags.check_can_issue_command_type,
+            flags.check_commandibility,
         )
     }
     pub fn can_attack_unit(&self, target: &Unit) -> bool {
-        self.can_attack_unit_(target, CanCheck3Flags::builder().build())
-    }
-    pub fn can_attack_unit_(&self, target: &Unit, arg: CanCheck3Flags) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let flags = Common3uFlags::builder().build();
         unsafe {
             x.canAttackU(
                 target.raw.as_ptr(),
-                arg.check_can_target_unit,
-                arg.check_can_issue_command_type,
-                arg.check_commandibility,
+                flags.check_can_target_unit,
+                flags.check_can_issue_command_type,
+                flags.check_commandibility,
             )
         }
     }
-    pub fn can_attack_grouped(&self, check_commandibility_grouped: bool, check_commandibility: bool) -> bool {
+    pub fn can_attack_grouped(&self) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let check_commandibility_grouped = true;
+        let check_commandibility = true;
         x.canAttackGrouped_(check_commandibility_grouped, check_commandibility)
     }
-    pub fn can_attack_grouped_position(
-        &self,
-        target: Position,
-        check_can_target_unit: bool,
-        check_can_issue_command_type: bool,
-        check_commandibility_grouped: bool,
-        check_commandibility: bool,
-    ) -> bool {
+    pub fn can_attack_grouped_position(&self, target: Position) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let flags = Common4igFlags::builder().build();
         x.canAttackGroupedP(
             target,
-            check_can_target_unit,
-            check_can_issue_command_type,
-            check_commandibility_grouped,
-            check_commandibility,
+            flags.check_can_target_unit,
+            flags.check_can_issue_command_type,
+            flags.check_commandibility_grouped,
+            flags.check_commandibility,
         )
     }
-    pub fn can_attack_grouped_unit(
-        &self,
-        target: &Unit,
-        check_can_target_unit: bool,
-        check_can_issue_command_type: bool,
-        check_commandibility_grouped: bool,
-        check_commandibility: bool,
-    ) -> bool {
+    pub fn can_attack_grouped_unit(&self, target: &Unit) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let flags = Common4igFlags::builder().build();
         unsafe {
             x.canAttackGroupedU(
                 target.raw.as_ptr(),
-                check_can_target_unit,
-                check_can_issue_command_type,
-                check_commandibility_grouped,
-                check_commandibility,
+                flags.check_can_target_unit,
+                flags.check_can_issue_command_type,
+                flags.check_commandibility_grouped,
+                flags.check_commandibility,
             )
         }
     }
-    pub fn can_attack_move(&self, check_commandibility: bool) -> bool {
+    pub fn can_attack_move(&self) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let check_commandibility = true;
         x.canAttackMove(check_commandibility)
     }
-    pub fn can_attack_move_grouped(&self, check_commandibility_grouped: bool, check_commandibility: bool) -> bool {
+    pub fn can_attack_move_grouped(&self) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let check_commandibility_grouped = true;
+        let check_commandibility = true;
         x.canAttackMoveGrouped(check_commandibility_grouped, check_commandibility)
     }
-    pub fn can_attack_units(&self, check_commandibility: bool) -> bool {
+    pub fn can_attack_units(&self) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let check_commandibility = true;
         x.canAttackUnits(check_commandibility)
     }
-    pub fn can_attack_unit_u(
-        &self,
-        target_unit: &Unit,
-        check_can_target_unit: bool,
-        check_can_issue_command_type: bool,
-        check_commandibility: bool,
-    ) -> bool {
+    pub fn can_attack_unit_u(&self, target_unit: &Unit) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let flags = Common3uFlags::builder().build();
         unsafe {
             x.canAttackUnitU(
                 target_unit.raw.as_ptr(),
-                check_can_target_unit,
-                check_can_issue_command_type,
-                check_commandibility,
+                flags.check_can_target_unit,
+                flags.check_can_issue_command_type,
+                flags.check_commandibility,
             )
         }
     }
-    pub fn can_attack_unit_grouped(&self, check_commandibility_grouped: bool, check_commandibility: bool) -> bool {
+    pub fn can_attack_unit_grouped(&self) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let check_commandibility_grouped = true;
+        let check_commandibility = true;
         x.canAttackUnitGrouped_(check_commandibility_grouped, check_commandibility)
     }
-    pub fn can_attack_unit_grouped_u(
-        &self,
-        target_unit: &Unit,
-        check_can_target_unit: bool,
-        check_can_issue_command_type: bool,
-        check_commandibility_grouped: bool,
-        check_commandibility: bool,
-    ) -> bool {
+    pub fn can_attack_unit_grouped_u(&self, target_unit: &Unit) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let flags = Common4igFlags::builder().build();
         unsafe {
             x.canAttackUnitGroupedU(
                 target_unit.raw.as_ptr(),
-                check_can_target_unit,
-                check_can_issue_command_type,
-                check_commandibility_grouped,
-                check_commandibility,
+                flags.check_can_target_unit,
+                flags.check_can_issue_command_type,
+                flags.check_commandibility_grouped,
+                flags.check_commandibility,
             )
         }
     }
-    pub fn can_build(&self, check_commandibility: bool) -> bool {
+    pub fn can_build_(&self) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let check_commandibility = true;
         x.canBuild_(check_commandibility)
     }
-    pub fn can_build_t(
-        &self,
-        unit_type: UnitType,
-        check_can_issue_command_type: bool,
-        check_commandibility: bool,
-    ) -> bool {
+    pub fn can_build_t(&self, unit_type: UnitType) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let check_can_issue_command_type = true;
+        let check_commandibility = true;
         x.canBuildT(unit_type, check_can_issue_command_type, check_commandibility)
     }
-    pub fn can_build_tp(
-        &self,
-        unit_type: UnitType,
-        tile: TilePosition,
-        check_target_unit_type: bool,
-        check_can_issue_command_type: bool,
-        check_commandibility: bool,
-    ) -> bool {
+    pub fn can_build_tp(&self, unit_type: UnitType, tile: TilePosition) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let check_target_unit_type = true;
+        let check_can_issue_command_type = true;
+        let check_commandibility = true;
         x.canBuildTP(
             unit_type,
             tile,
@@ -960,308 +920,284 @@ impl Unit {
             check_commandibility,
         )
     }
-    pub fn can_build_addon(&self, check_commandibility: bool) -> bool {
+    pub fn can_build_addon(&self) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let check_commandibility = true;
         x.canBuildAddon_(check_commandibility)
     }
-    pub fn can_build_addon_t(
-        &self,
-        unit_type: UnitType,
-        check_can_issue_command_type: bool,
-        check_commandibility: bool,
-    ) -> bool {
+    pub fn can_build_addon_t(&self, unit_type: UnitType) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let check_can_issue_command_type = true;
+        let check_commandibility = true;
         x.canBuildAddonT(unit_type, check_can_issue_command_type, check_commandibility)
     }
     pub fn can_train(&self, check_commandibility: bool) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
         x.canTrain_(check_commandibility)
     }
-    pub fn can_train_t(
-        &self,
-        unit_type: UnitType,
-        check_can_issue_command_type: bool,
-        check_commandibility: bool,
-    ) -> bool {
+    pub fn can_train_t(&self, unit_type: UnitType) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let check_can_issue_command_type = true;
+        let check_commandibility = true;
         x.canTrainT(unit_type, check_can_issue_command_type, check_commandibility)
     }
-    pub fn can_morph(&self, check_commandibility: bool) -> bool {
+    pub fn can_morph(&self) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let check_commandibility: bool = true;
         x.canMorph_(check_commandibility)
     }
-    pub fn can_morph_t(
-        &self,
-        unit_type: UnitType,
-        check_can_issue_command_type: bool,
-        check_commandibility: bool,
-    ) -> bool {
+    pub fn can_morph_utype(&self, unit_type: UnitType) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let check_can_issue_command_type = true;
+        let check_commandibility = true;
         x.canMorphT(unit_type, check_can_issue_command_type, check_commandibility)
     }
-    pub fn can_research(&self, check_commandibility: bool) -> bool {
+    pub fn can_research(&self) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let check_commandibility = true;
         x.canResearch_(check_commandibility)
     }
-    pub fn can_research_t(&self, tech_type: TechType, check_can_issue_command_type: bool) -> bool {
+    pub fn can_research_t(&self, tech_type: TechType) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let check_can_issue_command_type = true;
         x.canResearchT(tech_type, check_can_issue_command_type)
     }
-    pub fn can_upgrade(&self, check_commandibility: bool) -> bool {
+    pub fn can_upgrade(&self) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let check_commandibility = true;
         x.canUpgrade_(check_commandibility)
     }
-    pub fn can_upgrade_t(&self, tech_type: UpgradeType, check_can_issue_command_type: bool) -> bool {
+    pub fn can_upgrade_t(&self, tech_type: UpgradeType) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let check_can_issue_command_type = true;
         x.canUpgradeT(tech_type, check_can_issue_command_type)
     }
-    pub fn can_set_rally_point(&self, check_commandibility: bool) -> bool {
+    pub fn can_set_rally_point(&self) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let check_commandibility = true;
         x.canSetRallyPoint_(check_commandibility)
     }
-    pub fn can_set_rally_point_p(
-        &self,
-        target: Position,
-        check_can_target_unit: bool,
-        check_can_issue_command_type: bool,
-        check_commandibility: bool,
-    ) -> bool {
+    pub fn can_set_rally_point_p(&self, target: Position) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let flags = Common3uFlags::builder().build();
         x.canSetRallyPointP(
             target,
-            check_can_target_unit,
-            check_can_issue_command_type,
-            check_commandibility,
+            flags.check_can_target_unit,
+            flags.check_can_issue_command_type,
+            flags.check_commandibility,
         )
     }
-    pub fn can_set_rally_point_u(
-        &self,
-        target: &Unit,
-        check_can_target_unit: bool,
-        check_can_issue_command_type: bool,
-        check_commandibility: bool,
-    ) -> bool {
+    pub fn can_set_rally_point_u(&self, target: &Unit) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let flags = Common3uFlags::builder().build();
         unsafe {
             x.canSetRallyPointU(
                 target.raw.as_ptr(),
-                check_can_target_unit,
-                check_can_issue_command_type,
-                check_commandibility,
+                flags.check_can_target_unit,
+                flags.check_can_issue_command_type,
+                flags.check_commandibility,
             )
         }
     }
-    pub fn can_set_rally_position(&self, check_commandibility: bool) -> bool {
+    pub fn can_set_rally_position(&self) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let check_commandibility = true;
         x.canSetRallyPosition(check_commandibility)
     }
-    pub fn can_set_rally_unit(&self, check_commandibility: bool) -> bool {
+    pub fn can_set_rally_unit(&self) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let check_commandibility = true;
         x.canSetRallyUnit_(check_commandibility)
     }
-    pub fn can_set_rally_unit_u(
-        &self,
-        target_unit: &Unit,
-        check_can_target_unit: bool,
-        check_can_issue_command_type: bool,
-        check_commandibility: bool,
-    ) -> bool {
+    pub fn can_set_rally_unit_u(&self, target_unit: &Unit) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let flags = Common3uFlags::builder().build();
         unsafe {
             x.canSetRallyUnitU(
                 target_unit.raw.as_ptr(),
-                check_can_target_unit,
-                check_can_issue_command_type,
-                check_commandibility,
+                flags.check_can_target_unit,
+                flags.check_can_issue_command_type,
+                flags.check_commandibility,
             )
         }
     }
-    pub fn can_move(&self, check_commandibility: bool) -> bool {
+    pub fn can_move(&self) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let check_commandibility = true;
         x.canMove(check_commandibility)
     }
-    pub fn can_move_grouped(&self, check_commandibility_grouped: bool, check_commandibility: bool) -> bool {
+    pub fn can_move_grouped(&self) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let check_commandibility_grouped = true;
+        let check_commandibility = true;
         x.canMoveGrouped(check_commandibility_grouped, check_commandibility)
     }
-    pub fn can_patrol(&self, check_commandibility: bool) -> bool {
+    pub fn can_patrol(&self) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let check_commandibility = true;
         x.canPatrol(check_commandibility)
     }
-    pub fn can_patrol_grouped(&self, check_commandibility_grouped: bool, check_commandibility: bool) -> bool {
+    pub fn can_patrol_grouped(&self) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let check_commandibility_grouped = true;
+        let check_commandibility = true;
         x.canPatrolGrouped(check_commandibility_grouped, check_commandibility)
     }
-    pub fn can_follow(&self, check_commandibility: bool) -> bool {
+    pub fn can_follow(&self) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let check_commandibility = true;
         x.canFollow_(check_commandibility)
     }
-    pub fn can_follow_u(
-        &self,
-        target_unit: &Unit,
-        check_can_target_unit: bool,
-        check_can_issue_command_type: bool,
-        check_commandibility: bool,
-    ) -> bool {
+    pub fn can_follow_u(&self, target_unit: &Unit) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let flags = Common3uFlags::builder().build();
         unsafe {
             x.canFollowU(
                 target_unit.raw.as_ptr(),
-                check_can_target_unit,
-                check_can_issue_command_type,
-                check_commandibility,
+                flags.check_can_target_unit,
+                flags.check_can_issue_command_type,
+                flags.check_commandibility,
             )
         }
     }
-    pub fn can_gather(&self, check_commandibility: bool) -> bool {
+    pub fn can_gather(&self) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let check_commandibility = true;
         x.canGather_(check_commandibility)
     }
-    pub fn can_gather_u(
-        &self,
-        target_unit: &Unit,
-        check_can_target_unit: bool,
-        check_can_issue_command_type: bool,
-        check_commandibility: bool,
-    ) -> bool {
+    pub fn can_gather_u(&self, target_unit: &Unit) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let flags = Common3uFlags::builder().build();
         unsafe {
             x.canGatherU(
                 target_unit.raw.as_ptr(),
-                check_can_target_unit,
-                check_can_issue_command_type,
-                check_commandibility,
+                flags.check_can_target_unit,
+                flags.check_can_issue_command_type,
+                flags.check_commandibility,
             )
         }
     }
-    pub fn can_return_cargo(&self, check_commandibility: bool) -> bool {
+    pub fn can_return_cargo(&self) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let check_commandibility = true;
         x.canReturnCargo(check_commandibility)
     }
-    pub fn can_hold_position(&self, check_commandibility: bool) -> bool {
+    pub fn can_hold_position(&self) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let check_commandibility = true;
         x.canHoldPosition(check_commandibility)
     }
-    pub fn can_stop(&self, check_commandibility: bool) -> bool {
+    pub fn can_stop(&self) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let check_commandibility = true;
         x.canStop(check_commandibility)
     }
-    pub fn can_repair(&self, check_commandibility: bool) -> bool {
+    pub fn can_repair(&self) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let check_commandibility = true;
         x.canRepair_(check_commandibility)
     }
-    pub fn can_repair_u(
-        &self,
-        target_unit: &Unit,
-        check_can_target_unit: bool,
-        check_can_issue_command_type: bool,
-        check_commandibility: bool,
-    ) -> bool {
+    pub fn can_repair_u(&self, target_unit: &Unit) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let flags = Common3uFlags::builder().build();
         unsafe {
             x.canRepairU(
                 target_unit.raw.as_ptr(),
-                check_can_target_unit,
-                check_can_issue_command_type,
-                check_commandibility,
+                flags.check_can_target_unit,
+                flags.check_can_issue_command_type,
+                flags.check_commandibility,
             )
         }
     }
-    pub fn can_burrow(&self, check_commandibility: bool) -> bool {
+    pub fn can_burrow(&self) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let check_commandibility = true;
         x.canBurrow(check_commandibility)
     }
-    pub fn can_unburrow(&self, check_commandibility: bool) -> bool {
+    pub fn can_unburrow(&self) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let check_commandibility = true;
         x.canUnburrow(check_commandibility)
     }
-    pub fn can_cloak(&self, check_commandibility: bool) -> bool {
+    pub fn can_cloak(&self) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let check_commandibility = true;
         x.canCloak(check_commandibility)
     }
-    pub fn can_decloak(&self, check_commandibility: bool) -> bool {
+    pub fn can_decloak(&self) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let check_commandibility = true;
         x.canDecloak(check_commandibility)
     }
-    pub fn can_siege(&self, check_commandibility: bool) -> bool {
+    pub fn can_siege(&self) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let check_commandibility = true;
         x.canSiege(check_commandibility)
     }
-    pub fn can_unsiege(&self, check_commandibility: bool) -> bool {
+    pub fn can_unsiege(&self) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let check_commandibility = true;
         x.canUnsiege(check_commandibility)
     }
-    pub fn can_lift(&self, check_commandibility: bool) -> bool {
+    pub fn can_lift(&self) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let check_commandibility = true;
         x.canLift(check_commandibility)
     }
-    pub fn can_land(&self, check_commandibility: bool) -> bool {
+    pub fn can_land(&self) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let check_commandibility = true;
         x.canLand_(check_commandibility)
     }
-    pub fn can_land_p(
-        &self,
-        target: TilePosition,
-        check_can_issue_command_type: bool,
-        check_commandibility: bool,
-    ) -> bool {
+    pub fn can_land_p(&self, target: TilePosition) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let check_can_issue_command_type = true;
+        let check_commandibility = true;
         x.canLandP(target, check_can_issue_command_type, check_commandibility)
     }
-    pub fn can_load(&self, check_commandibility: bool) -> bool {
+    pub fn can_load(&self) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let check_commandibility = true;
         x.canLoad_(check_commandibility)
     }
-    pub fn can_load_u(
-        &self,
-        target_unit: &Unit,
-        check_can_target_unit: bool,
-        check_can_issue_command_type: bool,
-        check_commandibility: bool,
-    ) -> bool {
+    pub fn can_load_u(&self, target_unit: &Unit) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let flags = Common3uFlags::builder().build();
         unsafe {
             x.canLoadU(
                 target_unit.raw.as_ptr(),
-                check_can_target_unit,
-                check_can_issue_command_type,
-                check_commandibility,
+                flags.check_can_target_unit,
+                flags.check_can_issue_command_type,
+                flags.check_commandibility,
             )
         }
     }
-    pub fn can_unload_with_or_without_target(&self, check_commandibility: bool) -> bool {
+    pub fn can_unload_with_or_without_target(&self) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let check_commandibility = true;
         x.canUnloadWithOrWithoutTarget(check_commandibility)
     }
-    pub fn can_unload_at_position(
-        &self,
-        target_drop_pos: Position,
-        check_can_issue_command_type: bool,
-        check_commandibility: bool,
-    ) -> bool {
+    pub fn can_unload_at_position(&self, target_drop_pos: Position) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let check_can_issue_command_type = true;
+        let check_commandibility = true;
         x.canUnloadAtPosition(target_drop_pos, check_can_issue_command_type, check_commandibility)
     }
-    pub fn can_unload(&self, check_commandibility: bool) -> bool {
+    pub fn can_unload(&self) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let check_commandibility = true;
         x.canUnload_(check_commandibility)
     }
-    pub fn can_unload_u(
-        &self,
-        target_unit: &Unit,
-        check_can_target_unit: bool,
-        check_position: bool,
-        check_can_issue_command_type: bool,
-        check_commandibility: bool,
-    ) -> bool {
+    pub fn can_unload_u(&self, target_unit: &Unit) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let flags = Common4piFlags::builder().build();
         unsafe {
             x.canUnloadU(
                 target_unit.raw.as_ptr(),
-                check_can_target_unit,
-                check_position,
-                check_can_issue_command_type,
-                check_commandibility,
+                flags.check_can_target_unit,
+                flags.check_position,
+                flags.check_can_issue_command_type,
+                flags.check_commandibility,
             )
         }
     }
@@ -1273,317 +1209,252 @@ impl Unit {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
         x.canUnloadAllPosition_(check_commandibility)
     }
-    pub fn can_unload_all_position_p(
-        &self,
-        target_drop_pos: Position,
-        check_can_issue_command_type: bool,
-        check_commandibility: bool,
-    ) -> bool {
+    pub fn can_unload_all_position_p(&self, target_drop_pos: Position) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let check_can_issue_command_type = true;
+        let check_commandibility = true;
         x.canUnloadAllPositionP(target_drop_pos, check_can_issue_command_type, check_commandibility)
     }
-    pub fn can_right_click(&self, check_commandibility: bool) -> bool {
+    pub fn can_right_click(&self) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let check_commandibility = true;
         x.canRightClick_(check_commandibility)
     }
-    pub fn can_right_click_p(
-        &self,
-        target: Position,
-        check_can_target_unit: bool,
-        check_can_issue_command_type: bool,
-        check_commandibility: bool,
-    ) -> bool {
+    pub fn can_right_click_p(&self, target: Position) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let flags = Common3uFlags::builder().build();
         x.canRightClickP(
             target,
-            check_can_target_unit,
-            check_can_issue_command_type,
-            check_commandibility,
+            flags.check_can_target_unit,
+            flags.check_can_issue_command_type,
+            flags.check_commandibility,
         )
     }
-    pub fn can_right_click_u(
-        &self,
-        target: &Unit,
-        check_can_target_unit: bool,
-        check_can_issue_command_type: bool,
-        check_commandibility: bool,
-    ) -> bool {
+    pub fn can_right_click_u(&self, target: &Unit) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let flags = Common3uFlags::builder().build();
         unsafe {
             x.canRightClickU(
                 target.raw.as_ptr(),
-                check_can_target_unit,
-                check_can_issue_command_type,
-                check_commandibility,
+                flags.check_can_target_unit,
+                flags.check_can_issue_command_type,
+                flags.check_commandibility,
             )
         }
     }
-    pub fn can_right_click_grouped(&self, check_commandibility_grouped: bool, check_commandibility: bool) -> bool {
+    pub fn can_right_click_grouped(&self) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let check_commandibility_grouped = true;
+        let check_commandibility = true;
         x.canRightClickGrouped_(check_commandibility_grouped, check_commandibility)
     }
-    pub fn can_right_click_grouped_p(
-        &self,
-        target: Position,
-        check_can_target_unit: bool,
-        check_can_issue_command_type: bool,
-        check_commandibility_grouped: bool,
-        check_commandibility: bool,
-    ) -> bool {
+    pub fn can_right_click_grouped_p(&self, target: Position) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let flags = Common4igFlags::builder().build();
         x.canRightClickGroupedP(
             target,
-            check_can_target_unit,
-            check_can_issue_command_type,
-            check_commandibility_grouped,
-            check_commandibility,
+            flags.check_can_target_unit,
+            flags.check_can_issue_command_type,
+            flags.check_commandibility_grouped,
+            flags.check_commandibility,
         )
     }
-    pub fn can_right_click_grouped_u(
-        &self,
-        target: &Unit,
-        check_can_target_unit: bool,
-        check_can_issue_command_type: bool,
-        check_commandibility_grouped: bool,
-        check_commandibility: bool,
-    ) -> bool {
+    pub fn can_right_click_grouped_u(&self, target: &Unit) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let flags = Common4igFlags::builder().build();
         unsafe {
             x.canRightClickGroupedU(
                 target.raw.as_ptr(),
-                check_can_target_unit,
-                check_can_issue_command_type,
-                check_commandibility_grouped,
-                check_commandibility,
+                flags.check_can_target_unit,
+                flags.check_can_issue_command_type,
+                flags.check_commandibility_grouped,
+                flags.check_commandibility,
             )
         }
     }
-    pub fn can_right_click_position(&self, check_commandibility: bool) -> bool {
+    pub fn can_right_click_position(&self) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let  check_commandibility = true;
         x.canRightClickPosition(check_commandibility)
     }
-    pub fn can_right_click_position_grouped(
-        &self,
-        check_commandibility_grouped: bool,
-        check_commandibility: bool,
-    ) -> bool {
+    pub fn can_right_click_position_grouped(&self) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let check_commandibility_grouped = true;
+        let check_commandibility = true;
         x.canRightClickPositionGrouped(check_commandibility_grouped, check_commandibility)
     }
-    pub fn can_right_click_unit(&self, check_commandibility: bool) -> bool {
+    pub fn can_right_click_unit(&self) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let check_commandibility = true;
         x.canRightClickUnit_(check_commandibility)
     }
-    pub fn can_right_click_unit_u(
-        &self,
-        target_unit: &Unit,
-        check_can_target_unit: bool,
-        check_can_issue_command_type: bool,
-        check_commandibility: bool,
-    ) -> bool {
+    pub fn can_right_click_unit_u(&self, target_unit: &Unit) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let flags = Common3uFlags::builder().build();
         unsafe {
             x.canRightClickUnitU(
                 target_unit.raw.as_ptr(),
-                check_can_target_unit,
-                check_can_issue_command_type,
-                check_commandibility,
+                flags.check_can_target_unit,
+                flags.check_can_issue_command_type,
+                flags.check_commandibility,
             )
         }
     }
-    pub fn can_right_click_unit_grouped(&self, check_commandibility_grouped: bool, check_commandibility: bool) -> bool {
+    pub fn can_right_click_unit_grouped(&self) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let check_commandibility_grouped = true;
+        let check_commandibility = true;
         x.canRightClickUnitGrouped_(check_commandibility_grouped, check_commandibility)
     }
-    pub fn can_right_click_unit_grouped_u(
-        &self,
-        target_unit: &Unit,
-        check_can_target_unit: bool,
-        check_can_issue_command_type: bool,
-        check_commandibility_grouped: bool,
-        check_commandibility: bool,
-    ) -> bool {
+    pub fn can_right_click_unit_grouped_u(&self, target_unit: &Unit) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let flags = Common4igFlags::builder().build();
         unsafe {
             x.canRightClickUnitGroupedU(
                 target_unit.raw.as_ptr(),
-                check_can_target_unit,
-                check_can_issue_command_type,
-                check_commandibility_grouped,
-                check_commandibility,
+                flags.check_can_target_unit,
+                flags.check_can_issue_command_type,
+                flags.check_commandibility_grouped,
+                flags.check_commandibility,
             )
         }
     }
-    pub fn can_halt_construction(&self, check_commandibility: bool) -> bool {
+    pub fn can_halt_construction(&self) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let check_commandibility = true;
         x.canHaltConstruction(check_commandibility)
     }
-    pub fn can_cancel_construction(&self, check_commandibility: bool) -> bool {
+    pub fn can_cancel_construction(&self) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let check_commandibility = true;
         x.canCancelConstruction(check_commandibility)
     }
-    pub fn can_cancel_addon(&self, check_commandibility: bool) -> bool {
+    pub fn can_cancel_addon(&self) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let check_commandibility = true;
         x.canCancelAddon(check_commandibility)
     }
-    pub fn can_cancel_train(&self, check_commandibility: bool) -> bool {
+    pub fn can_cancel_train(&self) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let check_commandibility = true;
         x.canCancelTrain(check_commandibility)
     }
-    pub fn can_cancel_train_slot(&self, check_commandibility: bool) -> bool {
+    pub fn can_cancel_train_slot(&self) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let check_commandibility = true;
         x.canCancelTrainSlot_(check_commandibility)
     }
-    pub fn can_cancel_train_slot_i(
-        &self,
-        slot: i32,
-        check_can_issue_command_type: bool,
-        check_commandibility: bool,
-    ) -> bool {
+    pub fn can_cancel_train_slot_i(&self, slot: i32) -> bool {
+        // default slot = -2
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let check_can_issue_command_type = true;
+        let check_commandibility = true;
         x.canCancelTrainSlotI(slot, check_can_issue_command_type, check_commandibility)
     }
-    pub fn can_cancel_morph(&self, check_commandibility: bool) -> bool {
+    pub fn can_cancel_morph(&self) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let check_commandibility = true;
         x.canCancelMorph(check_commandibility)
     }
-    pub fn can_cancel_research(&self, check_commandibility: bool) -> bool {
+    pub fn can_cancel_research(&self) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let check_commandibility = true;
         x.canCancelResearch(check_commandibility)
     }
-    pub fn can_cancel_upgrade(&self, check_commandibility: bool) -> bool {
+    pub fn can_cancel_upgrade(&self) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let check_commandibility = true;
         x.canCancelUpgrade(check_commandibility)
     }
-    pub fn can_use_tech_with_or_without_target(&self, check_commandibility: bool) -> bool {
+    pub fn can_use_tech_with_or_without_target(&self) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let check_commandibility = true;
         x.canUseTechWithOrWithoutTarget_(check_commandibility)
     }
-    pub fn can_use_tech_with_or_without_target_t(
-        &self,
-        tech: TechType,
-        check_can_issue_command_type: bool,
-        check_commandibility: bool,
-    ) -> bool {
+    pub fn can_use_tech_with_or_without_target_t(&self, tech: TechType) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let check_can_issue_command_type = true;
+        let check_commandibility = true;
         x.canUseTechWithOrWithoutTargetT(tech, check_can_issue_command_type, check_commandibility)
     }
-    pub fn can_use_tech_p(
-        &self,
-        tech: TechType,
-        target: Position,
-        check_can_target_unit: bool,
-        check_targets_type: bool,
-        check_can_issue_command_type: bool,
-        check_commandibility: bool,
-    ) -> bool {
+    pub fn can_use_tech_p(&self, tech: TechType, target: Position) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let flags = Common4tiFlags::builder().build();
         x.canUseTechP(
             tech,
             target,
-            check_can_target_unit,
-            check_targets_type,
-            check_can_issue_command_type,
-            check_commandibility,
+            flags.check_can_target_unit,
+            flags.check_targets_type,
+            flags.check_can_issue_command_type,
+            flags.check_commandibility,
         )
     }
-    pub fn can_use_tech_u(
-        &self,
-        tech: TechType,
-        target: &Unit,
-        check_can_target_unit: bool,
-        check_targets_type: bool,
-        check_can_issue_command_type: bool,
-        check_commandibility: bool,
-    ) -> bool {
+    pub fn can_use_tech_u(&self, tech: TechType, target: &Unit) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let flags = Common4tiFlags::builder().build();
         unsafe {
             x.canUseTechU(
                 tech,
                 target.raw.as_ptr(),
-                check_can_target_unit,
-                check_targets_type,
-                check_can_issue_command_type,
-                check_commandibility,
+                flags.check_can_target_unit,
+                flags.check_targets_type,
+                flags.check_can_issue_command_type,
+                flags.check_commandibility,
             )
         }
     }
-    pub fn can_use_tech_without_target(
-        &self,
-        tech: TechType,
-        check_can_issue_command_type: bool,
-        check_commandibility: bool,
-    ) -> bool {
+    pub fn can_use_tech_without_target(&self, tech: TechType) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let check_can_issue_command_type = true;
+        let check_commandibility = true;
         x.canUseTechWithoutTarget(tech, check_can_issue_command_type, check_commandibility)
     }
-    pub fn can_use_tech_unit(
-        &self,
-        tech: TechType,
-        check_can_issue_command_type: bool,
-        check_commandibility: bool,
-    ) -> bool {
+    pub fn can_use_tech_unit(&self, tech: TechType) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let check_can_issue_command_type = true;
+        let check_commandibility = true;
         x.canUseTechUnit_(tech, check_can_issue_command_type, check_commandibility)
     }
-    pub fn can_use_tech_unit_t(
-        &self,
-        tech: TechType,
-        target_unit: &Unit,
-        check_can_target_unit: bool,
-        check_targets_units: bool,
-        check_can_issue_command_type: bool,
-        check_commandibility: bool,
-    ) -> bool {
+    pub fn can_use_tech_unit_t(&self, tech: TechType, target_unit: &Unit) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let flags = Common4uiFlags::builder().build();
         unsafe {
             x.canUseTechUnitT(
                 tech,
                 target_unit.raw.as_ptr(),
-                check_can_target_unit,
-                check_targets_units,
-                check_can_issue_command_type,
-                check_commandibility,
+                flags.check_can_target_unit,
+                flags.check_targets_units,
+                flags.check_can_issue_command_type,
+                flags.check_commandibility,
             )
         }
     }
-    pub fn can_use_tech_position(
-        &self,
-        tech: TechType,
-        check_can_issue_command_type: bool,
-        check_commandibility: bool,
-    ) -> bool {
+    pub fn can_use_tech_position(&self, tech: TechType) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let check_can_issue_command_type = true;
+        let check_commandibility = true;
         x.canUseTechPosition_(tech, check_can_issue_command_type, check_commandibility)
     }
-    pub fn can_use_tech_position_p(
-        &self,
-        tech: TechType,
-        target: Position,
-        check_targets_positions: bool,
-        check_can_issue_command_type: bool,
-        check_commandibility: bool,
-    ) -> bool {
+    pub fn can_use_tech_position_p(&self, tech: TechType, target: Position) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let flags = Common3pFlags::builder().build();
         x.canUseTechPositionP(
             tech,
             target,
-            check_targets_positions,
-            check_can_issue_command_type,
-            check_commandibility,
+            flags.check_targets_positions,
+            flags.check_can_issue_command_type,
+            flags.check_commandibility,
         )
     }
-    pub fn can_place_cop(&self, check_commandibility: bool) -> bool {
+    pub fn can_place_cop(&self) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let check_commandibility = true;
         x.canPlaceCOP_(check_commandibility)
     }
-    pub fn can_place_cop_p(
-        &self,
-        target: TilePosition,
-        check_can_issue_command_type: bool,
-        check_commandibility: bool,
-    ) -> bool {
+    pub fn can_place_cop_p(&self, target: TilePosition) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
+        let check_can_issue_command_type = true;
+        let check_commandibility = true;
         x.canPlaceCOPP(target, check_can_issue_command_type, check_commandibility)
     }
 }
