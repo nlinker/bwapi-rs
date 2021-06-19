@@ -107,31 +107,49 @@ mod ext {
     use super::*;
 
     pub trait Builder<T> {
-        fn build(self) -> T { unreachable!("IDE stub") }
+        fn build(self) -> T {
+            unreachable!("IDE stub")
+        }
     }
 
     impl CommandFlags {
-        pub fn builder() -> impl Builder<Self> { unreachable!("IDE stub") }
+        pub fn builder() -> impl Builder<Self> {
+            unreachable!("IDE stub")
+        }
     }
     impl CommandGroupedFlags {
-        pub fn builder() -> impl Builder<Self> { unreachable!("IDE stub") }
+        pub fn builder() -> impl Builder<Self> {
+            unreachable!("IDE stub")
+        }
     }
     impl Common3uFlags {
-        pub fn builder() -> impl Builder<Self> { unreachable!("IDE stub") }
+        pub fn builder() -> impl Builder<Self> {
+            unreachable!("IDE stub")
+        }
     }
     impl Common3pFlags {
-        pub fn builder() -> impl Builder<Self> { unreachable!("IDE stub") }
+        pub fn builder() -> impl Builder<Self> {
+            unreachable!("IDE stub")
+        }
     }
     impl Common4igFlags {
-        pub fn builder() -> impl Builder<Self> { unreachable!("IDE stub") }
+        pub fn builder() -> impl Builder<Self> {
+            unreachable!("IDE stub")
+        }
     }
     impl Common4piFlags {
-        pub fn builder() -> impl Builder<Self> { unreachable!("IDE stub") }
+        pub fn builder() -> impl Builder<Self> {
+            unreachable!("IDE stub")
+        }
     }
     impl Common4tiFlags {
-        pub fn builder() -> impl Builder<Self> { unreachable!("IDE stub") }
+        pub fn builder() -> impl Builder<Self> {
+            unreachable!("IDE stub")
+        }
     }
     impl Common4uiFlags {
-        pub fn builder() -> impl Builder<Self> { unreachable!("IDE stub") }
+        pub fn builder() -> impl Builder<Self> {
+            unreachable!("IDE stub")
+        }
     }
 }

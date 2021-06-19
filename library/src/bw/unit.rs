@@ -1,4 +1,7 @@
-use crate::bw::can_do::{Common3uFlags, CommandFlags, CommandGroupedFlags, Common4igFlags, Common4piFlags, Common4tiFlags, Common4uiFlags, Common3pFlags};
+use crate::bw::can_do::{
+    CommandFlags, CommandGroupedFlags, Common3pFlags, Common3uFlags, Common4igFlags, Common4piFlags, Common4tiFlags,
+    Common4uiFlags,
+};
 use crate::bw::order::Order;
 use crate::bw::player::Player;
 use crate::bw::position::{Position, TilePosition};
@@ -1274,7 +1277,7 @@ impl Unit {
     }
     pub fn can_right_click_position(&self) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
-        let  check_commandibility = true;
+        let check_commandibility = true;
         x.canRightClickPosition(check_commandibility)
     }
     pub fn can_right_click_position_grouped(&self) -> bool {
