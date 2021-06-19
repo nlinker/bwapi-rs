@@ -1,4 +1,4 @@
-use crate::bw::position::{Position, TilePosition, PositionLike};
+use crate::bw::position::{Position, PositionLike, TilePosition};
 use crate::bw::tech_type::TechType;
 use crate::bw::unit::Unit;
 use crate::bw::unit_type::UnitType;
@@ -370,10 +370,27 @@ impl UnitCommand {
     }
     pub fn use_tech(unit: &Unit, tech_type: TechType) -> UnitCommand {
         let command_type = match tech_type {
-            TechType::Burrowing => if unit.is_burrowed() { UnitCommandType::Unburrow } else { UnitCommandType::Burrow },
-            TechType::Cloaking_Field | TechType::Personnel_Cloaking =>
-                if unit.is_cloaked() { UnitCommandType::Decloak } else { UnitCommandType::Cloak },
-            TechType::Tank_Siege_Mode => if unit.is_sieged() { UnitCommandType::Unsiege } else { UnitCommandType::Siege },
+            TechType::Burrowing => {
+                if unit.is_burrowed() {
+                    UnitCommandType::Unburrow
+                } else {
+                    UnitCommandType::Burrow
+                }
+            }
+            TechType::Cloaking_Field | TechType::Personnel_Cloaking => {
+                if unit.is_cloaked() {
+                    UnitCommandType::Decloak
+                } else {
+                    UnitCommandType::Cloak
+                }
+            }
+            TechType::Tank_Siege_Mode => {
+                if unit.is_sieged() {
+                    UnitCommandType::Unsiege
+                } else {
+                    UnitCommandType::Siege
+                }
+            }
             _ => UnitCommandType::Use_Tech,
         };
         UnitCommand::builder()
@@ -410,40 +427,35 @@ impl UnitCommand {
 
     pub fn get_target_position(&self) -> Position {
         match self.ctype {
-            UnitCommandType::Build |
-            UnitCommandType::Land |
-            UnitCommandType::Place_COP =>
-                (self.x, self.y).to_tile_position().to_position(),
-            _ =>
-                (self.x, self.y).to_position(),
+            UnitCommandType::Build | UnitCommandType::Land | UnitCommandType::Place_COP => {
+                (self.x, self.y).to_tile_position().to_position()
+            }
+            _ => (self.x, self.y).to_position(),
         }
     }
     pub fn get_target_tile_position(&self) -> TilePosition {
         match self.ctype {
-            UnitCommandType::Build |
-            UnitCommandType::Land |
-            UnitCommandType::Place_COP =>
-                (self.x, self.y).to_position().to_tile_position(),
-            _ =>
-                (self.x, self.y).to_tile_position(),
+            UnitCommandType::Build | UnitCommandType::Land | UnitCommandType::Place_COP => {
+                (self.x, self.y).to_position().to_tile_position()
+            }
+            _ => (self.x, self.y).to_tile_position(),
         }
     }
     pub fn get_unit_type(&self) -> Option<UnitType> {
         match self.ctype {
-            UnitCommandType::Build |
-            UnitCommandType::Build_Addon |
-            UnitCommandType::Train |
-            UnitCommandType::Morph => Some(UnitType::from(self.extra as u32)),
-            _ => None
+            UnitCommandType::Build | UnitCommandType::Build_Addon | UnitCommandType::Train | UnitCommandType::Morph => {
+                Some(UnitType::from(self.extra as u32))
+            }
+            _ => None,
         }
     }
     pub fn get_tech_type(&self) -> Option<TechType> {
         match self.ctype {
-            UnitCommandType::Research |
-            UnitCommandType::Use_Tech |
-            UnitCommandType::Use_Tech_Position |
-            UnitCommandType::Use_Tech_Unit => Some(TechType::from(self.extra as u32)),
-            _ => None
+            UnitCommandType::Research
+            | UnitCommandType::Use_Tech
+            | UnitCommandType::Use_Tech_Position
+            | UnitCommandType::Use_Tech_Unit => Some(TechType::from(self.extra as u32)),
+            _ => None,
         }
     }
     pub fn get_upgrade_type(&self) -> Option<UpgradeType> {
@@ -463,21 +475,21 @@ impl UnitCommand {
     pub fn is_queued(&self) -> bool {
         // extract shift_queue_command back
         match self.ctype {
-            UnitCommandType::Attack_Move |
-            UnitCommandType::Attack_Unit |
-            UnitCommandType::Move |
-            UnitCommandType::Patrol |
-            UnitCommandType::Hold_Position |
-            UnitCommandType::Stop |
-            UnitCommandType::Follow |
-            UnitCommandType::Gather |
-            UnitCommandType::Return_Cargo |
-            UnitCommandType::Repair |
-            UnitCommandType::Load |
-            UnitCommandType::Unload_All |
-            UnitCommandType::Unload_All_Position |
-            UnitCommandType::Right_Click_Position |
-            UnitCommandType::Right_Click_Unit => self.extra != 0,
+            UnitCommandType::Attack_Move
+            | UnitCommandType::Attack_Unit
+            | UnitCommandType::Move
+            | UnitCommandType::Patrol
+            | UnitCommandType::Hold_Position
+            | UnitCommandType::Stop
+            | UnitCommandType::Follow
+            | UnitCommandType::Gather
+            | UnitCommandType::Return_Cargo
+            | UnitCommandType::Repair
+            | UnitCommandType::Load
+            | UnitCommandType::Unload_All
+            | UnitCommandType::Unload_All_Position
+            | UnitCommandType::Right_Click_Position
+            | UnitCommandType::Right_Click_Unit => self.extra != 0,
             _ => false,
         }
     }
@@ -517,8 +529,8 @@ mod ext {
     }
 
     impl<TypedBuilderFields> Clone for UnitCommandBuilder<TypedBuilderFields>
-        where
-            TypedBuilderFields: Clone,
+    where
+        TypedBuilderFields: Clone,
     {
         fn clone(&self) -> Self {
             Self {
@@ -540,7 +552,7 @@ mod ext {
         }
     }
 
-    impl<T> UnitCommandBuilder_Optional<T> for (T, ) {
+    impl<T> UnitCommandBuilder_Optional<T> for (T,) {
         fn into_value<F: FnOnce() -> T>(self, _: F) -> T {
             self.0
         }
@@ -548,8 +560,8 @@ mod ext {
 
     #[allow(dead_code, non_camel_case_types, missing_docs)]
     impl<__ctype, __target, __x, __y, __extra> UnitCommandBuilder<((), __ctype, __target, __x, __y, __extra)> {
-        pub fn unit(self, unit: Unit) -> UnitCommandBuilder<((Unit, ), __ctype, __target, __x, __y, __extra)> {
-            let unit = (unit, );
+        pub fn unit(self, unit: Unit) -> UnitCommandBuilder<((Unit,), __ctype, __target, __x, __y, __extra)> {
+            let unit = (unit,);
             let (_, ctype, target, x, y, extra) = self.fields;
             UnitCommandBuilder {
                 fields: (unit, ctype, target, x, y, extra),
@@ -564,12 +576,12 @@ mod ext {
 
     #[doc(hidden)]
     #[allow(dead_code, non_camel_case_types, missing_docs)]
-    impl<__ctype, __target, __x, __y, __extra> UnitCommandBuilder<((Unit, ), __ctype, __target, __x, __y, __extra)> {
+    impl<__ctype, __target, __x, __y, __extra> UnitCommandBuilder<((Unit,), __ctype, __target, __x, __y, __extra)> {
         #[deprecated(note = "Repeated field unit")]
         pub fn unit(
             self,
             _: UnitCommandBuilder_Error_Repeated_field_unit,
-        ) -> UnitCommandBuilder<((Unit, ), __ctype, __target, __x, __y, __extra)> {
+        ) -> UnitCommandBuilder<((Unit,), __ctype, __target, __x, __y, __extra)> {
             self
         }
     }
@@ -579,8 +591,8 @@ mod ext {
         pub fn ctype(
             self,
             ctype: UnitCommandType,
-        ) -> UnitCommandBuilder<(__unit, (UnitCommandType, ), __target, __x, __y, __extra)> {
-            let ctype = (ctype, );
+        ) -> UnitCommandBuilder<(__unit, (UnitCommandType,), __target, __x, __y, __extra)> {
+            let ctype = (ctype,);
             let (unit, _, target, x, y, extra) = self.fields;
             UnitCommandBuilder {
                 fields: (unit, ctype, target, x, y, extra),
@@ -596,13 +608,13 @@ mod ext {
     #[doc(hidden)]
     #[allow(dead_code, non_camel_case_types, missing_docs)]
     impl<__unit, __target, __x, __y, __extra>
-    UnitCommandBuilder<(__unit, (UnitCommandType, ), __target, __x, __y, __extra)>
+        UnitCommandBuilder<(__unit, (UnitCommandType,), __target, __x, __y, __extra)>
     {
         #[deprecated(note = "Repeated field ctype")]
         pub fn ctype(
             self,
             _: UnitCommandBuilder_Error_Repeated_field_ctype,
-        ) -> UnitCommandBuilder<(__unit, (UnitCommandType, ), __target, __x, __y, __extra)> {
+        ) -> UnitCommandBuilder<(__unit, (UnitCommandType,), __target, __x, __y, __extra)> {
             self
         }
     }
@@ -612,8 +624,8 @@ mod ext {
         pub fn target(
             self,
             target: Option<Unit>,
-        ) -> UnitCommandBuilder<(__unit, __ctype, (Option<Unit>, ), __x, __y, __extra)> {
-            let target = (target, );
+        ) -> UnitCommandBuilder<(__unit, __ctype, (Option<Unit>,), __x, __y, __extra)> {
+            let target = (target,);
             let (unit, ctype, _, x, y, extra) = self.fields;
             UnitCommandBuilder {
                 fields: (unit, ctype, target, x, y, extra),
@@ -628,20 +640,20 @@ mod ext {
 
     #[doc(hidden)]
     #[allow(dead_code, non_camel_case_types, missing_docs)]
-    impl<__unit, __ctype, __x, __y, __extra> UnitCommandBuilder<(__unit, __ctype, (Option<Unit>, ), __x, __y, __extra)> {
+    impl<__unit, __ctype, __x, __y, __extra> UnitCommandBuilder<(__unit, __ctype, (Option<Unit>,), __x, __y, __extra)> {
         #[deprecated(note = "Repeated field target")]
         pub fn target(
             self,
             _: UnitCommandBuilder_Error_Repeated_field_target,
-        ) -> UnitCommandBuilder<(__unit, __ctype, (Option<Unit>, ), __x, __y, __extra)> {
+        ) -> UnitCommandBuilder<(__unit, __ctype, (Option<Unit>,), __x, __y, __extra)> {
             self
         }
     }
 
     #[allow(dead_code, non_camel_case_types, missing_docs)]
     impl<__unit, __ctype, __target, __y, __extra> UnitCommandBuilder<(__unit, __ctype, __target, (), __y, __extra)> {
-        pub fn x(self, x: i32) -> UnitCommandBuilder<(__unit, __ctype, __target, (i32, ), __y, __extra)> {
-            let x = (x, );
+        pub fn x(self, x: i32) -> UnitCommandBuilder<(__unit, __ctype, __target, (i32,), __y, __extra)> {
+            let x = (x,);
             let (unit, ctype, target, _, y, extra) = self.fields;
             UnitCommandBuilder {
                 fields: (unit, ctype, target, x, y, extra),
@@ -656,20 +668,20 @@ mod ext {
 
     #[doc(hidden)]
     #[allow(dead_code, non_camel_case_types, missing_docs)]
-    impl<__unit, __ctype, __target, __y, __extra> UnitCommandBuilder<(__unit, __ctype, __target, (i32, ), __y, __extra)> {
+    impl<__unit, __ctype, __target, __y, __extra> UnitCommandBuilder<(__unit, __ctype, __target, (i32,), __y, __extra)> {
         #[deprecated(note = "Repeated field x")]
         pub fn x(
             self,
             _: UnitCommandBuilder_Error_Repeated_field_x,
-        ) -> UnitCommandBuilder<(__unit, __ctype, __target, (i32, ), __y, __extra)> {
+        ) -> UnitCommandBuilder<(__unit, __ctype, __target, (i32,), __y, __extra)> {
             self
         }
     }
 
     #[allow(dead_code, non_camel_case_types, missing_docs)]
     impl<__unit, __ctype, __target, __x, __extra> UnitCommandBuilder<(__unit, __ctype, __target, __x, (), __extra)> {
-        pub fn y(self, y: i32) -> UnitCommandBuilder<(__unit, __ctype, __target, __x, (i32, ), __extra)> {
-            let y = (y, );
+        pub fn y(self, y: i32) -> UnitCommandBuilder<(__unit, __ctype, __target, __x, (i32,), __extra)> {
+            let y = (y,);
             let (unit, ctype, target, x, _, extra) = self.fields;
             UnitCommandBuilder {
                 fields: (unit, ctype, target, x, y, extra),
@@ -684,20 +696,20 @@ mod ext {
 
     #[doc(hidden)]
     #[allow(dead_code, non_camel_case_types, missing_docs)]
-    impl<__unit, __ctype, __target, __x, __extra> UnitCommandBuilder<(__unit, __ctype, __target, __x, (i32, ), __extra)> {
+    impl<__unit, __ctype, __target, __x, __extra> UnitCommandBuilder<(__unit, __ctype, __target, __x, (i32,), __extra)> {
         #[deprecated(note = "Repeated field y")]
         pub fn y(
             self,
             _: UnitCommandBuilder_Error_Repeated_field_y,
-        ) -> UnitCommandBuilder<(__unit, __ctype, __target, __x, (i32, ), __extra)> {
+        ) -> UnitCommandBuilder<(__unit, __ctype, __target, __x, (i32,), __extra)> {
             self
         }
     }
 
     #[allow(dead_code, non_camel_case_types, missing_docs)]
     impl<__unit, __ctype, __target, __x, __y> UnitCommandBuilder<(__unit, __ctype, __target, __x, __y, ())> {
-        pub fn extra(self, extra: i32) -> UnitCommandBuilder<(__unit, __ctype, __target, __x, __y, (i32, ))> {
-            let extra = (extra, );
+        pub fn extra(self, extra: i32) -> UnitCommandBuilder<(__unit, __ctype, __target, __x, __y, (i32,))> {
+            let extra = (extra,);
             let (unit, ctype, target, x, y, _) = self.fields;
             UnitCommandBuilder {
                 fields: (unit, ctype, target, x, y, extra),
@@ -712,12 +724,12 @@ mod ext {
 
     #[doc(hidden)]
     #[allow(dead_code, non_camel_case_types, missing_docs)]
-    impl<__unit, __ctype, __target, __x, __y> UnitCommandBuilder<(__unit, __ctype, __target, __x, __y, (i32, ))> {
+    impl<__unit, __ctype, __target, __x, __y> UnitCommandBuilder<(__unit, __ctype, __target, __x, __y, (i32,))> {
         #[deprecated(note = "Repeated field extra")]
         pub fn extra(
             self,
             _: UnitCommandBuilder_Error_Repeated_field_extra,
-        ) -> UnitCommandBuilder<(__unit, __ctype, __target, __x, __y, (i32, ))> {
+        ) -> UnitCommandBuilder<(__unit, __ctype, __target, __x, __y, (i32,))> {
             self
         }
     }
@@ -743,7 +755,7 @@ mod ext {
 
     #[doc(hidden)]
     #[allow(dead_code, non_camel_case_types, missing_docs, clippy::panic)]
-    impl<__target, __x, __y, __extra> UnitCommandBuilder<((Unit, ), (), __target, __x, __y, __extra)> {
+    impl<__target, __x, __y, __extra> UnitCommandBuilder<((Unit,), (), __target, __x, __y, __extra)> {
         #[deprecated(note = "Missing required field ctype")]
         pub fn build(self, _: UnitCommandBuilder_Error_Missing_required_field_ctype) -> UnitCommand {
             {
@@ -754,11 +766,11 @@ mod ext {
 
     #[allow(dead_code, non_camel_case_types, missing_docs)]
     impl<
-        __target: UnitCommandBuilder_Optional<Option<Unit>>,
-        __x: UnitCommandBuilder_Optional<i32>,
-        __y: UnitCommandBuilder_Optional<i32>,
-        __extra: UnitCommandBuilder_Optional<i32>,
-    > UnitCommandBuilder<((Unit, ), (UnitCommandType, ), __target, __x, __y, __extra)>
+            __target: UnitCommandBuilder_Optional<Option<Unit>>,
+            __x: UnitCommandBuilder_Optional<i32>,
+            __y: UnitCommandBuilder_Optional<i32>,
+            __extra: UnitCommandBuilder_Optional<i32>,
+        > UnitCommandBuilder<((Unit,), (UnitCommandType,), __target, __x, __y, __extra)>
     {
         pub fn build(self) -> UnitCommand {
             let (unit, ctype, target, x, y, extra) = self.fields;

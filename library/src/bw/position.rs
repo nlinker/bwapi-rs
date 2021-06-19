@@ -44,27 +44,51 @@ pub trait PositionLike {
 }
 
 impl PositionLike for (i32, i32) {
-    fn to_position(&self) -> Position { Position { x: self.0, y: self.1 } }
-    fn to_walk_position(&self) -> WalkPosition { WalkPosition { x: self.0, y: self.1 } }
-    fn to_tile_position(&self) -> TilePosition { TilePosition { x: self.0, y: self.1 } }
+    fn to_position(&self) -> Position {
+        Position { x: self.0, y: self.1 }
+    }
+    fn to_walk_position(&self) -> WalkPosition {
+        WalkPosition { x: self.0, y: self.1 }
+    }
+    fn to_tile_position(&self) -> TilePosition {
+        TilePosition { x: self.0, y: self.1 }
+    }
 }
 
 impl PositionLike for Position {
-    fn to_position(&self) -> Position { (*self).into() }
-    fn to_walk_position(&self) -> WalkPosition { (*self).into() }
-    fn to_tile_position(&self) -> TilePosition { (*self).into() }
+    fn to_position(&self) -> Position {
+        (*self).into()
+    }
+    fn to_walk_position(&self) -> WalkPosition {
+        (*self).into()
+    }
+    fn to_tile_position(&self) -> TilePosition {
+        (*self).into()
+    }
 }
 
 impl PositionLike for WalkPosition {
-    fn to_position(&self) -> Position { (*self).into() }
-    fn to_walk_position(&self) -> WalkPosition { (*self).into() }
-    fn to_tile_position(&self) -> TilePosition { (*self).into() }
+    fn to_position(&self) -> Position {
+        (*self).into()
+    }
+    fn to_walk_position(&self) -> WalkPosition {
+        (*self).into()
+    }
+    fn to_tile_position(&self) -> TilePosition {
+        (*self).into()
+    }
 }
 
 impl PositionLike for TilePosition {
-    fn to_position(&self) -> Position { (*self).into() }
-    fn to_walk_position(&self) -> WalkPosition { (*self).into() }
-    fn to_tile_position(&self) -> TilePosition { (*self).into() }
+    fn to_position(&self) -> Position {
+        (*self).into()
+    }
+    fn to_walk_position(&self) -> WalkPosition {
+        (*self).into()
+    }
+    fn to_tile_position(&self) -> TilePosition {
+        (*self).into()
+    }
 }
 
 impl From<TilePosition> for Position {

@@ -1,6 +1,6 @@
+use cmake::Config;
 use std::env;
 use std::path::PathBuf;
-use cmake::Config;
 
 // borrowed from tensorflow/rust
 macro_rules! get(($name:expr) => (ok!(env::var($name))));

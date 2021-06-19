@@ -1,4 +1,4 @@
-use crate::bw::can_do::{CanIssueCommandFlags, CanIssueCommandGroupedFlags, CanCheck3Flags};
+use crate::bw::can_do::{CanCheck3Flags, CanIssueCommandFlags, CanIssueCommandGroupedFlags};
 use crate::bw::order::Order;
 use crate::bw::player::Player;
 use crate::bw::position::{Position, TilePosition};
@@ -12,7 +12,7 @@ use crate::bw::weapon_type::WeaponType;
 use crate::bw::{with_unit_filter, Handle};
 use crate::{ffi, FromRaw};
 use std::pin::Pin;
-use std::ptr::{NonNull, null_mut};
+use std::ptr::{null_mut, NonNull};
 
 #[derive(Debug, Clone)]
 pub struct Unit {
@@ -788,7 +788,12 @@ impl Unit {
     pub fn can_issue_command_type_grouped(&self, command_type: UnitCommandType) -> bool {
         self.can_issue_command_type_grouped_(command_type, true, true)
     }
-    pub fn can_issue_command_type_grouped_(&self, command_type: UnitCommandType, check_commandibility_grouped: bool, check_commandibility: bool) -> bool {
+    pub fn can_issue_command_type_grouped_(
+        &self,
+        command_type: UnitCommandType,
+        check_commandibility_grouped: bool,
+        check_commandibility: bool,
+    ) -> bool {
         let x: &ffi::UnitInterface = unsafe { self.raw.as_ref() };
         x.canIssueCommandTypeGrouped(command_type, check_commandibility_grouped, check_commandibility)
     }
