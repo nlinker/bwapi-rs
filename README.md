@@ -1,4 +1,4 @@
-# `BWAPI` o`XI`dized library
+# `BWAPI` oxidized library
  
 _Oxidized BWAPI_ is the native [Rust](https://github.com/rust-lang/rust) bindings 
 to [BWAPI](https://github.com/bwapi/bwapi). Main objectives:
@@ -16,6 +16,12 @@ to [BWAPI](https://github.com/bwapi/bwapi). Main objectives:
   - _Module library_ mode (more performance) and
   - _Client executable_ mode (more convenient to debug, but less performance, the
   game state is exchanged over network or pipe).
+
+Comparison with:
+* https://github.com/bytekeeper/rsbwapi -- this repository is more featureful, however the library there is remote only,
+  compared to `rsbwapi` this binary-linked library has much more performance over the calls to `BWAPI`
+* https://github.com/RnDome/bwapi-rs -- this repository is abandoned and the implementation is mostly manual. Now with the
+  new rust library [`CXX`](https://cxx.rs/) we can potentially make the library more maintainable.
 
 __Warning:__ _the project is on the very early stage and pretty much unstable._
 
