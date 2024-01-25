@@ -18,10 +18,11 @@ to [BWAPI](https://github.com/bwapi/bwapi). Main objectives:
   game state is exchanged over network or pipe).
 
 Comparison with:
-* https://github.com/bytekeeper/rsbwapi -- this repository is more featureful, however the library there is remote only,
-  compared to `rsbwapi` this binary-linked library has much more performance over the calls to `BWAPI`
-* https://github.com/RnDome/bwapi-rs -- this repository is abandoned and the implementation is mostly manual. Now with the
-  new rust library [`CXX`](https://cxx.rs/) we can potentially make the library more maintainable.
+* https://github.com/bytekeeper/rsbwapi - this repository is more featureful, however the `rsbwapi`
+  is client executable mode only. In the comparison with this library, the `bwapi-rs` has much more performance when calling to `BWAPI`
+* https://github.com/RnDome/bwapi-rs -- this repository is abandoned and not practical to continue,
+  since its implementation is mostly manual. Now with the new rust library [`CXX`](https://cxx.rs/)
+  we can potentially make the library more maintainable.
 
 __Warning:__ _the project is on the very early stage and pretty much unstable._
 
