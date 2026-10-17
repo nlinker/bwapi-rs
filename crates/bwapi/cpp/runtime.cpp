@@ -7,3 +7,10 @@ void bwapi_c_game_init(Game* game) noexcept {
 Game* bwapi_c_game() noexcept {
   return reinterpret_cast<Game*>(BWAPI::BroodwarPtr);
 }
+
+void bwapi_c_fatal(const char* msg, size_t len) noexcept {
+  std::fwrite("bwapi-rs: ", 1, 10, stderr);
+  std::fwrite(msg, 1, len, stderr);
+  std::fputc('\n', stderr);
+  std::abort();
+}
